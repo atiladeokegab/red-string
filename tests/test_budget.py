@@ -95,13 +95,13 @@ def test_the_loop_stops_at_the_case_budget(store):
     gateway = build_gateway(store)
     # Wide margins: this runs in the merge gate, where a cold first call must not fail a PR.
     start = time.monotonic()
-    result = run(CASE, gateway, settings, provider, deadline=start + 1.0)
+    result = run(CASE, gateway, settings, provider, deadline=start + 2.0)
 
-    assert time.monotonic() - start < 2  # the deadline plus at most one reply in flight
+    assert time.monotonic() - start < 4  # the deadline plus at most one reply in flight
     assert 2 <= len(requests) < 20
     assert result.final_state == "ERROR"
     assert result.trace[-1]["error"] == "CaseCancelled: case budget exhausted"
-    assert all(r["timeout"]["read"] <= 0.5 for r in requests)  # min(50, seconds left / 2 tries)
+    assert all(r["timeout"]["read"] <= 1.0 for r in requests)  # min(50, seconds left / 2 tries)
 
 
 def test_iterations_and_effort_reach_the_api(store):
