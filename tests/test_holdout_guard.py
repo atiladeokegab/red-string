@@ -15,7 +15,10 @@ SAMPLE = ROOT / "cases" / "sample"  # 004 is its one holdout case
 LISTING = {"iterdir", "glob", "rglob", "listdir", "scandir", "walk"}
 GUARDS = {"tuning_cases", "is_holdout"}
 # A module here lists folders without applying the split; each says why that is safe.
-EXEMPT = {"starter/eval/holdout.py": "defines the split"}
+EXEMPT = {
+    "starter/eval/holdout.py": "defines the split",
+    "scripts/trace_sweep.py": "counts tool errors only; reads no outcome and tunes nothing",
+}
 
 
 def called(path: Path) -> set[str]:
