@@ -5,8 +5,15 @@ builds the `Dockerfile` on Cloud Build, deploys service `hackathon-starter` in `
 the commit as a label, prints the URL and checks `/health`. One deploy owner per event runs it,
 from `main`, after `main` is promoted.
 
-State resets on each deploy or instance restart because the JSON store is on Cloud Run's ephemeral
-filesystem. The service uses one instance; move to a shared store when demo state must persist.
+State is one JSON object, `gs://<project>-state/store.json` (`DATA_PATH`, set by `deploy.sh`;
+`STATE_BUCKET` names another bucket). It survives redeploys and restarts, and up to three instances
+share it through compare-and-swap writes. The bucket keeps old versions of the object: list them with
+`gcloud storage ls -a gs://<project>-state/store.json` and restore one with
+`gcloud storage cp gs://<project>-state/store.json#<generation> gs://<project>-state/store.json`.
+
+Effect tools are simulated in the cloud too, unless the service is given `EFFECTS=live`. On demo day,
+deploy with `MIN_INSTANCES=1` so the first visitor never waits for a cold start; set it back to 0
+afterwards (an idle instance is billed).
 
 ## One-time setup (per GCP project)
 
@@ -26,6 +33,13 @@ for s in anthropic-api-key admin-password; do
   gcloud secrets add-iam-policy-binding "$s" --project "$PROJECT" \
     --member "serviceAccount:$SA" --role roles/secretmanager.secretAccessor
 done
+
+# The store's bucket: private, versioned, writable by the service account.
+gcloud storage buckets create "gs://$PROJECT-state" --project "$PROJECT" \
+  --location europe-west1 --uniform-bucket-level-access --public-access-prevention
+gcloud storage buckets update "gs://$PROJECT-state" --project "$PROJECT" --versioning
+gcloud storage buckets add-iam-policy-binding "gs://$PROJECT-state" --project "$PROJECT" \
+  --member "serviceAccount:$SA" --role roles/storage.objectUser
 ```
 
 If the first deploy fails with a Cloud Build permission error, the same account also builds:

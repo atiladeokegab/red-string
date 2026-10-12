@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 # Deploy the committed HEAD to Cloud Run and prove it answers.
-#   PROJECT=<gcp-project-id> [REGION=europe-west1] [SERVICE=hackathon-starter] scripts/deploy.sh
+#   PROJECT=<gcp-project-id> [REGION=europe-west1] [SERVICE=hackathon-starter] \
+#     [STATE_BUCKET=<PROJECT>-state] [MIN_INSTANCES=0] scripts/deploy.sh
 # One-time GCP setup and rollback: docs/deploy.md.
 set -euo pipefail
 
 : "${PROJECT:?set PROJECT to the GCP project id}"
 REGION="${REGION:-europe-west1}"
 SERVICE="${SERVICE:-hackathon-starter}"
+STATE_BUCKET="${STATE_BUCKET:-$PROJECT-state}"
+MIN_INSTANCES="${MIN_INSTANCES:-0}"  # the event playbook sets 1 on demo day: no cold start
 
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "deploy: the working tree is dirty; commit first so the commit label names what ships" >&2
@@ -14,13 +17,17 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 COMMIT="$(git rev-parse --short=12 HEAD)"
 
-# ponytail: --max-instances 1 keeps the JSON store in one place; lift it with a shared store.
+# State is one JSON object in GCS written with compare-and-swap (GcsStore), so it survives a
+# redeploy and instances share it.
+# ponytail: --max-instances 3 because GcsStore holds a few writes a second; raise it only with a
+# sharded store.
 gcloud run deploy "$SERVICE" --source . --region "$REGION" --project "$PROJECT" \
   --allow-unauthenticated \
   --set-secrets ANTHROPIC_API_KEY=anthropic-api-key:latest,ADMIN_PASSWORD=admin-password:latest \
-  --set-env-vars MODE=cloud \
+  --set-env-vars "MODE=cloud,DATA_PATH=gs://$STATE_BUCKET/store.json" \
   --labels "commit=$COMMIT" \
-  --max-instances 1 \
+  --min-instances "$MIN_INSTANCES" \
+  --max-instances 3 \
   --quiet
 
 URL="$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT" \
