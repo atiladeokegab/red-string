@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runs</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Runs</h1>
+      <p class="muted">{{ status.mode }} · {{ status.model }} · provider: {{ status.providers.anthropic }}</p>
+    </header>
+    {% for run in runs %}
+    <article class="card">
+      <h2>Case {{ run.case_id }} <span class="badge">{{ run.final_state }}</span></h2>
+      <p>{{ run.final_answer }}</p>
+      <ul>
+        {% for action in run.actions %}
+        <li><span class="badge">{{ action.status }}</span> <code>{{ action.tool }}</code></li>
+        {% endfor %}
+      </ul>
+    </article>
+    {% else %}
+    <p class="muted">No runs yet. POST a case to /api/runs or run scripts/run_cases.py.</p>
+    {% endfor %}
+  </main>
+</body>
+</html>

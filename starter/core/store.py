@@ -41,6 +41,8 @@ class Store:
             fd, tmp = tempfile.mkstemp(dir=self.path.parent, prefix=".store-")
             with os.fdopen(fd, "w") as f:
                 json.dump(data, f, indent=1)
+                f.flush()
+                os.fsync(f.fileno())
             os.replace(tmp, self.path)
             return result
 

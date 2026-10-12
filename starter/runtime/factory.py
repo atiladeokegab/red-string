@@ -11,10 +11,13 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from starter import verticals
+from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
+from starter.core.gateway import build_gateway
 from starter.core.store import Store
 from starter.runtime.config import Settings
 from starter.runtime.deps import session_token
+from starter.web import pages
 
 ERROR_STATUS = {ConflictError: 409, NotFound: 404, ProviderNotConfigured: 503, ValueError: 422}
 
@@ -29,6 +32,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
     app = FastAPI(title="starter")
     app.state.settings = settings
     app.state.store = store
+    app.state.gateway = build_gateway(store)
 
     for exc, status in ERROR_STATUS.items():
         app.add_exception_handler(exc, _error_handler(status))
@@ -58,6 +62,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
         if not hmac.compare_digest(body.password, settings.admin_password):
             raise HTTPException(401, "wrong password")
         return {"token": session_token(settings.admin_password)}
+
+    app.include_router(routes.router)
+    app.include_router(pages.router)
+    app.mount("/static", pages.static, name="static")
 
     for module in verticals.modules():
         if hasattr(module, "router"):

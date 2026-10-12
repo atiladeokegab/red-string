@@ -43,3 +43,20 @@ def create_item(item: Item, store: StoreDep) -> Item:
 
     store.mutate(add)
     return item
+
+
+def register_tools(gateway) -> None:
+    @gateway.register
+    def send_message(to: str, body: str) -> dict:
+        """Send a message to a person about their case.
+
+        Args:
+            to: Who receives the message.
+            body: The message text.
+        """
+        return {"to": to, "body": body}
+
+    @gateway.register(effect=False)
+    def list_items() -> list[dict]:
+        """List the example items in the store."""
+        return gateway.store.snapshot().get("items", [])

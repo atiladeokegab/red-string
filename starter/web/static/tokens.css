@@ -1,0 +1,32 @@
+/* Neutral design tokens. The brand slot is --accent: set it, and only it, for an event. */
+:root {
+  --accent: #2563eb;
+  --bg: #ffffff;
+  --surface: #f4f4f5;
+  --ink: #18181b;
+  --muted: #71717a;
+  --border: #e4e4e7;
+  --radius: 8px;
+  --space: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #09090b;
+    --surface: #18181b;
+    --ink: #f4f4f5;
+    --muted: #a1a1aa;
+    --border: #27272a;
+  }
+}
+
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--font); }
+main { max-width: 760px; margin: 0 auto; padding: calc(var(--space) * 2) var(--space); }
+h1, h2 { font-weight: 500; margin: 0 0 calc(var(--space) / 2); }
+.muted { color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: var(--space); margin-bottom: var(--space); }
+.badge { background: var(--accent); color: #fff; border-radius: 4px; padding: 0 6px; font-size: 12px; }
+code { font-family: var(--mono); }
