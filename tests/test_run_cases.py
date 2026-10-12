@@ -21,7 +21,8 @@ def test_sample_cases_write_five_answers_offline(tmp_path, monkeypatch):
         assert f"| {name} | DONE | 1 | 0 | fake | FakeProvider (no ANTHROPIC_API_KEY)" in index
     for name in answers:
         folder = tmp_path / "ANSWERS" / name
-        assert {p.name for p in folder.iterdir()} == {"ANSWER.md", "REASONING.md", "trace.jsonl"}
+        files = {"ANSWER.md", "REASONING.md", "trace.jsonl", "spans.jsonl"}
+        assert {p.name for p in folder.iterdir()} == files
         answer = (folder / "ANSWER.md").read_text()
         assert "Final state: DONE" in answer and "SIMULATED" in answer
         trace = (folder / "trace.jsonl").read_text()
@@ -119,3 +120,31 @@ def test_index_has_one_row_per_case_and_shows_the_question_asked(tmp_path):
         "| 002 | NEEDS_INFO | 1 | 1 | fake | Can you confirm your date of birth? |",
         "| 003 | ERROR | 0 | 0 | none | Run failed: |",
     ]
+
+
+def test_each_answer_has_spans_in_the_same_trace_as_its_steps(tmp_path, monkeypatch):
+    monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
+    assert run_cases.main([str(ROOT / "cases" / "sample"), "--out", str(tmp_path / "A")]) == 0
+    folder = tmp_path / "A" / "001"
+    trace = [json.loads(x) for x in (folder / "trace.jsonl").read_text().splitlines()]
+    spans = [json.loads(x) for x in (folder / "spans.jsonl").read_text().splitlines()]
+    trace_id = trace[0]["trace_id"]
+    assert len(trace_id) == 32 and trace[-1]["trace_id"] == trace_id
+    assert {s["trace_id"] for s in spans} == {trace_id}
+    assert {s["name"] for s in spans} == {"case", "model", "gateway.call"}
+
+
+def test_the_runner_uses_the_store_and_effects_mode_the_settings_name(tmp_path, monkeypatch):
+    opened, modes = [], []
+    local, build = run_cases.open_store, run_cases.build_gateway
+    monkeypatch.setattr(
+        run_cases, "open_store", lambda path: opened.append(path) or local(str(tmp_path / "s"))
+    )
+    monkeypatch.setattr(
+        run_cases, "build_gateway", lambda store, effects: modes.append(effects) or build(store)
+    )
+    monkeypatch.setenv("DATA_PATH", "gs://bucket/store.json")
+    monkeypatch.setenv("EFFECTS", "live")
+    sample = str(ROOT / "cases" / "sample")
+    assert run_cases.main([sample, "--out", str(tmp_path / "A"), "--set", "holdout"]) == 0
+    assert (opened, modes) == (["gs://bucket/store.json"], ["live"])

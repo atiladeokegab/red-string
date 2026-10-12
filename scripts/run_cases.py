@@ -35,7 +35,7 @@ from pathlib import Path
 from starter.agent.cases import load_case
 from starter.agent.loop import AgentResult, run, step
 from starter.core.gateway import build_gateway
-from starter.core.store import Store
+from starter.core.store import open_store
 from starter.eval.holdout import is_holdout, tuning_cases
 from starter.runtime.config import Settings
 
@@ -52,6 +52,7 @@ def write_answer(out: Path, case_id: str, result: AgentResult) -> None:
     )
     (out / "REASONING.md").write_text(f"# Reasoning: case {case_id}\n\n{result.reasoning}\n")
     (out / "trace.jsonl").write_text("".join(json.dumps(step) + "\n" for step in result.trace))
+    (out / "spans.jsonl").write_text("".join(json.dumps(span) + "\n" for span in result.spans))
 
 
 def write_index(out: Path, results: dict[str, AgentResult], which: str = "all") -> None:
@@ -160,7 +161,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("give a cases folder, or --compare PRACTICE HOLDOUT")
 
     settings = Settings.from_env()
-    gateway = build_gateway(Store(settings.data_path))
+    gateway = build_gateway(open_store(settings.data_path), settings.mode_effects)
     folders = sorted(p for p in args.cases.iterdir() if (p / "index.md").exists())
     folders = select(folders, args.set)
     args.out.mkdir(parents=True, exist_ok=True)
