@@ -3,7 +3,6 @@ start without its secrets, so a missing key is a failed deploy, never a silent f
 
 import os
 from dataclasses import dataclass
-from pathlib import Path
 
 DEFAULT_MODEL = "claude-opus-5-5"
 MODEL_MAX_RETRIES = 1  # the SDK retries a timed-out call; each try gets the model timeout
@@ -13,7 +12,7 @@ EFFORTS = ("low", "medium", "high", "xhigh", "max")
 @dataclass(frozen=True)
 class Settings:
     mode: str = "local"
-    data_path: Path = Path("data/store.json")
+    data_path: str = "data/store.json"  # a file path, or gs://bucket/object for GcsStore
     admin_password: str = "admin"
     anthropic_api_key: str | None = None
     model: str = DEFAULT_MODEL
@@ -43,13 +42,12 @@ class Settings:
         model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
         if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
             raise ValueError("inner timeouts must be shorter than the case timeout")
-        # ponytail: cloud keeps the JSON store in /tmp on one instance (deploy.sh pins
-        # --max-instances 1), lost on restart; move to a GCS-backed store when demo state must
-        # survive a redeploy.
+        # Cloud without DATA_PATH keeps the JSON store in /tmp, lost on restart; deploy.sh sets
+        # DATA_PATH=gs://... so state survives a redeploy and several instances share it.
         default_path = "/tmp/store.json" if mode == "cloud" else "data/store.json"
         return cls(
             mode=mode,
-            data_path=Path(env.get("DATA_PATH", default_path)),
+            data_path=env.get("DATA_PATH", default_path),
             admin_password=env.get("ADMIN_PASSWORD", "admin"),
             anthropic_api_key=env.get("ANTHROPIC_API_KEY") or None,
             model=env.get("MODEL", DEFAULT_MODEL),

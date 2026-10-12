@@ -14,7 +14,7 @@ from starter import verticals
 from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
 from starter.core.gateway import build_gateway
-from starter.core.store import Store
+from starter.core.store import Store, open_store
 from starter.core.tracing import EXPORTER, tracer
 from starter.runtime import mcp_door
 from starter.runtime.config import Settings
@@ -30,7 +30,7 @@ class Login(BaseModel):
 
 def create_app(settings: Settings | None = None, store: Store | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
-    store = store or Store(settings.data_path)
+    store = store or open_store(settings.data_path)
     gateway = build_gateway(store, settings.mode_effects)
     mcp = mcp_door.build_mcp(gateway)
     mcp_app = mcp_door.asgi_app(mcp)
