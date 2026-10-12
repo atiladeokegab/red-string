@@ -81,3 +81,24 @@ a deploy script. It contains no event-specific logic, data or prompts. Everythin
 commit, "chore: pre-existing starter from hackathon-starter@<sha>", was built during the event.
 Check the event's rules on pre-existing code before publishing, and extend this paragraph if they
 ask for more.
+
+## Architecture
+
+Drawn from the code by `docs/architecture/c4.py`; redraw with `uv run docs/architecture/c4.py`
+after changing a box or an arrow.
+
+**Context:** who uses the starter and what it depends on.
+
+![System context](docs/architecture/c4_context.png)
+
+**Containers:** the web app and the case runner share one store and one model.
+
+![Containers](docs/architecture/c4_container.png)
+
+**Components:** inside the web app, every tool call goes through the gateway.
+
+![Components](docs/architecture/c4_component.png)
+
+**Code:** the signatures the rest of the code depends on.
+
+![Code](docs/architecture/c4_code.png)
