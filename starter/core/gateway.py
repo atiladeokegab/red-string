@@ -5,9 +5,19 @@ A tool with an external effect (effect=True, the default) only runs when the gat
 (EFFECTS=live). Otherwise its function is never called: the gateway checks the arguments and
 returns {"status": "SIMULATED", "payload": <the checked arguments, or simulate(**arguments)>}.
 A read-only tool (effect=False) always runs and returns {"status": "OK", ...}, as does an effect
-tool on a live gateway."""
+tool on a live gateway.
 
+An effect tool registered with idempotent=True runs once per (case, tool, checked arguments): a
+repeat within the case returns the first result unchanged, runs and simulates nothing, and is
+audited as a tool_call event with "repeat": True. The key is derived, not passed, so a model that
+retries a send cannot send twice; register without it a tool whose repeats are meant (two
+reminders). Only a call that returned is remembered: one that raised can be retried. A live effect
+that ran is never reported as failed: if the case is cancelled while it runs, the gateway still
+audits it and returns its result."""
+
+import contextlib
 import inspect
+import json
 import threading
 from collections.abc import Callable
 from contextvars import ContextVar
@@ -31,6 +41,12 @@ class Gateway:
         self.tools: dict[str, Callable[..., Any]] = {}  # name -> argument-checking wrapper
         self.effects: dict[str, bool] = {}
         self.simulators: dict[str, Callable[..., Any]] = {}  # effect tools only
+        self.checks: dict[str, Callable[..., dict]] = {}  # name -> checked arguments, runs nothing
+        self.idempotent: dict[str, bool] = {}
+        # shortcut: remembered in this process only, one lock for every idempotent call; move to
+        # the store with a reservation if several instances serve the same cases.
+        self.done: dict[tuple, dict] = {}  # (case_id, tool, canonical arguments) -> first result
+        self._once = threading.Lock()
 
     def register(
         self,
@@ -38,10 +54,12 @@ class Gateway:
         *,
         effect: bool = True,
         simulate: Callable[..., Any] | None = None,
+        idempotent: bool = False,
     ):
         """Decorator. Type hints are the argument schema, the docstring is the description.
         simulate(**checked_arguments), if given, is the payload an effect tool returns when the
-        gateway is not live; without it the payload is the checked arguments."""
+        gateway is not live; without it the payload is the checked arguments. idempotent=True: a
+        repeat call in the same case returns the first result (see the module docstring)."""
 
         def add(fn: Callable[..., Any]) -> Callable[..., Any]:
             name = fn.__name__
@@ -49,8 +67,9 @@ class Gateway:
                 raise ValueError(f"tool {name!r} is already registered")
             self.tools[name] = validate_call(fn)
             self.effects[name] = effect
+            self.idempotent[name] = idempotent
+            check = self.checks[name] = validate_call(_arguments_of(fn))
             if effect:
-                check = validate_call(_arguments_of(fn))
                 self.simulators[name] = lambda **args: (simulate or dict)(**check(**args))
             return fn
 
@@ -65,19 +84,37 @@ class Gateway:
             raise NotFound(f"no tool {name!r}")
         if cancel is not None and cancel.is_set():
             raise CaseCancelled("case cancelled")
+        key = None
+        if self.idempotent[name]:
+            key = (
+                case_id,
+                name,
+                json.dumps(self.checks[name](**args), sort_keys=True, default=str),
+            )
+        with self._once if key else contextlib.nullcontext():
+            if key in self.done:
+                result = self.done[key]
+                event = {"case_id": case_id, "tool": name, "args": args, "result": result}
+                self.store.publish({"type": "tool_call", **event, "repeat": True})
+                return result
+            result = self._run(name, args, case_id, cancel)
+            if key:
+                self.done[key] = result
+        self.store.publish(
+            {"type": "tool_call", "case_id": case_id, "tool": name, "args": args, "result": result}
+        )
+        return result
+
+    def _run(self, name: str, args: dict, case_id: str, cancel: threading.Event | None) -> dict:
         simulated = self.effects[name] and not self.live
         run = self.simulators[name] if simulated else self.tools[name]
         attributes = {"tool": name, "case_id": case_id, "simulated": simulated}
         attributes |= {f"arg.{k}": str(v) for k, v in args.items()}  # redacted on export
         with tracer.start_as_current_span("gateway.call", attributes=attributes):
             payload = run(**args)  # pydantic.ValidationError is a ValueError
-        result = {"status": "SIMULATED" if simulated else "OK", "payload": payload}
-        if cancel is not None and cancel.is_set():  # cancelled while the tool ran: no audit write
-            raise CaseCancelled("case cancelled")
-        self.store.publish(
-            {"type": "tool_call", "case_id": case_id, "tool": name, "args": args, "result": result}
-        )
-        return result
+        if cancel is not None and cancel.is_set() and not (self.effects[name] and self.live):
+            raise CaseCancelled("case cancelled")  # cancelled while it ran, no effect: no audit
+        return {"status": "SIMULATED" if simulated else "OK", "payload": payload}
 
 
 def _arguments_of(fn: Callable[..., Any]) -> Callable[..., dict]:

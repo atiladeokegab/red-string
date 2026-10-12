@@ -9,6 +9,9 @@ A case is a folder holding index.md (and optionally history.md). ANSWER.md carri
 "Final state: <DONE|NEEDS_INFO|ESCALATED|ERROR>" line; every trace.jsonl line has "tool", "status"
 and "error". A case that crashes, or runs past CASE_TIMEOUT_S, still gets both, with state
 ERROR, and the run carries on; the exit code is 1 if any case crashed or timed out.
+ANSWER.md also carries "Effects: <n> (<tool>: <count>, ...)": the effect calls this run's gateway
+audit recorded for the case (crashed cases included), never the answer's own account, and an
+"Effects mismatch:" line for each count the answer claims that the audit does not match.
 <out>/README.md indexes the run: one row per case with its state, tool calls, tool errors, path
 (live = Claude, fake = FakeProvider, none = never reached the model) and its answer's first line,
 or for NEEDS_INFO the question it asked.
@@ -37,6 +40,7 @@ from starter.agent.cases import load_case
 from starter.agent.loop import AgentResult, run, step
 from starter.core.gateway import build_gateway
 from starter.core.store import open_store
+from starter.eval.effects import claim_mismatches, count_effects, effects_line
 from starter.eval.holdout import is_holdout, tuning_cases
 from starter.runtime.config import Settings
 
@@ -44,12 +48,14 @@ FINAL_STATE = re.compile(r"^Final state: (\w+)$", re.MULTILINE)
 STATES = ("DONE", "NEEDS_INFO", "ESCALATED", "ERROR")
 
 
-def write_answer(out: Path, case_id: str, result: AgentResult) -> None:
+def write_answer(out: Path, case_id: str, result: AgentResult, effects: str = "") -> None:
+    """`effects` is the case's "Effects: ..." line(s), placed under the final state."""
     out.mkdir(parents=True, exist_ok=True)
     actions = [f"- `{a['tool']}` {a['status']}: {json.dumps(a['args'])}" for a in result.actions]
+    head = f"# Answer: case {case_id}\n\nFinal state: {result.final_state}\n"
+    head += f"{effects}\n" if effects else ""
     (out / "ANSWER.md").write_text(
-        f"# Answer: case {case_id}\n\nFinal state: {result.final_state}\n\n"
-        f"{result.final_answer}\n\n## Actions\n\n" + ("\n".join(actions) or "None.") + "\n"
+        f"{head}\n{result.final_answer}\n\n## Actions\n\n" + ("\n".join(actions) or "None.") + "\n"
     )
     (out / "REASONING.md").write_text(f"# Reasoning: case {case_id}\n\n{result.reasoning}\n")
     (out / "trace.jsonl").write_text("".join(json.dumps(step) + "\n" for step in result.trace))
@@ -173,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
     failed = 0
     results: dict[str, AgentResult] = {}
     for folder in folders:
+        seen = len(gateway.store.snapshot()["events"])  # the store outlives runs: count this one's
         try:
             case = load_case(folder)
             result = run_with_timeout(case, gateway, settings)
@@ -193,7 +200,12 @@ def main(argv: list[str] | None = None) -> int:
                 "",
                 trace=[step("final", status="ERROR", error=error, final_state="ERROR")],
             )
-        write_answer(args.out / folder.name, folder.name, result)
+        counts = count_effects(
+            gateway.store.snapshot()["events"][seen:], folder.name, gateway.effects
+        )
+        claims = claim_mismatches(result.final_answer, counts, gateway.effects)
+        effects = "\n".join([effects_line(counts)] + [f"Effects mismatch: {c}" for c in claims])
+        write_answer(args.out / folder.name, folder.name, result, effects)
         results[folder.name] = result
     write_index(args.out, results, args.set)
     print(f"{len(folders) - failed}/{len(folders)} cases answered in {args.out}")
