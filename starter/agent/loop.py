@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from anthropic import beta_tool
 
 from starter.core.gateway import Gateway
-from starter.runtime.config import Settings
+from starter.runtime.config import MODEL_MAX_RETRIES, Settings
 
 SYSTEM = (
     "You handle one case for the operations team. Read it, act through the tools, and finish "
@@ -101,7 +101,9 @@ class ClaudeProvider:
 
         self.model = settings.model
         self.client = anthropic.Anthropic(
-            api_key=settings.anthropic_api_key, timeout=settings.model_timeout_s
+            api_key=settings.anthropic_api_key,
+            timeout=settings.model_timeout_s,
+            max_retries=MODEL_MAX_RETRIES,
         )
 
     def run(self, system: str, messages: list[dict], tools: list, trace: list[dict]):

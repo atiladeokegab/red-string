@@ -15,19 +15,20 @@ import run_cases  # noqa: E402
 
 def test_timeouts_default_and_come_from_env():
     s = Settings.from_env({})
-    assert (s.case_timeout_s, s.model_timeout_s) == (120, 60)
+    assert (s.case_timeout_s, s.model_timeout_s) == (120, 50)
     s = Settings.from_env({"CASE_TIMEOUT_S": "30", "MODEL_TIMEOUT_S": "10"})
     assert (s.case_timeout_s, s.model_timeout_s) == (30, 10)
 
 
-def test_model_timeout_must_be_shorter_than_case_timeout():
+def test_model_timeout_with_its_retry_must_fit_inside_the_case_timeout():
+    Settings.from_env({"CASE_TIMEOUT_S": "120", "MODEL_TIMEOUT_S": "50"})
     with pytest.raises(ValueError, match="inner timeouts must be shorter than the case timeout"):
-        Settings.from_env({"CASE_TIMEOUT_S": "30", "MODEL_TIMEOUT_S": "30"})
+        Settings.from_env({"CASE_TIMEOUT_S": "120", "MODEL_TIMEOUT_S": "60"})
 
 
-def test_claude_client_gets_the_model_timeout():
-    settings = Settings(anthropic_api_key="test-key", model_timeout_s=7)
-    assert loop.ClaudeProvider(settings).client.timeout == 7
+def test_claude_client_gets_the_model_timeout_and_one_retry():
+    client = loop.ClaudeProvider(Settings(anthropic_api_key="test-key", model_timeout_s=7)).client
+    assert (client.timeout, client.max_retries) == (7, 1)
 
 
 def test_a_hung_case_times_out_and_the_next_case_still_runs(tmp_path, monkeypatch):

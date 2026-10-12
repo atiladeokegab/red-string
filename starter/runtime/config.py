@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DEFAULT_MODEL = "claude-opus-5-5"
+MODEL_MAX_RETRIES = 1  # the SDK retries a timed-out call; each try gets the model timeout
 
 
 @dataclass(frozen=True)
@@ -16,7 +17,7 @@ class Settings:
     anthropic_api_key: str | None = None
     model: str = DEFAULT_MODEL
     case_timeout_s: float = 120
-    model_timeout_s: float = 60
+    model_timeout_s: float = 50
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -29,8 +30,8 @@ class Settings:
             if missing:
                 raise RuntimeError(f"cloud mode refuses to start without {', '.join(missing)}")
         case_timeout_s = float(env.get("CASE_TIMEOUT_S", 120))
-        model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 60))
-        if model_timeout_s >= case_timeout_s:
+        model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
+        if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
             raise ValueError("inner timeouts must be shorter than the case timeout")
         # ponytail: cloud keeps the JSON store in /tmp on one instance (deploy.sh pins
         # --max-instances 1), lost on restart; move to a GCS-backed store when demo state must
