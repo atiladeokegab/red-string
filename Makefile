@@ -1,4 +1,6 @@
-.PHONY: dev check smoke smoke-cases eval deploy
+.PHONY: dev check smoke smoke-cases eval deploy mcp
+
+MCP_URL ?= http://127.0.0.1:8000/mcp
 
 dev:
 	uv run uvicorn starter.main:app --reload
@@ -23,3 +25,6 @@ eval:
 
 deploy:
 	scripts/deploy.sh
+
+mcp:
+	uv run python -m starter.runtime.mcp_door $(MCP_URL)

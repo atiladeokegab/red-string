@@ -45,6 +45,20 @@ ESCALATED or ERROR); each `trace.jsonl` line has `tool`, `status` and `error`, s
 `grep '"status": "ERROR"' ANSWERS/*/trace.jsonl` lists every failed tool call. One case in five is a holdout (`starter/eval/holdout.py`; sample
 case `004` is one): never tune on it.
 
+## MCP door
+
+The gateway's tools are also an MCP server at `/mcp` (Streamable HTTP), so Claude Code or any MCP
+client can call them. Every call goes through the gateway: it is validated, simulated unless
+`EFFECTS=live`, and logged with case id `mcp-<session>`.
+
+```bash
+make dev                      # one terminal
+make mcp                      # prints the claude mcp add line for http://127.0.0.1:8000/mcp
+ADMIN_PASSWORD=<admin password> make mcp MCP_URL=<service url>/mcp    # a deployed service
+```
+
+Each `make mcp` mints a new session token; `POST /api/mcp/token` with the admin token does the same.
+
 ## System rules
 
 - **One factory.** Every app, router and page is mounted by `create_app()` in `starter/runtime/factory.py`.

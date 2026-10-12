@@ -6,7 +6,7 @@ import json
 import time
 import uuid
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -15,8 +15,9 @@ from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
 from starter.core.gateway import build_gateway
 from starter.core.store import Store
+from starter.runtime import mcp_door
 from starter.runtime.config import Settings
-from starter.runtime.deps import session_token
+from starter.runtime.deps import require_token, session_token
 from starter.web import pages
 
 ERROR_STATUS = {ConflictError: 409, NotFound: 404, ProviderNotConfigured: 503, ValueError: 422}
@@ -29,10 +30,13 @@ class Login(BaseModel):
 def create_app(settings: Settings | None = None, store: Store | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
     store = store or Store(settings.data_path)
-    app = FastAPI(title="starter")
+    gateway = build_gateway(store, settings.mode_effects)
+    mcp = mcp_door.build_mcp(gateway)
+    mcp_app = mcp_door.asgi_app(mcp)
+    app = FastAPI(title="starter", lifespan=lambda app: mcp.session_manager.run())
     app.state.settings = settings
     app.state.store = store
-    app.state.gateway = build_gateway(store, settings.mode_effects)
+    app.state.gateway = gateway
 
     for exc, status in ERROR_STATUS.items():
         app.add_exception_handler(exc, _error_handler(status))
@@ -64,6 +68,11 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
             raise HTTPException(401, "wrong password")
         return {"token": session_token(settings.admin_password)}
 
+    @app.post("/api/mcp/token", dependencies=[Depends(require_token)])
+    def mcp_token() -> dict:
+        return {"token": mcp_door.issue_token(settings.admin_password)}
+
+    app.add_route("/mcp", mcp_door.TokenGuard(mcp_app, settings.admin_password))
     app.include_router(routes.router)
     app.include_router(pages.router)
     app.mount("/static", pages.static, name="static")

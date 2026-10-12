@@ -15,7 +15,7 @@ with its reason and ask in review: dependency files are gated.
 | Deploy | Docker + Cloud Run via `gcloud run deploy --source .` | Decided | Build, push and deploy in one command; image labelled with the commit |
 | Secrets | Google Secret Manager | Decided | Keys never in the repo or the image |
 | Durable state | GCS-backed store behind the same `Store` interface | Proposed | When demo state must survive a redeploy |
-| Tool protocol | MCP server in front of the gateway | Proposed | When an outside agent must call our tools |
+| Tool protocol | MCP server at `/mcp` (official `mcp` SDK, Streamable HTTP, stateless) in front of the gateway | Decided | One door for every outside agent; same image; every call audited |
 | Telemetry | OpenTelemetry export | Proposed | When traces must leave `trace.jsonl` |
 | Grading | LLM judge over `ANSWERS/` | Proposed | When outcomes can't be checked by string |
 | Infra as code | Terraform | Proposed | Only when a project outlives an event |
