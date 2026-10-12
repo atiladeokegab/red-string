@@ -78,5 +78,6 @@ URL and checks `/healthz`. One-time setup and rollback: `docs/deploy.md`.
 This repository starts from `hackathon-starter`, a private template prepared before the event: an
 app factory, a JSON store, a tool gateway, an agent loop with an offline stand-in, a case runner and
 a deploy script. It contains no event-specific logic, data or prompts. Everything after the first
-commit, "Start from hackathon-starter", was built during the event. Check the event's rules on
-pre-existing code before publishing, and extend this paragraph if they ask for more.
+commit, "chore: pre-existing starter from hackathon-starter@<sha>", was built during the event.
+Check the event's rules on pre-existing code before publishing, and extend this paragraph if they
+ask for more.

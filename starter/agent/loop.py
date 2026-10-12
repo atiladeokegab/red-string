@@ -100,7 +100,9 @@ class ClaudeProvider:
         import anthropic
 
         self.model = settings.model
-        self.client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        self.client = anthropic.Anthropic(
+            api_key=settings.anthropic_api_key, timeout=settings.model_timeout_s
+        )
 
     def run(self, system: str, messages: list[dict], tools: list, trace: list[dict]):
         runner = self.client.beta.messages.tool_runner(

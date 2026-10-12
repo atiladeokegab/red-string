@@ -5,13 +5,14 @@
 
 A case is a folder holding index.md (and optionally history.md). ANSWER.md carries a
 "Final state: <DONE|NEEDS_INFO|ESCALATED|ERROR>" line; every trace.jsonl line has "tool", "status"
-and "error". A case that crashes still gets both, with state ERROR, and the run carries on; the
-exit code is 1 if any case crashed.
+and "error". A case that crashes, or runs past CASE_TIMEOUT_S, still gets both, with state
+ERROR, and the run carries on; the exit code is 1 if any case crashed or timed out.
 """
 
 import argparse
 import json
 import sys
+import threading
 import traceback
 from pathlib import Path
 
@@ -33,6 +34,33 @@ def write_answer(out: Path, case_id: str, result: AgentResult) -> None:
     (out / "trace.jsonl").write_text("".join(json.dumps(step) + "\n" for step in result.trace))
 
 
+class CaseTimeout(Exception):
+    pass
+
+
+def run_with_timeout(case: dict, gateway, settings: Settings) -> AgentResult:
+    """Run one case on a daemon thread and give up on it after settings.case_timeout_s, so a hung
+    model or tool call cannot block the cases after it."""
+    # ponytail: a timed-out case is abandoned, not killed: its thread may still finish and log
+    # tool calls; make the loop async and cancellable if abandoned work ever matters.
+    box: dict = {}
+
+    def target() -> None:
+        try:
+            box["result"] = run(case, gateway, settings)
+        except Exception as exc:
+            box["error"] = exc
+
+    worker = threading.Thread(target=target, daemon=True)  # daemon: a hung case can't block exit
+    worker.start()
+    worker.join(settings.case_timeout_s)
+    if worker.is_alive():
+        raise CaseTimeout(f"case timeout after {settings.case_timeout_s:g}s")
+    if "error" in box:
+        raise box["error"]
+    return box["result"]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("cases", type=Path)
@@ -46,7 +74,17 @@ def main(argv: list[str] | None = None) -> int:
     for folder in folders:
         try:
             case = load_case(folder)
-            write_answer(args.out / case["id"], case["id"], run(case, gateway, settings))
+            result = run_with_timeout(case, gateway, settings)
+            write_answer(args.out / case["id"], case["id"], result)
+        except CaseTimeout as exc:
+            failed += 1
+            timed_out = AgentResult(
+                "No answer: the case did not finish in time.",
+                "ERROR",
+                f"Stopped by the runner: {exc}.",
+                trace=[step("final", status="ERROR", error=str(exc), final_state="ERROR")],
+            )
+            write_answer(args.out / folder.name, folder.name, timed_out)
         except Exception as exc:
             failed += 1
             error = f"{type(exc).__name__}: {exc}"

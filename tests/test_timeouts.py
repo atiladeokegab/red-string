@@ -1,0 +1,64 @@
+import json
+import sys
+import threading
+from pathlib import Path
+
+import pytest
+
+from starter.agent import loop
+from starter.runtime.config import Settings
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+
+import run_cases  # noqa: E402
+
+
+def test_timeouts_default_and_come_from_env():
+    s = Settings.from_env({})
+    assert (s.case_timeout_s, s.model_timeout_s) == (120, 60)
+    s = Settings.from_env({"CASE_TIMEOUT_S": "30", "MODEL_TIMEOUT_S": "10"})
+    assert (s.case_timeout_s, s.model_timeout_s) == (30, 10)
+
+
+def test_model_timeout_must_be_shorter_than_case_timeout():
+    with pytest.raises(ValueError, match="inner timeouts must be shorter than the case timeout"):
+        Settings.from_env({"CASE_TIMEOUT_S": "30", "MODEL_TIMEOUT_S": "30"})
+
+
+def test_claude_client_gets_the_model_timeout():
+    settings = Settings(anthropic_api_key="test-key", model_timeout_s=7)
+    assert loop.ClaudeProvider(settings).client.timeout == 7
+
+
+def test_a_hung_case_times_out_and_the_next_case_still_runs(tmp_path, monkeypatch):
+    release = threading.Event()
+
+    class Hanging(loop.FakeProvider):
+        def run(self, system, messages, tools, trace):
+            if messages[0]["content"].startswith("Case a"):
+                release.wait(5)  # a model call that never comes back in time
+            return super().run(system, messages, tools, trace)
+
+    monkeypatch.setattr(loop, "FakeProvider", Hanging)
+    monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
+    monkeypatch.setenv("CASE_TIMEOUT_S", "0.5")
+    monkeypatch.setenv("MODEL_TIMEOUT_S", "0.1")
+    cases = tmp_path / "cases"
+    for name in ("a", "b"):
+        (cases / name).mkdir(parents=True)
+        (cases / name / "index.md").write_text(f"# {name}")
+    try:
+        assert run_cases.main([str(cases), "--out", str(tmp_path / "out")]) == 1
+    finally:
+        release.set()
+
+    a = tmp_path / "out" / "a"
+    assert "Final state: ERROR" in (a / "ANSWER.md").read_text()
+    assert "case timeout after 0.5s" in (a / "REASONING.md").read_text()
+    [final] = [json.loads(x) for x in (a / "trace.jsonl").read_text().splitlines()]
+    assert (final["tool"], final["status"], final["error"]) == (
+        None,
+        "ERROR",
+        "case timeout after 0.5s",
+    )
+    assert "Final state: DONE" in (tmp_path / "out" / "b" / "ANSWER.md").read_text()
