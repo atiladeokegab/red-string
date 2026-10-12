@@ -7,12 +7,18 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import run_cases  # noqa: E402
 
+from starter.agent.loop import AgentResult, step  # noqa: E402
+
 
 def test_sample_cases_write_five_answers_offline(tmp_path, monkeypatch):
     monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
     assert run_cases.main([str(ROOT / "cases" / "sample"), "--out", str(tmp_path / "ANSWERS")]) == 0
     answers = sorted(p.name for p in (tmp_path / "ANSWERS").iterdir() if p.is_dir())
     assert answers == ["001", "002", "003", "004", "005"]
+    index = (tmp_path / "ANSWERS" / "README.md").read_text()
+    assert index.startswith("# Answers (all cases)")
+    for name in answers:
+        assert f"| {name} | DONE | 1 | 0 | fake | FakeProvider (no ANTHROPIC_API_KEY)" in index
     for name in answers:
         folder = tmp_path / "ANSWERS" / name
         assert {p.name for p in folder.iterdir()} == {"ANSWER.md", "REASONING.md", "trace.jsonl"}
@@ -83,3 +89,33 @@ def test_compare_fails_closed_unless_each_side_is_its_own_labelled_set(tmp_path,
     assert "case 004" in capsys.readouterr().out
     assert compare(tmp_path / "c", MIXED, {}) == 2
     assert "no holdout cases" in capsys.readouterr().out
+
+
+def test_index_has_one_row_per_case_and_shows_the_question_asked(tmp_path):
+    claude = step("model_input", provider="claude")
+    fake = step("model_input", provider="fake")
+    results = {
+        "001": AgentResult(
+            "Refunded one payment | ref 42.\nEmailed Priya.",
+            "DONE",
+            "",
+            trace=[claude, step("tool_call", "send_message", "SIMULATED"), step("final")],
+        ),
+        "002": AgentResult(
+            "I checked the account.\nCan you confirm your date of birth?",
+            "NEEDS_INFO",
+            "",
+            trace=[fake, step("tool_call", "send_message", "ERROR", "bad"), step("final")],
+        ),
+        "003": AgentResult("Run failed:", "ERROR", "", trace=[step("final", status="ERROR")]),
+    }
+    run_cases.write_index(tmp_path, results, "holdout")
+    lines = (tmp_path / "README.md").read_text().splitlines()
+    assert lines[0] == "# Answers (holdout cases)"
+    assert "| Case | Final state | Tool calls | Tool errors | Path | Answer |" in lines
+    rows = [line for line in lines if line.startswith("| 00")]
+    assert rows == [
+        "| 001 | DONE | 1 | 0 | live | Refunded one payment \\| ref 42. |",
+        "| 002 | NEEDS_INFO | 1 | 1 | fake | Can you confirm your date of birth? |",
+        "| 003 | ERROR | 0 | 0 | none | Run failed: |",
+    ]

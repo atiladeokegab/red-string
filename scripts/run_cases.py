@@ -9,6 +9,9 @@ A case is a folder holding index.md (and optionally history.md). ANSWER.md carri
 "Final state: <DONE|NEEDS_INFO|ESCALATED|ERROR>" line; every trace.jsonl line has "tool", "status"
 and "error". A case that crashes, or runs past CASE_TIMEOUT_S, still gets both, with state
 ERROR, and the run carries on; the exit code is 1 if any case crashed or timed out.
+<out>/README.md indexes the run: one row per case with its state, tool calls, tool errors, path
+(live = Claude, fake = FakeProvider, none = never reached the model) and its answer's first line,
+or for NEEDS_INFO the question it asked.
 
 --set picks the cases: practice (through tuning_cases(), so never a holdout case), holdout, or all
 (the default, for reports). The out folder's SET file records which one ran. Tune only through
@@ -49,6 +52,29 @@ def write_answer(out: Path, case_id: str, result: AgentResult) -> None:
     )
     (out / "REASONING.md").write_text(f"# Reasoning: case {case_id}\n\n{result.reasoning}\n")
     (out / "trace.jsonl").write_text("".join(json.dumps(step) + "\n" for step in result.trace))
+
+
+def write_index(out: Path, results: dict[str, AgentResult], which: str = "all") -> None:
+    rows = [
+        f"# Answers ({which} cases)\n",
+        "| Case | Final state | Tool calls | Tool errors | Path | Answer |",
+        "|---|---|---|---|---|---|",
+    ]
+    for case_id, result in sorted(results.items()):
+        calls = [s for s in result.trace if s["type"] == "tool_call"]
+        errors = sum(s["status"] == "ERROR" for s in calls)
+        first = result.trace[0] if result.trace else {}
+        provider = first.get("provider") if first.get("type") == "model_input" else None
+        path = {"claude": "live", "fake": "fake", None: "none"}.get(provider, provider)
+        lines = [line.strip() for line in result.final_answer.splitlines() if line.strip()]
+        asked = [line for line in lines if line.endswith("?")]
+        if result.final_state == "NEEDS_INFO" and asked:
+            lines = asked
+        answer = (lines or ["(empty)"])[0].replace("|", "\\|")
+        rows.append(
+            f"| {case_id} | {result.final_state} | {len(calls)} | {errors} | {path} | {answer} |"
+        )
+    (out / "README.md").write_text("\n".join(rows) + "\n")
 
 
 class CaseTimeout(Exception):
@@ -140,30 +166,31 @@ def main(argv: list[str] | None = None) -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "SET").write_text(f"{args.set}\n")
     failed = 0
+    results: dict[str, AgentResult] = {}
     for folder in folders:
         try:
             case = load_case(folder)
             result = run_with_timeout(case, gateway, settings)
-            write_answer(args.out / case["id"], case["id"], result)
         except CaseTimeout as exc:
             failed += 1
-            timed_out = AgentResult(
+            result = AgentResult(
                 "No answer: the case did not finish in time.",
                 "ERROR",
                 f"Stopped by the runner: {exc}.",
                 trace=[step("final", status="ERROR", error=str(exc), final_state="ERROR")],
             )
-            write_answer(args.out / folder.name, folder.name, timed_out)
         except Exception as exc:
             failed += 1
             error = f"{type(exc).__name__}: {exc}"
-            crashed = AgentResult(
+            result = AgentResult(
                 f"Run failed:\n\n```\n{traceback.format_exc()}```",
                 "ERROR",
                 "",
                 trace=[step("final", status="ERROR", error=error, final_state="ERROR")],
             )
-            write_answer(args.out / folder.name, folder.name, crashed)
+        write_answer(args.out / folder.name, folder.name, result)
+        results[folder.name] = result
+    write_index(args.out, results, args.set)
     print(f"{len(folders) - failed}/{len(folders)} cases answered in {args.out}")
     return 1 if failed else 0
 
