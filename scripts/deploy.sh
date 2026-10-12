@@ -26,5 +26,5 @@ gcloud run deploy "$SERVICE" --source . --region "$REGION" --project "$PROJECT" 
 URL="$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT" \
   --format 'value(status.url)')"
 echo "deployed $COMMIT to $URL"
-curl -fsS --max-time 30 "$URL/healthz"
+curl -fsS --max-time 30 "$URL/health"
 echo

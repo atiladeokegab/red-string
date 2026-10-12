@@ -2,7 +2,7 @@
 
 `make deploy PROJECT=<id>` runs `scripts/deploy.sh`: it refuses a dirty tree, uploads the folder,
 builds the `Dockerfile` on Cloud Build, deploys service `hackathon-starter` in `europe-west1` with
-the commit as a label, prints the URL and checks `/healthz`. One deploy owner per event runs it,
+the commit as a label, prints the URL and checks `/health`. One deploy owner per event runs it,
 from `main`, after `main` is promoted.
 
 State resets on each deploy or instance restart because the JSON store is on Cloud Run's ephemeral
