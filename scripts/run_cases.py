@@ -3,6 +3,7 @@
     uv run scripts/run_cases.py cases/sample            # FakeProvider with no key, Claude with one
     uv run scripts/run_cases.py cases/sample --out /tmp/answers
     uv run scripts/run_cases.py cases/sample --set holdout --out ANSWERS-holdout
+    uv run scripts/run_cases.py --compare ANSWERS-practice ANSWERS-holdout
 
 A case is a folder holding index.md (and optionally history.md). ANSWER.md carries a
 "Final state: <DONE|NEEDS_INFO|ESCALATED|ERROR>" line; every trace.jsonl line has "tool", "status"
@@ -12,13 +13,20 @@ ERROR, and the run carries on; the exit code is 1 if any case crashed or timed o
 --set picks the cases: practice (through tuning_cases(), so never a holdout case), holdout, or all
 (the default, for reports). The out folder's SET file records which one ran. Tune only through
 scripts/tune.py, which always runs practice.
+
+--compare PRACTICE HOLDOUT prints the final-state mix of a --set holdout run beside a --set
+practice run and exits 2 when any state's share differs by more than 20 points: practice numbers
+the holdout does not reproduce were tuned, not earned. It also exits 2 unless each folder is
+labelled for its side and holds only that side's cases.
 """
 
 import argparse
 import json
+import re
 import sys
 import threading
 import traceback
+from collections import Counter
 from pathlib import Path
 
 from starter.agent.cases import load_case
@@ -27,6 +35,9 @@ from starter.core.gateway import build_gateway
 from starter.core.store import Store
 from starter.eval.holdout import is_holdout, tuning_cases
 from starter.runtime.config import Settings
+
+FINAL_STATE = re.compile(r"^Final state: (\w+)$", re.MULTILINE)
+STATES = ("DONE", "NEEDS_INFO", "ESCALATED", "ERROR")
 
 
 def write_answer(out: Path, case_id: str, result: AgentResult) -> None:
@@ -77,12 +88,50 @@ def select(folders: list[Path], which: str) -> list[Path]:
     return [f for f in folders if f.name in practice]
 
 
+def compare_mix(practice: Path, holdout: Path, limit: float = 20) -> int:
+    """Print each state's share of a holdout run beside a practice run; 2 if any share differs
+    by more than `limit` points or the runs are not one labelled set each, else 0."""
+    mix: dict[str, Counter] = {}
+    for side, folder in (("holdout", holdout), ("practice", practice)):
+        label = (folder / "SET").read_text().strip() if (folder / "SET").exists() else None
+        if label != side:
+            print(f"cannot compare: {folder} is not a --set {side} run (SET: {label})")
+            return 2
+        mix[side] = Counter()
+        for answer in sorted(folder.glob("*/ANSWER.md")):
+            case_id = answer.parent.name
+            if is_holdout(case_id) != (side == "holdout"):
+                print(f"cannot compare: case {case_id} in {folder} is not a {side} case")
+                return 2
+            match = FINAL_STATE.search(answer.read_text())
+            mix[side][match.group(1) if match else "ERROR"] += 1
+        if not mix[side]:
+            print(f"cannot compare: no {side} cases in {folder}")
+            return 2
+    held, practised = mix["holdout"], mix["practice"]
+    shifted = False
+    print(f"{'state':<12}{'holdout':>9}{'practice':>10}{'diff':>7}")
+    for state in STATES:
+        a = 100 * held[state] / held.total()
+        b = 100 * practised[state] / practised.total()
+        shift = abs(a - b) > limit
+        shifted |= shift
+        print(f"{state:<12}{a:>8.0f}%{b:>9.0f}%{abs(a - b):>7.0f}" + ("  <- shift" * shift))
+    print(f"{'cases':<12}{held.total():>9}{practised.total():>10}")
+    return 2 if shifted else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("cases", type=Path)
+    parser.add_argument("cases", type=Path, nargs="?")
     parser.add_argument("--out", type=Path, default=Path("ANSWERS"))
     parser.add_argument("--set", choices=("practice", "holdout", "all"), default="all")
+    parser.add_argument("--compare", nargs=2, type=Path, metavar=("PRACTICE", "HOLDOUT"))
     args = parser.parse_args(argv)
+    if args.compare:
+        return compare_mix(*args.compare)
+    if args.cases is None:
+        parser.error("give a cases folder, or --compare PRACTICE HOLDOUT")
 
     settings = Settings.from_env()
     gateway = build_gateway(Store(settings.data_path))

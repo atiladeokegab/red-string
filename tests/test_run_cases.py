@@ -40,3 +40,46 @@ def test_a_failing_case_is_reported_and_the_rest_still_run(tmp_path, monkeypatch
     [final] = [json.loads(x) for x in lines]
     assert final["status"] == "ERROR" and final["error"].startswith("IsADirectoryError")
     assert (tmp_path / "out" / "b" / "trace.jsonl").exists()
+
+
+def write_states(answers: Path, label: str, states: dict[str, str]) -> Path:
+    """A fake run_cases output folder: a SET label and one ANSWER.md per case."""
+    answers.mkdir(parents=True)
+    (answers / "SET").write_text(f"{label}\n")
+    for case_id, state in states.items():
+        (answers / case_id).mkdir()
+        (answers / case_id / "ANSWER.md").write_text(f"# Answer\n\nFinal state: {state}\n")
+    return answers
+
+
+# 004 and 011 hash into the holdout; 001, 002, 003 and 005 are practice
+MIXED = {"001": "DONE", "002": "NEEDS_INFO", "003": "DONE", "005": "NEEDS_INFO"}
+
+
+def compare(tmp_path, practice: dict, holdout: dict, labels=("practice", "holdout")) -> int:
+    p = write_states(tmp_path / "P", labels[0], practice)
+    h = write_states(tmp_path / "H", labels[1], holdout)
+    return run_cases.main(["--compare", str(p), str(h)])
+
+
+def test_compare_passes_when_holdout_and_practice_mix_match(tmp_path, capsys):
+    assert compare(tmp_path, MIXED, {"004": "DONE", "011": "NEEDS_INFO"}) == 0
+    out = capsys.readouterr().out
+    assert "holdout" in out and "practice" in out
+    assert "DONE" in out and "50%" in out and "shift" not in out
+
+
+def test_compare_exits_2_when_a_state_share_moves_more_than_20_points(tmp_path, capsys):
+    practice = dict.fromkeys(MIXED, "DONE")
+    assert compare(tmp_path, practice, {"004": "ESCALATED", "011": "DONE"}) == 2
+    escalated = next(line for line in capsys.readouterr().out.splitlines() if "ESCALATED" in line)
+    assert "50%" in escalated and "0%" in escalated and "shift" in escalated
+
+
+def test_compare_fails_closed_unless_each_side_is_its_own_labelled_set(tmp_path, capsys):
+    assert compare(tmp_path / "a", MIXED, {"004": "DONE"}, labels=("all", "holdout")) == 2
+    assert "not a --set practice run" in capsys.readouterr().out
+    assert compare(tmp_path / "b", MIXED | {"004": "DONE"}, {"011": "DONE"}) == 2
+    assert "case 004" in capsys.readouterr().out
+    assert compare(tmp_path / "c", MIXED, {}) == 2
+    assert "no holdout cases" in capsys.readouterr().out
