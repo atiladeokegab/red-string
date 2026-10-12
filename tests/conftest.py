@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from starter.core.store import Store
+from starter.core.tracing import EXPORTER
 from starter.runtime.config import Settings
 from starter.runtime.deps import session_token
 from starter.runtime.factory import create_app
@@ -12,6 +13,7 @@ def offline_env(monkeypatch):
     """Tests never see the developer's keys: every test runs offline, in local mode."""
     for name in ("ANTHROPIC_API_KEY", "ADMIN_PASSWORD", "MODE", "DATA_PATH", "MODEL"):
         monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(EXPORTER, "echo", False)  # create_app turns it on; off between tests
 
 
 @pytest.fixture

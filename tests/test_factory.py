@@ -36,8 +36,11 @@ def test_request_id_header_and_one_json_log_line(client, capsys):
     r = client.get("/healthz", headers={"x-request-id": "abc123"})
     assert r.headers["x-request-id"] == "abc123"
     lines = [json.loads(x) for x in capsys.readouterr().out.splitlines() if x.startswith("{")]
-    got = [(x["request_id"], x["path"], x["status"]) for x in lines]
-    assert got == [("abc123", "/healthz", 200)]
+    logs = [x for x in lines if "request_id" in x]  # the rest are spans (test_tracing.py)
+    assert [(x["request_id"], x["path"], x["status"]) for x in logs] == [
+        ("abc123", "/healthz", 200)
+    ]
+    assert len(logs[0]["trace_id"]) == 32
 
 
 def test_error_map(store):

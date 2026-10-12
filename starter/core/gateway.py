@@ -16,6 +16,7 @@ from pydantic import validate_call
 
 from starter.core.errors import CaseCancelled, NotFound
 from starter.core.store import Store
+from starter.core.tracing import tracer
 
 
 class Gateway:
@@ -61,7 +62,10 @@ class Gateway:
             raise CaseCancelled("case cancelled")
         simulated = self.effects[name] and not self.live
         run = self.simulators[name] if simulated else self.tools[name]
-        payload = run(**args)  # pydantic.ValidationError is a ValueError
+        attributes = {"tool": name, "case_id": case_id, "simulated": simulated}
+        attributes |= {f"arg.{k}": str(v) for k, v in args.items()}  # redacted on export
+        with tracer.start_as_current_span("gateway.call", attributes=attributes):
+            payload = run(**args)  # pydantic.ValidationError is a ValueError
         result = {"status": "SIMULATED" if simulated else "OK", "payload": payload}
         if cancel is not None and cancel.is_set():  # cancelled while the tool ran: no audit write
             raise CaseCancelled("case cancelled")

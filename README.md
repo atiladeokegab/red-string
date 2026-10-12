@@ -36,7 +36,7 @@ make eval           # the sample cases on the real model (needs ANTHROPIC_API_KE
 ## Run cases
 
 ```bash
-uv run scripts/run_cases.py cases/sample    # writes ANSWERS/<n>/{ANSWER.md, REASONING.md, trace.jsonl}
+uv run scripts/run_cases.py cases/sample    # writes ANSWERS/<n>/{ANSWER.md, REASONING.md, trace.jsonl, spans.jsonl}
 ```
 
 A case is a folder with `index.md` and optionally `history.md`. Any `## Outcome` section is cut
@@ -44,6 +44,10 @@ before the model sees the case. Each `ANSWER.md` has a `Final state:` line (DONE
 ESCALATED or ERROR); each `trace.jsonl` line has `tool`, `status` and `error`, so
 `grep '"status": "ERROR"' ANSWERS/*/trace.jsonl` lists every failed tool call. One case in five is a holdout (`starter/eval/holdout.py`; sample
 case `004` is one): never tune on it.
+
+`spans.jsonl` holds the case's OpenTelemetry spans (`case`, `model`, one `gateway.call` per tool
+call), secrets redacted; its `trace_id` is the one in `trace.jsonl`. The server prints the same span
+lines for every request to stdout, and each request log line carries its `trace_id`.
 
 ## MCP door
 

@@ -15,6 +15,7 @@ from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
 from starter.core.gateway import build_gateway
 from starter.core.store import Store
+from starter.core.tracing import EXPORTER, tracer
 from starter.runtime import mcp_door
 from starter.runtime.config import Settings
 from starter.runtime.deps import require_token, session_token
@@ -37,6 +38,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
     app.state.settings = settings
     app.state.store = store
     app.state.gateway = gateway
+    EXPORTER.echo = True  # a server prints every span: Cloud Run keeps stdout as its log
 
     for exc, status in ERROR_STATUS.items():
         app.add_exception_handler(exc, _error_handler(status))
@@ -45,10 +47,14 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
     async def log_request(request: Request, call_next):
         request_id = request.headers.get("x-request-id") or uuid.uuid4().hex[:16]
         start = time.perf_counter()
-        response = await call_next(request)
+        name = f"{request.method} {request.url.path}"
+        with tracer.start_as_current_span(name, attributes={"request_id": request_id}) as span:
+            response = await call_next(request)
+            span.set_attribute("status", response.status_code)
         response.headers["x-request-id"] = request_id
         line = {
             "request_id": request_id,
+            "trace_id": format(span.get_span_context().trace_id, "032x"),
             "method": request.method,
             "path": request.url.path,
             "status": response.status_code,
