@@ -29,6 +29,8 @@ budget exhausted".
 
 ```bash
 make check          # ruff + pytest, offline
+make smoke          # check, then the sample cases offline with any key forced off: the merge gate
+make eval           # the sample cases on the real model (needs ANTHROPIC_API_KEY); never a gate
 ```
 
 ## Run cases
