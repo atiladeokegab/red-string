@@ -28,6 +28,11 @@ class Settings:
     model_timeout_s: float = 50
     max_iterations: int = 8  # model calls per case
     effort: str = "medium"
+    resend_api_key: str | None = None  # send_email; live effects need it and email_from
+    email_from: str | None = None  # "Name <you@your-verified-domain>"
+    elevenlabs_api_key: str | None = None  # place_call; live effects need it and both ids
+    elevenlabs_agent_id: str | None = None
+    elevenlabs_phone_number_id: str | None = None
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -76,6 +81,11 @@ class Settings:
             model_timeout_s=model_timeout_s,
             max_iterations=int(env.get("MAX_ITERATIONS", 8)),
             effort=effort,
+            resend_api_key=env.get("RESEND_API_KEY") or None,
+            email_from=env.get("EMAIL_FROM") or None,
+            elevenlabs_api_key=env.get("ELEVENLABS_API_KEY") or None,
+            elevenlabs_agent_id=env.get("ELEVENLABS_AGENT_ID") or None,
+            elevenlabs_phone_number_id=env.get("ELEVENLABS_PHONE_NUMBER_ID") or None,
         )
 
     def public(self) -> dict:

@@ -1,4 +1,4 @@
-.PHONY: dev check smoke smoke-cases eval deploy mcp
+.PHONY: dev check smoke smoke-cases e2e eval deploy mcp
 
 MCP_URL ?= http://127.0.0.1:8000/mcp
 
@@ -17,6 +17,12 @@ smoke-cases:
 	out="$${SMOKE_OUT:-$$(mktemp -d)}" && \
 	ANTHROPIC_API_KEY= MODE=local EFFECTS=simulate DATA_PATH="$$out/store.json" \
 	uv run scripts/run_cases.py cases/sample --out "$$out/ANSWERS"
+
+# The pages in Chromium against an offline, seeded app. Downloads the browser once; not in check.
+e2e:
+	uv run playwright install chromium
+	out="$${E2E_OUT:-$$(mktemp -d)}" && \
+	E2E_OUT="$$out" uv run pytest -q -m e2e tests/e2e && echo "screenshots: $$out"
 
 # The real model on the sample cases, for the reviewer on agent/core PRs. Costs money; never a gate.
 eval:

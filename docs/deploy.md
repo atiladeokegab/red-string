@@ -18,6 +18,8 @@ afterwards (an idle instance is billed).
 Every setting the service reads is listed in `.env.example` at its local default, and
 `tests/test_env_example.py` fails when that list and `starter/runtime/config.py` drift apart. A new
 setting that cloud needs goes in `deploy.sh` (`--set-env-vars`, or a secret) in the same change.
+Real email and calls need `EFFECTS=live` plus the `RESEND_API_KEY`/`EMAIL_FROM` or `ELEVENLABS_*`
+settings on the service (keys as secrets); without them a live send fails with 503, sending nothing.
 
 ## One-time setup (per GCP project)
 

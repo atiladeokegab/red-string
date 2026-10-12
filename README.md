@@ -31,6 +31,7 @@ budget exhausted".
 make check          # ruff + pytest, offline
 make smoke          # check, then the sample cases offline with any key forced off: the merge gate
 make eval           # the sample cases on the real model (needs ANTHROPIC_API_KEY); never a gate
+make e2e            # the pages in Chromium (tests/e2e; downloads it once); not part of check
 ```
 
 ## Run cases
@@ -81,6 +82,13 @@ In an event repo these rules live in the kit's AGENTS.md §1.
 Copy `starter/verticals/example.py`. Export a `router`; optionally `seed(store)` for local data and
 `register_tools(gateway)` for agent tools. The factory and the gateway pick it up; nothing else
 changes. Follow the system rules above.
+
+## Email and phone calls
+
+`starter/verticals/notify.py` gives the agent `send_email` (Resend) and `place_call` (an
+ElevenLabs voice agent calling from a Twilio number imported into ElevenLabs). Both are simulated
+unless `EFFECTS=live`; live, each needs its settings in `.env.example` or fails with 503, never a
+fake send. A repeat in the same case sends once, and Resend gets an `Idempotency-Key` as well.
 
 ## SurrealDB store
 
