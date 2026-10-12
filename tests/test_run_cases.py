@@ -1,5 +1,7 @@
 import json
 import sys
+import threading
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -7,7 +9,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import run_cases  # noqa: E402
 
+from starter.agent import loop  # noqa: E402
 from starter.agent.loop import AgentResult, step  # noqa: E402
+from starter.core.errors import CaseCancelled  # noqa: E402
+from starter.core.store import open_store  # noqa: E402
 
 
 def test_sample_cases_write_five_answers_offline(tmp_path, monkeypatch):
@@ -148,3 +153,39 @@ def test_the_runner_uses_the_store_and_effects_mode_the_settings_name(tmp_path, 
     sample = str(ROOT / "cases" / "sample")
     assert run_cases.main([sample, "--out", str(tmp_path / "A"), "--set", "holdout"]) == 0
     assert (opened, modes) == (["gs://bucket/store.json"], ["live"])
+
+
+def test_a_timed_out_case_is_cancelled_and_its_late_tool_call_never_lands(tmp_path, monkeypatch):
+    release, finished = threading.Event(), threading.Event()
+    late: list[Exception] = []
+    given: dict = {}
+
+    class Late(loop.FakeProvider):
+        def run(self, system, messages, tools, trace, seconds_left):
+            release.wait(5)  # still working when the runner gives up on the case
+            try:
+                next(t for t in tools if t.name == "send_message").call({"to": "x", "body": "late"})
+            except Exception as exc:
+                late.append(exc)
+            finished.set()
+            return "STATE: DONE", ""
+
+    def spy(*args, **kwargs):
+        given.update(kwargs)
+        return loop.run(*args, **kwargs)
+
+    monkeypatch.setattr(loop, "FakeProvider", Late)
+    monkeypatch.setattr(run_cases, "run", spy)
+    monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
+    monkeypatch.setenv("CASE_TIMEOUT_S", "0.5")
+    monkeypatch.setenv("MODEL_TIMEOUT_S", "0.1")
+    (tmp_path / "cases" / "a").mkdir(parents=True)
+    (tmp_path / "cases" / "a" / "index.md").write_text("# a")
+    assert run_cases.main([str(tmp_path / "cases"), "--out", str(tmp_path / "out")]) == 1
+    assert given["cancel"].is_set()  # the runner told the case it gave up on to stop
+    assert given["deadline"] <= time.monotonic()  # and gave it the same budget it enforced
+    release.set()
+    assert finished.wait(5)
+    assert [(type(exc), str(exc)) for exc in late] == [(CaseCancelled, "case cancelled")]
+    events = open_store(str(tmp_path / "store.json")).snapshot()["events"]
+    assert [e for e in events if e["type"] == "tool_call"] == []

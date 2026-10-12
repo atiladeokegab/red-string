@@ -28,6 +28,7 @@ import json
 import re
 import sys
 import threading
+import time
 import traceback
 from collections import Counter
 from pathlib import Path
@@ -85,13 +86,15 @@ class CaseTimeout(Exception):
 def run_with_timeout(case: dict, gateway, settings: Settings) -> AgentResult:
     """Run one case on a daemon thread and give up on it after settings.case_timeout_s, so a hung
     model or tool call cannot block the cases after it."""
-    # ponytail: a timed-out case is abandoned, not killed: its thread may still finish and log
-    # tool calls; make the loop async and cancellable if abandoned work ever matters.
+    # A timed-out case is told to stop (cancel): its thread runs no tool and writes nothing more;
+    # a model call already in flight ends within its own timeout.
     box: dict = {}
+    cancel = threading.Event()
+    deadline = time.monotonic() + settings.case_timeout_s
 
     def target() -> None:
         try:
-            box["result"] = run(case, gateway, settings)
+            box["result"] = run(case, gateway, settings, deadline=deadline, cancel=cancel)
         except Exception as exc:
             box["error"] = exc
 
@@ -99,6 +102,7 @@ def run_with_timeout(case: dict, gateway, settings: Settings) -> AgentResult:
     worker.start()
     worker.join(settings.case_timeout_s)
     if worker.is_alive():
+        cancel.set()
         raise CaseTimeout(f"case timeout after {settings.case_timeout_s:g}s")
     if "error" in box:
         raise box["error"]
