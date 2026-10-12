@@ -11,7 +11,7 @@ import run_cases  # noqa: E402
 def test_sample_cases_write_five_answers_offline(tmp_path, monkeypatch):
     monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
     assert run_cases.main([str(ROOT / "cases" / "sample"), "--out", str(tmp_path / "ANSWERS")]) == 0
-    answers = sorted(p.name for p in (tmp_path / "ANSWERS").iterdir())
+    answers = sorted(p.name for p in (tmp_path / "ANSWERS").iterdir() if p.is_dir())
     assert answers == ["001", "002", "003", "004", "005"]
     for name in answers:
         folder = tmp_path / "ANSWERS" / name
