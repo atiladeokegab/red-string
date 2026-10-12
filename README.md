@@ -120,14 +120,17 @@ after changing a box or an arrow.
 
 ![System context](docs/architecture/c4_context.png)
 
-**Containers:** the web app and the case runner share one store and one model.
+**Containers:** the web app, the case runner and the eval scripts; one store (a local file, or a GCS
+object in the cloud) and one model.
 
 ![Containers](docs/architecture/c4_container.png)
 
-**Components:** inside the web app, every tool call goes through the gateway.
+**Components:** inside the web app, every tool call (API, agent loop or MCP door) goes through the
+gateway, which simulates effects unless `EFFECTS=live`.
 
 ![Components](docs/architecture/c4_component.png)
 
-**Code:** the signatures the rest of the code depends on.
+**Code:** the signatures the rest of the code depends on, including the case budget (`deadline`,
+`cancel`).
 
 ![Code](docs/architecture/c4_code.png)

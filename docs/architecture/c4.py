@@ -16,7 +16,15 @@ from functools import partial
 from pathlib import Path
 
 from diagrams import Cluster, Diagram, Edge, Node
-from diagrams.c4 import Container, Database, Person, Relationship, System, SystemBoundary
+from diagrams.c4 import (
+    Container,
+    Database,
+    Person,
+    Relationship,
+    System,
+    SystemBoundary,
+    _format_edge_label,  # the same small font as every edge label
+)
 
 # diagrams.c4 wraps text at 40 characters but draws 2.6in boxes, which fit about 34:
 # lines of 35-40 characters were cut off, silently. 3.3in fits the full wrap width.
@@ -58,71 +66,97 @@ def context():
     """Level 1: who uses it and what it depends on. The system is ONE box."""
     with draw("context", "System Context"):
         team = Person("Teammate or judge", "Opens the demo, runs cases, reads the answers")
-        system = System(SYSTEM, "One FastAPI image: pages, API, tool gateway, agent loop")
+        agent = System(
+            "Coding agent", "Claude Code or any MCP client, with a session token", external=True
+        )
+        system = System(SYSTEM, "One FastAPI image: pages, API, MCP door, gateway, agent loop")
         claude = System("Claude API", "Model behind the agent loop (opus-5-5)", external=True)
         gcp = System(
             "Google Cloud",
-            "Cloud Build, Cloud Run and Secret Manager: build, serve, keys",
+            "Cloud Run, Cloud Build, Secret Manager, the state bucket, logs",
             external=True,
         )
-        team >> Relationship("HTTPS, make dev, run_cases.py") >> system
+        team >> Relationship("HTTPS, make dev, make smoke, run_cases.py") >> system
+        agent >> Relationship("MCP over HTTPS") >> system
         team >> Relationship("make deploy") >> gcp
         system >> Relationship("tool runner, only with a key") >> claude
         gcp >> Relationship("runs the image, with secrets") >> system
+        system >> Relationship("state object, spans in logs") >> gcp
 
 
 def container():
     """Level 2: the separately running or deployed pieces, and how they talk."""
     with draw("container", "Containers"):
         team = Person("Teammate or judge", "")
-        claude = System("Claude API", "Model timeout 50s, one retry", external=True)
-        cloud_run = System("Cloud Run", "Builds the Dockerfile, serves one instance", external=True)
+        agent = System("Coding agent", "MCP client", external=True)
+        claude = System("Claude API", "Per-call timeout capped by the case budget", external=True)
+        cloud_run = System("Cloud Run", "Builds the Dockerfile, up to 3 instances", external=True)
         with SystemBoundary(SYSTEM):
-            web = Container("Web app", "FastAPI + uvicorn", "Pages, /api, /health; one image")
+            web = Container("Web app", "FastAPI + uvicorn", "Pages, /api, /mcp, /health; spans")
             runner = Container(
-                "Case runner", "scripts/run_cases.py", "cases/<n> to ANSWERS/<n>, case timeout"
+                "Case runner",
+                "scripts/run_cases.py",
+                "cases/<n> to ANSWERS/<n> with spans; budget, cancel",
+            )
+            sweep = Container(
+                "Eval scripts", "scripts/trace_sweep.py, tune.py", "Read ANSWERS: tool errors, mix"
             )
             deploy = Container(
-                "Deploy script", "scripts/deploy.sh + Dockerfile", "Clean tree, commit label"
+                "Deploy script", "scripts/deploy.sh + Dockerfile", "Clean tree, bucket, instances"
             )
-            store = Database("Store", "JSON file + flock", "Items, runs, the event log")
+            store = Database(
+                "Store", "JSON file or GCS object", "Local file; GCS with compare-and-swap"
+            )
         team >> Relationship("HTTPS") >> web
-        team >> Relationship("uv run") >> runner
+        agent >> Relationship("MCP, bearer token") >> web
+        team >> Relationship("uv run, make smoke") >> runner
+        team >> Relationship("reviewer runs") >> sweep
         team >> Relationship("make deploy") >> deploy
-        deploy >> Relationship("gcloud run deploy --source") >> cloud_run
+        # xlabel: a flat edge's label sits in its curve; placed after layout, it stays clear
+        deploy >> Relationship(xlabel=_format_edge_label("gcloud run deploy --source")) >> cloud_run
         deploy >> Relationship("probes /health") >> web
         cloud_run >> Relationship("runs, with secrets") >> web
         web >> Relationship("snapshot / mutate") >> store
         runner >> Relationship("audit events") >> store
+        sweep >> Relationship("reads ANSWERS") >> runner
         web >> Relationship("messages + tools") >> claude
         runner >> Relationship("messages + tools") >> claude
 
 
 def component():
-    """Level 3: inside the web app. Runs start at the agent routes, not at a vertical."""
+    """Level 3: inside the web app. Every tool call, from any door, goes through the gateway."""
     with draw("component", "Components of the web app"):
         claude = System("Claude API", "", external=True)
         with SystemBoundary("Web app"):
             factory = Container(
-                "Factory", "runtime/factory.py", "/health, /healthz, login, errors, logs"
+                "Factory", "runtime/factory.py", "/health, login, errors, a span per request"
             )
-            config = Container("Settings", "runtime/config.py", "Env, secrets check, timeouts")
+            config = Container("Settings", "runtime/config.py", "EFFECTS, budget, effort, store")
+            mcp = Container("MCP door", "runtime/mcp_door.py", "/mcp, session tokens")
             verticals = Container("Verticals", "verticals/*.py", "router, seed, register_tools")
             routes = Container("Agent routes", "agent/routes.py", "/api/tools, /api/runs")
-            loop = Container("Agent loop", "agent/loop.py", "Claude or FakeProvider")
-            gateway = Container("Gateway", "core/gateway.py", "Validate, audit, SIMULATED")
-            store = Container("Store", "core/store.py", "snapshot, mutate, publish")
+            loop = Container("Agent loop", "agent/loop.py", "Claude or FakeProvider, budget")
+            skills = Container("Skills", "agent/skills/", "Preamble, get_skill")
+            gateway = Container("Gateway", "core/gateway.py", "Validate, simulate, cancel, audit")
+            tracing = Container("Tracing", "core/tracing.py", "Redacted spans as JSON lines")
+            store = Container("Store", "core/store.py", "Store or GcsStore")
             pages = Container("Pages", "web/pages.py", "Runs page, tokens.css")
         factory >> Relationship("reads") >> config
         factory >> Relationship("mounts") >> verticals
         factory >> Relationship("mounts") >> routes
+        factory >> Relationship("mounts") >> mcp
         factory >> Relationship("mounts") >> pages
+        mcp >> Relationship("call(name, args)") >> gateway
         routes >> Relationship("run(case)") >> loop
         routes >> Relationship("call(name, args)") >> gateway
         routes >> Relationship("mutate: runs") >> store
-        loop >> Relationship("tools") >> gateway
+        loop >> Relationship("system_prompt") >> skills
+        loop >> Relationship("tools, cancel") >> gateway
         loop >> Relationship("tool runner, timeout") >> claude
+        loop >> Relationship("case span") >> tracing
+        skills >> Relationship("register_tools") >> gateway
         verticals >> Relationship("register_tools") >> gateway
+        gateway >> Relationship("gateway.call span") >> tracing
         gateway >> Relationship("publish") >> store
         pages >> Relationship("snapshot") >> store
 
@@ -132,38 +166,48 @@ def code():
     with draw("code", "Code"):
         with Cluster("starter/core"):
             store = Code(
-                f"Store\n{RULE}\n+ snapshot() → dict\n+ mutate(fn) → T\n+ publish(event) → dict"
+                f"Store / GcsStore\n{RULE}\n+ snapshot() → dict\n+ mutate(fn) → T\n"
+                "+ publish(event) → dict\nopen_store(path) → Store"
             )
             gateway = Code(
-                f"Gateway\n{RULE}\n+ register(fn, effect=True)\n+ call(name, args,\n"
-                "    case_id) → dict"
+                f"Gateway(store, effects)\n{RULE}\n"
+                "+ register(fn, effect=True,\n    simulate=None)\n"
+                "+ call(name, args, case_id,\n    cancel=None) → dict"
             )
+            tracing = Code("collect(name) → (trace_id, spans)\nredact(value)\ntracer, EXPORTER")
         with Cluster("starter/agent"):
-            loop = Code("run(case, gateway, settings,\n    provider=None) → AgentResult")
+            loop = Code(
+                "run(case, gateway, settings,\n    provider=None, deadline=None,\n"
+                "    cancel=None) → AgentResult\nsystem_prompt() → str"
+            )
             result = Code(
-                f"AgentResult\n{RULE}\n+ final_answer: str\n+ final_state: str\n"
-                "+ reasoning: str\n+ actions: list[dict]\n+ trace: list[dict]"
+                f"AgentResult\n{RULE}\n+ final_answer, final_state\n+ reasoning: str\n"
+                "+ actions, trace: list[dict]\n+ trace_id: str\n+ spans: list[dict]"
             )
             claude = Code(
                 f"ClaudeProvider\n{RULE}\n+ client: Anthropic(timeout,\n    max_retries=1)\n"
-                "+ run(system, messages,\n    tools, trace)"
+                "+ run(system, messages, tools,\n    trace, seconds_left)"
             )
-            cases = Code("load_case(folder) → dict\nstrip_outcome(text) → str")
+            skills = Code("skills.preamble() → str\nget_skill(name) → str")
         with Cluster("starter/runtime"):
             settings = Code(
-                f"Settings\n{RULE}\n+ case_timeout_s = 120\n+ model_timeout_s = 50\n"
-                "+ from_env(env)\n+ public() → dict"
+                f"Settings\n{RULE}\n+ mode_effects = simulate\n+ case_timeout_s = 120\n"
+                "+ max_iterations = 8\n+ effort = medium\n+ data_path: str"
             )
             factory = Code("create_app(settings=None,\n    store=None) → FastAPI")
+            mcp = Code("build_mcp(gateway) → MCPServer\nissue_token(password) → str")
         with Cluster("scripts/run_cases.py"):
             runner = Code("run_with_timeout(case,\n    gateway, settings)\n    → AgentResult")
         factory >> Edge(label="builds") >> gateway
         factory >> Edge(label="reads") >> settings
-        runner >> Edge(label="daemon thread,\ncase timeout") >> loop
-        cases >> Edge(label="case dict") >> loop
+        factory >> Edge(label="mounts /mcp") >> mcp
+        mcp >> Edge(label="calls") >> gateway
+        runner >> Edge(label="deadline,\ncancel") >> loop
         loop >> Edge(label="returns") >> result
         loop >> Edge(label="calls") >> gateway
         loop >> Edge(label="provider.run") >> claude
+        loop >> Edge(label="prompt") >> skills
+        loop >> Edge(label="case span") >> tracing
         gateway >> Edge(label="publish") >> store
 
 
