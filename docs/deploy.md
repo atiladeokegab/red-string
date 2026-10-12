@@ -15,6 +15,10 @@ Effect tools are simulated in the cloud too, unless the service is given `EFFECT
 deploy with `MIN_INSTANCES=1` so the first visitor never waits for a cold start; set it back to 0
 afterwards (an idle instance is billed).
 
+Every setting the service reads is listed in `.env.example` at its local default, and
+`tests/test_env_example.py` fails when that list and `starter/runtime/config.py` drift apart. A new
+setting that cloud needs goes in `deploy.sh` (`--set-env-vars`, or a secret) in the same change.
+
 ## One-time setup (per GCP project)
 
 ```bash
