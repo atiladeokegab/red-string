@@ -18,6 +18,12 @@ def test_healthz_reports_public_status(client):
     }
 
 
+def test_health_serves_the_same_body_for_cloud_run(client):
+    """Cloud Run reserves paths ending in "z", so /healthz 404s there; /health is the live probe."""
+    r = client.get("/health")
+    assert r.status_code == 200 and r.json() == client.get("/healthz").json()
+
+
 def test_login_returns_token_only_for_the_right_password(client, auth):
     assert client.post("/api/login", json={"password": "nope"}).status_code == 401
     r = client.post("/api/login", json={"password": "admin"})

@@ -53,6 +53,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
         print(json.dumps(line), flush=True)  # Cloud Run reads stdout JSON as structured logs
         return response
 
+    @app.get("/health")  # Cloud Run reserves paths ending in "z": /healthz is local only
     @app.get("/healthz")
     def healthz() -> dict:
         return {"status": "ok", **settings.public()}

@@ -10,7 +10,7 @@ uv sync
 make dev            # http://127.0.0.1:8000, offline, seeded; no keys needed
 ```
 
-The runs page is `/`; health is `/healthz`; log in with `POST /api/login {"password": "admin"}`
+The runs page is `/`; health is `/health` (`/healthz` also works locally); log in with `POST /api/login {"password": "admin"}`
 (local default) and send the token as `Authorization: Bearer <token>`.
 
 With `ANTHROPIC_API_KEY` set, the agent uses Claude (`MODEL`, default `claude-opus-5-5`). Without
@@ -60,7 +60,7 @@ make deploy PROJECT=<gcp-project-id>        # from a clean, committed main
 ```
 
 Builds the Dockerfile on Cloud Build, deploys to Cloud Run with the commit as a label, prints the
-URL and checks `/healthz`. One-time setup and rollback: `docs/deploy.md`.
+URL and checks `/health`. One-time setup and rollback: `docs/deploy.md`.
 
 ## Provider checklist (the night before)
 
@@ -69,7 +69,7 @@ URL and checks `/healthz`. One-time setup and rollback: `docs/deploy.md`.
 - [ ] The model in `MODEL` (default `claude-opus-5-5`) answers on this key.
 - [ ] GCP project with billing; `gcloud auth login` done; APIs enabled and both secrets created
       (`docs/deploy.md`).
-- [ ] `make deploy PROJECT=<id>` prints a URL whose `/healthz` says `"anthropic": "configured"`.
+- [ ] `make deploy PROJECT=<id>` prints a URL whose `/health` says `"anthropic": "configured"`.
 - [ ] The admin password secret is set and shared with the team out of band.
 - [ ] Each event-specific provider (email, voice, browser, analytics) has its own line here.
 
