@@ -34,11 +34,24 @@ ESCALATED or ERROR); each `trace.jsonl` line has `tool`, `status` and `error`, s
 `grep '"status": "ERROR"' ANSWERS/*/trace.jsonl` lists every failed tool call. One case in five is a holdout (`starter/eval/holdout.py`; sample
 case `004` is one): never tune on it.
 
+## System rules
+
+- **One factory.** Every app, router and page is mounted by `create_app()` in `starter/runtime/factory.py`.
+- **One store.** All state goes through `starter/core/store.py` (`snapshot`, `mutate`, `publish`).
+- **One gateway.** Every tool call and external effect goes through `starter/core/gateway.py`.
+- **No simulated success outside the gateway.** Only it may simulate an effect, marked `SIMULATED`.
+- **`make dev` runs every part**, offline with no keys; a new part joins it in the same change.
+- **Current docs.** Read a library's current docs before using its API.
+- **Files stay under 1,000 lines** (`tests/test_file_sizes.py`). Split before you cross it.
+- **Run `make check` before `DONE:`.**
+
+In an event repo these rules live in the kit's AGENTS.md §1.
+
 ## Add a vertical
 
 Copy `starter/verticals/example.py`. Export a `router`; optionally `seed(store)` for local data and
 `register_tools(gateway)` for agent tools. The factory and the gateway pick it up; nothing else
-changes. Read `AGENTS.md` first.
+changes. Follow the system rules above.
 
 ## Deploy
 
