@@ -7,6 +7,7 @@ from pathlib import Path
 
 DEFAULT_MODEL = "claude-opus-5-5"
 MODEL_MAX_RETRIES = 1  # the SDK retries a timed-out call; each try gets the model timeout
+EFFORTS = ("low", "medium", "high", "xhigh", "max")
 
 
 @dataclass(frozen=True)
@@ -19,6 +20,8 @@ class Settings:
     mode_effects: str = "simulate"  # "live" lets effect tools act; anything else simulates
     case_timeout_s: float = 120
     model_timeout_s: float = 50
+    max_iterations: int = 8  # model calls per case
+    effort: str = "medium"
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -33,6 +36,9 @@ class Settings:
         effects = env.get("EFFECTS", "simulate")
         if effects not in ("simulate", "live"):
             raise ValueError(f"EFFECTS must be simulate or live, got {effects!r}")
+        effort = env.get("EFFORT", "medium")
+        if effort not in EFFORTS:
+            raise ValueError(f"EFFORT must be one of {', '.join(EFFORTS)}, got {effort!r}")
         case_timeout_s = float(env.get("CASE_TIMEOUT_S", 120))
         model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
         if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
@@ -50,6 +56,8 @@ class Settings:
             mode_effects=effects,
             case_timeout_s=case_timeout_s,
             model_timeout_s=model_timeout_s,
+            max_iterations=int(env.get("MAX_ITERATIONS", 8)),
+            effort=effort,
         )
 
     def public(self) -> dict:

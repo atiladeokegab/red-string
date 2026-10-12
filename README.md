@@ -20,6 +20,11 @@ A tool with an external effect never acts unless `EFFECTS=live`. By default, loc
 cloud, the gateway checks its arguments and answers `SIMULATED` without running it; `/health`
 shows `"effects"`.
 
+Each case has a budget: `CASE_TIMEOUT_S` (default 120 s), at most `MAX_ITERATIONS` model calls
+(default 8) at `EFFORT` (default `medium`). When the budget runs out, or the runner gives up on
+the case, no further tool runs, nothing more is written, and the case ends `ERROR` with "case
+budget exhausted".
+
 ## Check
 
 ```bash

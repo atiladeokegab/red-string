@@ -8,10 +8,14 @@ OK or ERROR) and "error" (None or the message). trace[0] is exactly what the mod
 
 import json
 import re
+import threading
+import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from anthropic import beta_tool
 
+from starter.core.errors import CaseCancelled
 from starter.core.gateway import Gateway
 from starter.runtime.config import MODEL_MAX_RETRIES, Settings
 
@@ -50,16 +54,25 @@ def build_messages(case: dict) -> list[dict]:
     return [{"role": "user", "content": f"Case {case['id']}\n\n{case['body']}"}]
 
 
-def gateway_tools(gateway: Gateway, case_id: str, actions: list[dict], trace: list[dict]) -> list:
+def gateway_tools(
+    gateway: Gateway,
+    case_id: str,
+    actions: list[dict],
+    trace: list[dict],
+    cancel: threading.Event,
+    seconds_left: Callable[[], float],
+) -> list:
     """Each gateway tool as an SDK tool bound to this case. Arguments are checked by the gateway
-    alone, so a bad call is traced as ERROR before the runner hands the error back to Claude."""
+    alone, so a bad call is traced as ERROR before the runner hands the error back to Claude.
+    A call after the case is cancelled or out of time raises CaseCancelled and runs nothing."""
 
     def bind(name: str, fn):
         spec = beta_tool(fn)  # schema and description from the tool's type hints and docstring
 
         def call(**args):
             try:
-                result = gateway.call(name, args, case_id)
+                seconds_left()
+                result = gateway.call(name, args, case_id, cancel)
             except Exception as exc:
                 trace.append(step("tool_call", name, "ERROR", str(exc), args=args))
                 raise
@@ -81,7 +94,7 @@ class FakeProvider:
 
     name = "fake"
 
-    def run(self, system: str, messages: list[dict], tools: list, trace: list[dict]):
+    def run(self, system, messages, tools, trace, seconds_left):
         # ponytail: always the example vertical's send_message; teach it your tools if the
         # offline demo needs a different first action.
         tool = next(t for t in tools if t.name == "send_message")
@@ -100,31 +113,46 @@ class ClaudeProvider:
         import anthropic
 
         self.model = settings.model
+        self.model_timeout_s = settings.model_timeout_s
+        self.max_iterations = settings.max_iterations
+        self.effort = settings.effort
         self.client = anthropic.Anthropic(
             api_key=settings.anthropic_api_key,
             timeout=settings.model_timeout_s,
             max_retries=MODEL_MAX_RETRIES,
         )
 
-    def run(self, system: str, messages: list[dict], tools: list, trace: list[dict]):
+    def run(self, system, messages, tools, trace, seconds_left: Callable[[], float]):
         runner = self.client.beta.messages.tool_runner(
             model=self.model,
             max_tokens=16000,
             system=system,
             messages=messages,
             tools=tools,
-            max_iterations=20,
+            max_iterations=self.max_iterations,
             thinking={"type": "adaptive", "display": "summarized"},
-            output_config={"effort": "high"},
+            output_config={"effort": self.effort},
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",  # a safety decline is retried on a fallback model, same call
         )
+
+        def before_each_call() -> None:
+            """Stop if the case is out of time; else cap this call, and its retry, to what is
+            left. The SDK reads client.timeout per request; this client is this run's own."""
+            # ponytail: checked before the runner executes the last reply's tool calls, so their
+            # time is not counted here; the per-call timeout still bounds the overrun.
+            tries = 1 + MODEL_MAX_RETRIES
+            self.client.timeout = min(self.model_timeout_s, seconds_left() / tries)
+
+        before_each_call()
         notes, last = [], None
         for message in runner:
             last = message
             content = [block.to_dict() for block in message.content]
             trace.append(step("model_output", stop_reason=message.stop_reason, content=content))
             notes += [b.thinking for b in message.content if b.type == "thinking" and b.thinking]
+            if message.stop_reason in ("tool_use", "pause_turn"):  # another call follows
+                before_each_call()
         reasoning = "\n\n".join(notes)
         if last is None:
             return "No response from the model.", reasoning
@@ -134,14 +162,33 @@ class ClaudeProvider:
         return "".join(b.text for b in last.content if b.type == "text"), reasoning
 
 
-def run(case: dict, gateway: Gateway, settings: Settings, provider=None) -> AgentResult:
-    """Run one case. case = {"id": str, "body": str}, already stripped of its outcome."""
+def run(
+    case: dict,
+    gateway: Gateway,
+    settings: Settings,
+    provider=None,
+    deadline: float | None = None,
+    cancel: threading.Event | None = None,
+) -> AgentResult:
+    """Run one case. case = {"id": str, "body": str}, already stripped of its outcome.
+    deadline is a time.monotonic() value (default: now + settings.case_timeout_s); setting
+    `cancel` stops the case: its next tool call or model call raises CaseCancelled."""
     if provider is None:
         provider = ClaudeProvider(settings) if settings.anthropic_api_key else FakeProvider()
+    deadline = deadline or time.monotonic() + settings.case_timeout_s
+    cancel = cancel or threading.Event()
+
+    def seconds_left() -> float:
+        if cancel.is_set():
+            raise CaseCancelled("case cancelled")
+        if (left := deadline - time.monotonic()) <= 0:
+            raise CaseCancelled("case budget exhausted")
+        return left
+
     messages = build_messages(case)
     actions: list[dict] = []
     trace: list[dict] = []
-    tools = gateway_tools(gateway, case["id"], actions, trace)
+    tools = gateway_tools(gateway, case["id"], actions, trace, cancel, seconds_left)
     trace.append(
         step(
             "model_input",
@@ -153,7 +200,7 @@ def run(case: dict, gateway: Gateway, settings: Settings, provider=None) -> Agen
         )
     )
     try:
-        answer, reasoning = provider.run(SYSTEM, messages, tools, trace)
+        answer, reasoning = provider.run(SYSTEM, messages, tools, trace, seconds_left)
         state, answer = parse_state(answer)
         error = None if state != "ERROR" else f"no STATE line in the final answer: {answer[:200]}"
     except Exception as exc:  # the case still gets an answer and a trace saying what broke

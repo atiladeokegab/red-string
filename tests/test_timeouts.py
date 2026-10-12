@@ -35,10 +35,10 @@ def test_a_hung_case_times_out_and_the_next_case_still_runs(tmp_path, monkeypatc
     release = threading.Event()
 
     class Hanging(loop.FakeProvider):
-        def run(self, system, messages, tools, trace):
+        def run(self, system, messages, tools, trace, seconds_left):
             if messages[0]["content"].startswith("Case a"):
                 release.wait(5)  # a model call that never comes back in time
-            return super().run(system, messages, tools, trace)
+            return super().run(system, messages, tools, trace, seconds_left)
 
     monkeypatch.setattr(loop, "FakeProvider", Hanging)
     monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
@@ -63,3 +63,32 @@ def test_a_hung_case_times_out_and_the_next_case_still_runs(tmp_path, monkeypatc
         "case timeout after 0.5s",
     )
     assert "Final state: DONE" in (tmp_path / "out" / "b" / "ANSWER.md").read_text()
+
+
+def test_a_timed_out_case_cannot_act_afterwards(tmp_path, monkeypatch):
+    release, finished = threading.Event(), threading.Event()
+
+    class Late(loop.FakeProvider):
+        def run(self, system, messages, tools, trace, seconds_left):
+            if not messages[0]["content"].startswith("Case a"):
+                return super().run(system, messages, tools, trace, seconds_left)
+            try:
+                release.wait(5)  # still busy when the runner gives up on case a
+                return super().run(system, messages, tools, trace, seconds_left)
+            finally:
+                finished.set()
+
+    monkeypatch.setattr(loop, "FakeProvider", Late)
+    monkeypatch.setenv("DATA_PATH", str(tmp_path / "store.json"))
+    monkeypatch.setenv("CASE_TIMEOUT_S", "0.5")
+    monkeypatch.setenv("MODEL_TIMEOUT_S", "0.1")
+    cases = tmp_path / "cases"
+    for name in ("a", "b"):
+        (cases / name).mkdir(parents=True)
+        (cases / name / "index.md").write_text(f"# {name}")
+    assert run_cases.main([str(cases), "--out", str(tmp_path / "out")]) == 1
+    release.set()
+    assert finished.wait(5)  # case a's thread woke up and tried to send its message
+
+    events = json.loads((tmp_path / "store.json").read_text())["events"]
+    assert [e["case_id"] for e in events if e["type"] == "tool_call"] == ["b"]

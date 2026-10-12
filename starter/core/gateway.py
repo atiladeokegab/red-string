@@ -8,12 +8,13 @@ A read-only tool (effect=False) always runs and returns {"status": "OK", ...}, a
 tool on a live gateway."""
 
 import inspect
+import threading
 from collections.abc import Callable
 from typing import Any
 
 from pydantic import validate_call
 
-from starter.core.errors import NotFound
+from starter.core.errors import CaseCancelled, NotFound
 from starter.core.store import Store
 
 
@@ -49,14 +50,21 @@ class Gateway:
 
         return add(fn) if fn else add
 
-    def call(self, name: str, args: dict, case_id: str) -> dict:
-        """Validate, run (or simulate), audit. Bad arguments raise ValueError (HTTP 422)."""
+    def call(
+        self, name: str, args: dict, case_id: str, cancel: threading.Event | None = None
+    ) -> dict:
+        """Validate, run (or simulate), audit. Bad arguments raise ValueError (HTTP 422). Once
+        `cancel` is set, the call raises CaseCancelled: nothing runs and nothing is written."""
         if name not in self.tools:
             raise NotFound(f"no tool {name!r}")
+        if cancel is not None and cancel.is_set():
+            raise CaseCancelled("case cancelled")
         simulated = self.effects[name] and not self.live
         run = self.simulators[name] if simulated else self.tools[name]
         payload = run(**args)  # pydantic.ValidationError is a ValueError
         result = {"status": "SIMULATED" if simulated else "OK", "payload": payload}
+        if cancel is not None and cancel.is_set():  # cancelled while the tool ran: no audit write
+            raise CaseCancelled("case cancelled")
         self.store.publish(
             {"type": "tool_call", "case_id": case_id, "tool": name, "args": args, "result": result}
         )

@@ -36,7 +36,7 @@ def test_failing_tool_call_writes_error_status_and_text(store):
     class BadArgs:
         name = "test"
 
-        def run(self, system, messages, tools, trace):
+        def run(self, system, messages, tools, trace, seconds_left):
             send = next(t for t in tools if t.name == "send_message")
             try:
                 send.call({"to": "ann"})
@@ -66,7 +66,7 @@ def test_a_crashing_provider_still_returns_an_error_result(store):
     class Broken:
         name = "test"
 
-        def run(self, system, messages, tools, trace):
+        def run(self, system, messages, tools, trace, seconds_left):
             raise RuntimeError("API down")
 
     result = run(CASE, build_gateway(store), Settings(), Broken())
