@@ -16,6 +16,7 @@ class Settings:
     admin_password: str = "admin"
     anthropic_api_key: str | None = None
     model: str = DEFAULT_MODEL
+    mode_effects: str = "simulate"  # "live" lets effect tools act; anything else simulates
     case_timeout_s: float = 120
     model_timeout_s: float = 50
 
@@ -29,6 +30,9 @@ class Settings:
             missing = [k for k in ("ANTHROPIC_API_KEY", "ADMIN_PASSWORD") if not env.get(k)]
             if missing:
                 raise RuntimeError(f"cloud mode refuses to start without {', '.join(missing)}")
+        effects = env.get("EFFECTS", "simulate")
+        if effects not in ("simulate", "live"):
+            raise ValueError(f"EFFECTS must be simulate or live, got {effects!r}")
         case_timeout_s = float(env.get("CASE_TIMEOUT_S", 120))
         model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
         if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
@@ -43,6 +47,7 @@ class Settings:
             admin_password=env.get("ADMIN_PASSWORD", "admin"),
             anthropic_api_key=env.get("ANTHROPIC_API_KEY") or None,
             model=env.get("MODEL", DEFAULT_MODEL),
+            mode_effects=effects,
             case_timeout_s=case_timeout_s,
             model_timeout_s=model_timeout_s,
         )
@@ -52,5 +57,6 @@ class Settings:
         return {
             "mode": self.mode,
             "model": self.model,
+            "effects": self.mode_effects,
             "providers": {"anthropic": "configured" if self.anthropic_api_key else "fake"},
         }

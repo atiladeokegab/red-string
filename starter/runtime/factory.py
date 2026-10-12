@@ -32,7 +32,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
     app = FastAPI(title="starter")
     app.state.settings = settings
     app.state.store = store
-    app.state.gateway = build_gateway(store)
+    app.state.gateway = build_gateway(store, settings.mode_effects)
 
     for exc, status in ERROR_STATUS.items():
         app.add_exception_handler(exc, _error_handler(status))

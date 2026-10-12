@@ -16,6 +16,10 @@ The runs page is `/`; health is `/health` (`/healthz` also works locally); log i
 With `ANTHROPIC_API_KEY` set, the agent uses Claude (`MODEL`, default `claude-opus-5-5`). Without
 it, `FakeProvider` takes one simulated action and says so in every answer.
 
+A tool with an external effect never acts unless `EFFECTS=live`. By default, locally and in the
+cloud, the gateway checks its arguments and answers `SIMULATED` without running it; `/health`
+shows `"effects"`.
+
 ## Check
 
 ```bash

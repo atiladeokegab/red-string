@@ -28,3 +28,20 @@ def test_cloud_with_secrets_starts_and_public_hides_them():
 def test_unknown_mode_is_rejected():
     with pytest.raises(ValueError):
         Settings.from_env({"MODE": "prod"})
+
+
+def test_effects_default_to_simulate_everywhere_and_live_is_opt_in():
+    cloud = {"MODE": "cloud", "ANTHROPIC_API_KEY": "k", "ADMIN_PASSWORD": "pw"}
+    assert Settings().mode_effects == "simulate"
+    assert Settings.from_env({}).mode_effects == "simulate"
+    assert Settings.from_env(cloud).mode_effects == "simulate"
+    assert Settings.from_env({**cloud, "EFFECTS": "live"}).mode_effects == "live"
+    with pytest.raises(ValueError, match="EFFECTS must be simulate or live"):
+        Settings.from_env({"EFFECTS": "real"})
+
+
+def test_the_app_gateway_follows_effects(store):
+    from starter.runtime.factory import create_app
+
+    assert create_app(Settings(), store).state.gateway.live is False
+    assert create_app(Settings(mode_effects="live"), store).state.gateway.live is True

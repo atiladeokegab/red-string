@@ -53,3 +53,57 @@ def test_api_maps_bad_args_to_422_and_needs_login(client, auth):
     bad = {"case_id": "c1", "args": {"to": "ann"}}
     assert client.post("/api/tools/send_message", json=bad, headers=auth).status_code == 422
     assert client.post("/api/tools/nope", json=good, headers=auth).status_code == 404
+
+
+def live_and_simulated(store):
+    """Two gateways over one store, each with an effect tool whose body is a real side effect."""
+    ran = []
+
+    def wire(gateway):
+        @gateway.register
+        def charge_card(card: str, amount: int) -> dict:
+            """Charge a card."""
+            ran.append((card, amount))
+            raise RuntimeError("a real charge would happen here")
+
+        @gateway.register(simulate=lambda to, body: {"would_send_to": to})
+        def send_sms(to: str, body: str) -> dict:
+            """Send an SMS."""
+            ran.append((to, body))
+            return {"sent": True}
+
+        return gateway
+
+    return wire(Gateway(store)), wire(Gateway(store, effects="live")), ran
+
+
+def test_simulate_mode_never_runs_an_effect_tool(store):
+    simulated, _, ran = live_and_simulated(store)
+    result = simulated.call("charge_card", {"card": "4242", "amount": "5"}, "c1")
+    assert result == {"status": "SIMULATED", "payload": {"card": "4242", "amount": 5}}
+    sms = simulated.call("send_sms", {"to": "ann", "body": "hi"}, "c1")
+    assert sms == {"status": "SIMULATED", "payload": {"would_send_to": "ann"}}
+    assert ran == []
+    with pytest.raises(ValueError):  # arguments are still checked without running anything
+        simulated.call("charge_card", {"card": "4242", "amount": "five"}, "c1")
+
+
+def test_live_mode_runs_effect_tools(store):
+    _, live, ran = live_and_simulated(store)
+    assert live.call("send_sms", {"to": "ann", "body": "hi"}, "c1") == {
+        "status": "OK",
+        "payload": {"sent": True},
+    }
+    with pytest.raises(RuntimeError, match="a real charge"):
+        live.call("charge_card", {"card": "4242", "amount": 5}, "c1")
+    assert ran == [("ann", "hi"), ("4242", 5)]
+
+
+def test_a_duplicate_tool_name_is_refused(store):
+    gateway = build_gateway(store)
+    with pytest.raises(ValueError, match="'send_message' is already registered"):
+
+        @gateway.register
+        def send_message(to: str) -> dict:
+            """A second tool with a taken name."""
+            return {}
