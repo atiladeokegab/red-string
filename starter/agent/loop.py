@@ -18,7 +18,7 @@ from anthropic import beta_tool
 from starter.agent import skills
 from starter.core import tracing
 from starter.core.errors import CaseCancelled
-from starter.core.gateway import Gateway
+from starter.core.gateway import Gateway, current_case
 from starter.runtime.config import MODEL_MAX_RETRIES, Settings
 
 SYSTEM = (
@@ -201,30 +201,36 @@ def run(
     actions: list[dict] = []
     trace: list[dict] = []
     tools = gateway_tools(gateway, case["id"], actions, trace, cancel, seconds_left)
-    with tracing.collect("case", case_id=case["id"]) as (trace_id, spans):
-        trace.append(
-            step(
-                "model_input",
-                provider=provider.name,
-                model=settings.model,
-                system=system,
-                messages=messages,
-                tools=[t.to_dict() for t in tools],
-                trace_id=trace_id,
+    token = current_case.set(case)
+    try:
+        with tracing.collect("case", case_id=case["id"]) as (trace_id, spans):
+            trace.append(
+                step(
+                    "model_input",
+                    provider=provider.name,
+                    model=settings.model,
+                    system=system,
+                    messages=messages,
+                    tools=[t.to_dict() for t in tools],
+                    trace_id=trace_id,
+                )
             )
-        )
-        try:
-            attributes = {"provider": provider.name, "model": settings.model}
-            with tracing.tracer.start_as_current_span("model", attributes=attributes):
-                answer, reasoning = provider.run(system, messages, tools, trace, seconds_left)
-            state, answer = parse_state(answer)
-            error = (
-                None if state != "ERROR" else f"no STATE line in the final answer: {answer[:200]}"
+            try:
+                attributes = {"provider": provider.name, "model": settings.model}
+                with tracing.tracer.start_as_current_span("model", attributes=attributes):
+                    answer, reasoning = provider.run(system, messages, tools, trace, seconds_left)
+                state, answer = parse_state(answer)
+                error = (
+                    None
+                    if state != "ERROR"
+                    else f"no STATE line in the final answer: {answer[:200]}"
+                )
+            except Exception as exc:  # the case still gets an answer and a trace saying what broke
+                state, answer, reasoning, error = "ERROR", "", "", f"{type(exc).__name__}: {exc}"
+            status = "ERROR" if state == "ERROR" else "OK"
+            trace.append(
+                step("final", status=status, error=error, final_state=state, trace_id=trace_id)
             )
-        except Exception as exc:  # the case still gets an answer and a trace saying what broke
-            state, answer, reasoning, error = "ERROR", "", "", f"{type(exc).__name__}: {exc}"
-        status = "ERROR" if state == "ERROR" else "OK"
-        trace.append(
-            step("final", status=status, error=error, final_state=state, trace_id=trace_id)
-        )
+    finally:
+        current_case.reset(token)
     return AgentResult(answer, state, reasoning, actions, trace, trace_id, spans)

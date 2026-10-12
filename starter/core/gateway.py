@@ -10,6 +10,7 @@ tool on a live gateway."""
 import inspect
 import threading
 from collections.abc import Callable
+from contextvars import ContextVar
 from typing import Any
 
 from pydantic import validate_call
@@ -17,6 +18,10 @@ from pydantic import validate_call
 from starter.core.errors import CaseCancelled, NotFound
 from starter.core.store import Store
 from starter.core.tracing import tracer
+
+# The case being run (the runner's case dict); the agent loop sets it, so a simulate= hook can
+# check a call against the case without it being a tool argument.
+current_case: ContextVar[dict | None] = ContextVar("current_case", default=None)
 
 
 class Gateway:
