@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 
 from anthropic import beta_tool
 
+from starter.agent import skills
 from starter.core import tracing
 from starter.core.errors import CaseCancelled
 from starter.core.gateway import Gateway
@@ -27,6 +28,13 @@ SYSTEM = (
     "exactly one line: STATE: DONE (handled), STATE: NEEDS_INFO (you need more from someone "
     "before acting) or STATE: ESCALATED (a person must decide)."
 )
+
+
+def system_prompt() -> str:
+    """The skills preamble (index and trust order), then the rules. Read on every run."""
+    return f"{skills.preamble()}\n\n{SYSTEM}"
+
+
 STATE_LINE = re.compile(r"^[ \t]*STATE:[ \t]*(DONE|NEEDS_INFO|ESCALATED)[ \t]*$", re.MULTILINE)
 
 
@@ -188,6 +196,7 @@ def run(
             raise CaseCancelled("case budget exhausted")
         return left
 
+    system = system_prompt()
     messages = build_messages(case)
     actions: list[dict] = []
     trace: list[dict] = []
@@ -198,7 +207,7 @@ def run(
                 "model_input",
                 provider=provider.name,
                 model=settings.model,
-                system=SYSTEM,
+                system=system,
                 messages=messages,
                 tools=[t.to_dict() for t in tools],
                 trace_id=trace_id,
@@ -207,7 +216,7 @@ def run(
         try:
             attributes = {"provider": provider.name, "model": settings.model}
             with tracing.tracer.start_as_current_span("model", attributes=attributes):
-                answer, reasoning = provider.run(SYSTEM, messages, tools, trace, seconds_left)
+                answer, reasoning = provider.run(system, messages, tools, trace, seconds_left)
             state, answer = parse_state(answer)
             error = (
                 None if state != "ERROR" else f"no STATE line in the final answer: {answer[:200]}"

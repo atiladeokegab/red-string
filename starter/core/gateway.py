@@ -88,11 +88,13 @@ def _arguments_of(fn: Callable[..., Any]) -> Callable[..., dict]:
 
 
 def build_gateway(store: Store, effects: str = "simulate") -> Gateway:
-    """A gateway with every vertical's tools registered."""
+    """A gateway with every vertical's tools and get_skill registered."""
     from starter import verticals
+    from starter.agent import skills
 
     gateway = Gateway(store, effects)
     for module in verticals.modules():
         if hasattr(module, "register_tools"):
             module.register_tools(gateway)
+    skills.register_tools(gateway)  # get_skill: the system prompt's index names what it loads
     return gateway

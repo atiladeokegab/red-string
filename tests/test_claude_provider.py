@@ -6,7 +6,7 @@ import json
 import anthropic
 import httpx2
 
-from starter.agent.loop import ClaudeProvider, run
+from starter.agent.loop import ClaudeProvider, run, system_prompt
 from starter.core.gateway import build_gateway
 from starter.runtime.config import Settings
 
@@ -50,7 +50,8 @@ def test_claude_provider_drives_gateway_tools(store):
     assert (result.final_answer, result.final_state) == ("Done.", "DONE")
     assert [(a["tool"], a["status"]) for a in result.actions] == [("send_message", "SIMULATED")]
     assert requests[0]["model"] == "claude-opus-5-5"
-    assert {t["name"] for t in requests[0]["tools"]} == {"send_message", "list_items"}
+    assert {t["name"] for t in requests[0]["tools"]} == {"send_message", "list_items", "get_skill"}
+    assert requests[0]["system"] == system_prompt()
     tool_result = requests[1]["messages"][-1]["content"][0]
     assert json.loads(tool_result["content"])["status"] == "SIMULATED"
 
