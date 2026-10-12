@@ -15,6 +15,7 @@ from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
 from starter.core.gateway import build_gateway
 from starter.core.store import Store, open_store
+from starter.core.surreal_store import SurrealStore
 from starter.core.tracing import EXPORTER, tracer
 from starter.runtime import mcp_door
 from starter.runtime.config import Settings
@@ -30,7 +31,7 @@ class Login(BaseModel):
 
 def create_app(settings: Settings | None = None, store: Store | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
-    store = store or open_store(settings.data_path)
+    store = store or _open_store(settings)
     gateway = build_gateway(store, settings.mode_effects)
     mcp = mcp_door.build_mcp(gateway)
     mcp_app = mcp_door.asgi_app(mcp)
@@ -89,6 +90,14 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
         if settings.mode == "local" and hasattr(module, "seed"):
             module.seed(store)
     return app
+
+
+def _open_store(settings: Settings) -> Store:
+    if settings.store == "surreal":
+        s = settings
+        creds = (s.surreal_user, s.surreal_password)
+        return SurrealStore(s.surreal_url, s.surreal_namespace, s.surreal_database, *creds)
+    return open_store(settings.data_path)
 
 
 def _error_handler(status: int):

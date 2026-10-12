@@ -7,12 +7,19 @@ from dataclasses import dataclass
 DEFAULT_MODEL = "claude-opus-5-5"
 MODEL_MAX_RETRIES = 1  # the SDK retries a timed-out call; each try gets the model timeout
 EFFORTS = ("low", "medium", "high", "xhigh", "max")
+SURREAL_ENV = ("SURREAL_URL", "SURREAL_NS", "SURREAL_DB", "SURREAL_USER", "SURREAL_PASS")
 
 
 @dataclass(frozen=True)
 class Settings:
     mode: str = "local"
     data_path: str = "data/store.json"  # a file path, or gs://bucket/object for GcsStore
+    store: str = "json"  # "json" is data_path above; "surreal" is SurrealStore on surreal_*
+    surreal_url: str = "mem://"  # embedded in-process; ws(s)://host/rpc for a server
+    surreal_namespace: str = "starter"
+    surreal_database: str = "starter"
+    surreal_user: str | None = None
+    surreal_password: str | None = None
     admin_password: str = "admin"
     anthropic_api_key: str | None = None
     model: str = DEFAULT_MODEL
@@ -32,6 +39,13 @@ class Settings:
             missing = [k for k in ("ANTHROPIC_API_KEY", "ADMIN_PASSWORD") if not env.get(k)]
             if missing:
                 raise RuntimeError(f"cloud mode refuses to start without {', '.join(missing)}")
+        store = env.get("STORE", "json")
+        if store not in ("json", "surreal"):
+            raise ValueError(f"STORE must be json or surreal, got {store!r}")
+        if mode == "cloud" and store == "surreal":
+            missing = [k for k in SURREAL_ENV if not env.get(k)]
+            if missing:
+                raise RuntimeError(f"STORE=surreal refuses to start without {', '.join(missing)}")
         effects = env.get("EFFECTS", "simulate")
         if effects not in ("simulate", "live"):
             raise ValueError(f"EFFECTS must be simulate or live, got {effects!r}")
@@ -48,6 +62,12 @@ class Settings:
         return cls(
             mode=mode,
             data_path=env.get("DATA_PATH", default_path),
+            store=store,
+            surreal_url=env.get("SURREAL_URL", "mem://"),
+            surreal_namespace=env.get("SURREAL_NS", "starter"),
+            surreal_database=env.get("SURREAL_DB", "starter"),
+            surreal_user=env.get("SURREAL_USER") or None,
+            surreal_password=env.get("SURREAL_PASS") or None,
             admin_password=env.get("ADMIN_PASSWORD", "admin"),
             anthropic_api_key=env.get("ANTHROPIC_API_KEY") or None,
             model=env.get("MODEL", DEFAULT_MODEL),

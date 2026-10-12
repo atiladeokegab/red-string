@@ -82,6 +82,24 @@ Copy `starter/verticals/example.py`. Export a `router`; optionally `seed(store)`
 `register_tools(gateway)` for agent tools. The factory and the gateway pick it up; nothing else
 changes. Follow the system rules above.
 
+## SurrealDB store
+
+Off by default. `STORE=surreal` swaps the store for `SurrealStore` (`starter/core/surreal_store.py`):
+the same `snapshot`/`mutate`/`publish`, with compare-and-swap so concurrent writers lose nothing.
+Locally it runs embedded in memory (`SURREAL_URL=mem://`, the default), offline with no server.
+Against a server, set `SURREAL_URL` (`wss://host/rpc`), `SURREAL_NS`, `SURREAL_DB`, `SURREAL_USER`
+and `SURREAL_PASS`; cloud mode refuses to start without all five. The store's connection is
+`store.db`, so a vertical can use SurrealQL graph relations next to the store:
+
+```python
+store.db.query("RELATE fact:deadline->derived_from->source:brief")
+# returns ["Event brief"]
+store.db.query("SELECT VALUE ->derived_from->source.title FROM ONLY fact:deadline")
+```
+
+The Python SDK is Apache-2.0. The SurrealDB server is BSL 1.1: free to use and self-host for our
+own product, but not to resell as a hosted database service.
+
 ## Deploy
 
 ```bash
