@@ -68,6 +68,7 @@ def test_a_rerun_creates_nothing_and_only_re_grants(tmp_path):
     assert proc.returncode == 0, proc.stderr
     assert [a for a in changes(calls) if "add-iam-policy-binding" not in a] == []
     assert not any("stdin" in c for c in calls)  # no secret value is sent again
+    assert "wait before the first deploy" in proc.stdout  # IAM grants take ~2 min to apply
 
 
 def test_a_service_account_may_be_the_deployer(tmp_path):

@@ -99,3 +99,4 @@ grant gcloud iam service-accounts add-iam-policy-binding "$DEPLOYER" "${P[@]}" \
   --member "$member" --role roles/iam.serviceAccountTokenCreator
 
 echo "bootstrapped $PROJECT"
+echo "new IAM grants take up to ~2 min: wait before the first deploy"
