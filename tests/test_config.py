@@ -18,11 +18,26 @@ def test_cloud_refuses_missing_secrets():
 
 def test_cloud_with_secrets_starts_and_public_hides_them():
     env = {"MODE": "cloud", "ANTHROPIC_API_KEY": "sk-secret", "ADMIN_PASSWORD": "pw"}
-    s = Settings.from_env(env)
-    assert s.mode == "cloud" and str(s.data_path) == "/tmp/store.json"
+    s = Settings.from_env({**env, "DATA_PATH": "gs://b/store.json"})
+    assert s.mode == "cloud" and s.data_path == "gs://b/store.json"
     shown = json.dumps(s.public())
     assert "sk-secret" not in shown and "pw" not in shown
     assert s.public()["providers"] == {"anthropic": "configured"}
+
+
+def test_cloud_refuses_a_store_that_does_not_survive_a_restart():
+    cloud = {"MODE": "cloud", "ANTHROPIC_API_KEY": "k", "ADMIN_PASSWORD": "pw"}
+    for path in (None, "/tmp/store.json", "data/store.json"):
+        env = cloud if path is None else {**cloud, "DATA_PATH": path}
+        with pytest.raises(RuntimeError, match="DATA_PATH=gs://"):
+            Settings.from_env(env)
+    surreal = {**cloud, "STORE": "surreal", "SURREAL_NS": "n", "SURREAL_DB": "d"}
+    surreal |= {"SURREAL_USER": "u", "SURREAL_PASS": "p"}
+    for url in ("mem://", "surrealkv://data/db"):
+        with pytest.raises(RuntimeError, match="in-process SurrealDB"):
+            Settings.from_env({**surreal, "SURREAL_URL": url})
+    assert Settings.from_env({**surreal, "SURREAL_URL": "wss://db.example"}).store == "surreal"
+    assert Settings.from_env({}).data_path == "data/store.json"  # local is unchanged
 
 
 def test_unknown_mode_is_rejected():
@@ -31,7 +46,12 @@ def test_unknown_mode_is_rejected():
 
 
 def test_effects_default_to_simulate_everywhere_and_live_is_opt_in():
-    cloud = {"MODE": "cloud", "ANTHROPIC_API_KEY": "k", "ADMIN_PASSWORD": "pw"}
+    cloud = {
+        "MODE": "cloud",
+        "ANTHROPIC_API_KEY": "k",
+        "ADMIN_PASSWORD": "pw",
+        "DATA_PATH": "gs://b/s",
+    }
     assert Settings().mode_effects == "simulate"
     assert Settings.from_env({}).mode_effects == "simulate"
     assert Settings.from_env(cloud).mode_effects == "simulate"

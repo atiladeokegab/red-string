@@ -7,6 +7,7 @@ from dataclasses import dataclass
 DEFAULT_MODEL = "claude-opus-5-5"
 MODEL_MAX_RETRIES = 1  # the SDK retries a timed-out call; each try gets the model timeout
 EFFORTS = ("low", "medium", "high", "xhigh", "max")
+REMOTE = ("ws://", "wss://", "http://", "https://")  # a SurrealDB server, not mem:// or a file
 SURREAL_ENV = ("SURREAL_URL", "SURREAL_NS", "SURREAL_DB", "SURREAL_USER", "SURREAL_PASS")
 
 
@@ -52,6 +53,12 @@ class Settings:
             missing = [k for k in SURREAL_ENV if not env.get(k)]
             if missing:
                 raise RuntimeError(f"STORE=surreal refuses to start without {', '.join(missing)}")
+        # A Cloud Run disk is wiped on restart and not shared between instances: cloud state lives
+        # off the box, or the deploy fails here instead of losing data later.
+        if mode == "cloud" and store == "json" and not env.get("DATA_PATH", "").startswith("gs://"):
+            raise RuntimeError("cloud mode refuses a JSON store off GCS: set DATA_PATH=gs://...")
+        if mode == "cloud" and store == "surreal" and not env["SURREAL_URL"].startswith(REMOTE):
+            raise RuntimeError("cloud mode refuses an in-process SurrealDB: SURREAL_URL=wss://...")
         effects = env.get("EFFECTS", "simulate")
         if effects not in ("simulate", "live"):
             raise ValueError(f"EFFECTS must be simulate or live, got {effects!r}")
@@ -68,12 +75,9 @@ class Settings:
         model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
         if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
             raise ValueError("inner timeouts must be shorter than the case timeout")
-        # Cloud without DATA_PATH keeps the JSON store in /tmp, lost on restart; deploy.sh sets
-        # DATA_PATH=gs://... so state survives a redeploy and several instances share it.
-        default_path = "/tmp/store.json" if mode == "cloud" else "data/store.json"
         return cls(
             mode=mode,
-            data_path=env.get("DATA_PATH", default_path),
+            data_path=env.get("DATA_PATH", "data/store.json"),
             store=store,
             surreal_url=env.get("SURREAL_URL", "mem://"),
             surreal_namespace=env.get("SURREAL_NS", "starter"),
