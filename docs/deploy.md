@@ -5,7 +5,8 @@ builds the `Dockerfile` on Cloud Build, deploys service `hackathon-starter` in `
 the commit as a label, prints one release line (`release: commit=<sha> revision=<name> url=<url>`),
 checks `/health`, then runs the tests marked `live` against that URL (every GET below 500, a request
 without the token refused). One deploy owner per event runs it, from `main`, after `main` is
-promoted.
+promoted. After the first deploy and again after code freeze, someone audits production by hand,
+failures first, under the safety rules in `docs/VERIFICATION.md`.
 
 State is one JSON object, `gs://<project>-state/store.json` (`DATA_PATH`, set by `deploy.sh`;
 `STATE_BUCKET` names another bucket). It survives redeploys and restarts, and up to three instances
