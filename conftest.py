@@ -11,7 +11,14 @@ from starter.runtime.factory import create_app
 @pytest.fixture(autouse=True)
 def offline_env(monkeypatch):
     """Tests never see the developer's keys: every test runs offline, in local mode."""
-    for name in ("ANTHROPIC_API_KEY", "ADMIN_PASSWORD", "MODE", "DATA_PATH", "MODEL"):
+    for name in (
+        "ANTHROPIC_API_KEY",
+        "ADMIN_PASSWORD",
+        "MODE",
+        "DATA_PATH",
+        "MODEL",
+        "DEMO_LATENCY",
+    ):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setattr(EXPORTER, "echo", False)  # create_app turns it on; off between tests
 

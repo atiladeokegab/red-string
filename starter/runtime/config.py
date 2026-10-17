@@ -33,6 +33,7 @@ class Settings:
     elevenlabs_api_key: str | None = None  # place_call; live effects need it and both ids
     elevenlabs_agent_id: str | None = None
     elevenlabs_phone_number_id: str | None = None
+    demo_latency: tuple[float, float] | None = None  # (low, high) s; only the demo recorder sets it
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -57,6 +58,12 @@ class Settings:
         effort = env.get("EFFORT", "medium")
         if effort not in EFFORTS:
             raise ValueError(f"EFFORT must be one of {', '.join(EFFORTS)}, got {effort!r}")
+        demo_latency = None
+        if latency := env.get("DEMO_LATENCY"):
+            low, _, high = latency.partition("-")
+            demo_latency = (float(low), float(high or low))
+            if not 0 <= demo_latency[0] <= demo_latency[1]:
+                raise ValueError(f"DEMO_LATENCY must be low-high seconds, got {latency!r}")
         case_timeout_s = float(env.get("CASE_TIMEOUT_S", 120))
         model_timeout_s = float(env.get("MODEL_TIMEOUT_S", 50))
         if (1 + MODEL_MAX_RETRIES) * model_timeout_s >= case_timeout_s:
@@ -86,6 +93,7 @@ class Settings:
             elevenlabs_api_key=env.get("ELEVENLABS_API_KEY") or None,
             elevenlabs_agent_id=env.get("ELEVENLABS_AGENT_ID") or None,
             elevenlabs_phone_number_id=env.get("ELEVENLABS_PHONE_NUMBER_ID") or None,
+            demo_latency=demo_latency,
         )
 
     def public(self) -> dict:

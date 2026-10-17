@@ -13,12 +13,17 @@ audited as a tool_call event with "repeat": True. The key is derived, not passed
 retries a send cannot send twice; register without it a tool whose repeats are meant (two
 reminders). Only a call that returned is remembered: one that raised can be retried. A live effect
 that ran is never reported as failed: if the case is cancelled while it runs, the gateway still
-audits it and returns its result."""
+audits it and returns its result.
+
+latency=(low, high) waits a random low to high seconds before each simulated effect, so a recorded
+demo grows at a believable pace; only scripts/demo/record.py sets it (DEMO_LATENCY)."""
 
 import contextlib
 import inspect
 import json
+import random
 import threading
+import time
 from collections.abc import Callable
 from contextvars import ContextVar
 from typing import Any
@@ -35,9 +40,15 @@ current_case: ContextVar[dict | None] = ContextVar("current_case", default=None)
 
 
 class Gateway:
-    def __init__(self, store: Store, effects: str = "simulate"):
+    def __init__(
+        self,
+        store: Store,
+        effects: str = "simulate",
+        latency: tuple[float, float] | None = None,
+    ):
         self.store = store
         self.live = effects == "live"
+        self.latency = latency
         self.tools: dict[str, Callable[..., Any]] = {}  # name -> argument-checking wrapper
         self.effects: dict[str, bool] = {}
         self.simulators: dict[str, Callable[..., Any]] = {}  # effect tools only
@@ -111,6 +122,8 @@ class Gateway:
         attributes = {"tool": name, "case_id": case_id, "simulated": simulated}
         attributes |= {f"arg.{k}": str(v) for k, v in args.items()}  # redacted on export
         with tracer.start_as_current_span("gateway.call", attributes=attributes):
+            if simulated and self.latency:
+                time.sleep(random.uniform(*self.latency))
             payload = run(**args)  # pydantic.ValidationError is a ValueError
         if cancel is not None and cancel.is_set() and not (self.effects[name] and self.live):
             raise CaseCancelled("case cancelled")  # cancelled while it ran, no effect: no audit
@@ -129,12 +142,14 @@ def _arguments_of(fn: Callable[..., Any]) -> Callable[..., dict]:
     return arguments
 
 
-def build_gateway(store: Store, effects: str = "simulate") -> Gateway:
+def build_gateway(
+    store: Store, effects: str = "simulate", latency: tuple[float, float] | None = None
+) -> Gateway:
     """A gateway with every vertical's tools and get_skill registered."""
     from starter import verticals
     from starter.agent import skills
 
-    gateway = Gateway(store, effects)
+    gateway = Gateway(store, effects, latency)
     for module in verticals.modules():
         if hasattr(module, "register_tools"):
             module.register_tools(gateway)

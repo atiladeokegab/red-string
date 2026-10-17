@@ -32,7 +32,7 @@ class Login(BaseModel):
 def create_app(settings: Settings | None = None, store: Store | None = None) -> FastAPI:
     settings = settings or Settings.from_env()
     store = store or _open_store(settings)
-    gateway = build_gateway(store, settings.mode_effects)
+    gateway = build_gateway(store, settings.mode_effects, settings.demo_latency)
     mcp = mcp_door.build_mcp(gateway)
     mcp_app = mcp_door.asgi_app(mcp)
     app = FastAPI(title="starter", lifespan=lambda app: mcp.session_manager.run())

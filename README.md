@@ -34,6 +34,18 @@ make eval           # the sample cases on the real model (needs ANTHROPIC_API_KE
 make e2e            # the pages in Chromium (tests/e2e; downloads it once); not part of check
 ```
 
+## Recording the demo
+
+```bash
+make demo           # docs/media/demo.mp4 (H.264) and demo.gif (8 fps, 640 px); needs ffmpeg
+```
+
+`scripts/demo/record.py` starts the app as the e2e tests do (offline, seeded), plays the `SCENES`
+list at the top of the file in Chromium at 1920x1080, and encodes the result. A scene is a page, a
+selector it waits for, and how long it holds: edit the list, not the code. Every simulated effect
+waits a random `DEMO_LATENCY` (default `0.35-1.0` s) so the screen grows at a believable pace;
+only the recorder sets it, so smoke and the tests never see it. Re-record after a fix, from `main`.
+
 ## Run cases
 
 ```bash

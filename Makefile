@@ -1,4 +1,4 @@
-.PHONY: dev check smoke smoke-cases e2e eval deploy mcp
+.PHONY: dev check smoke smoke-cases e2e demo eval deploy mcp
 
 MCP_URL ?= http://127.0.0.1:8000/mcp
 
@@ -23,6 +23,11 @@ e2e:
 	uv run playwright install chromium
 	out="$${E2E_OUT:-$$(mktemp -d)}" && \
 	E2E_OUT="$$out" uv run pytest -q -m e2e tests/e2e && echo "screenshots: $$out"
+
+# The demo film from the offline, seeded app: docs/media/demo.mp4 and demo.gif. Needs ffmpeg.
+demo:
+	uv run playwright install chromium
+	uv run scripts/demo/record.py
 
 # The real model on the sample cases, for the reviewer on agent/core PRs. Costs money; never a gate.
 eval:

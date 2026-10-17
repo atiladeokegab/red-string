@@ -45,3 +45,11 @@ def test_the_app_gateway_follows_effects(store):
 
     assert create_app(Settings(), store).state.gateway.live is False
     assert create_app(Settings(mode_effects="live"), store).state.gateway.live is True
+
+
+def test_demo_latency_is_off_unless_set_and_parses_low_high():
+    assert Settings.from_env({}).demo_latency is None
+    assert Settings.from_env({"DEMO_LATENCY": "0.35-1.0"}).demo_latency == (0.35, 1.0)
+    for bad in ("1-0.5", "-1", "fast"):
+        with pytest.raises(ValueError):
+            Settings.from_env({"DEMO_LATENCY": bad})

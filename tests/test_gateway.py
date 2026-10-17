@@ -107,3 +107,12 @@ def test_a_duplicate_tool_name_is_refused(store):
         def send_message(to: str) -> dict:
             """A second tool with a taken name."""
             return {}
+
+
+def test_latency_waits_before_a_simulated_effect_only(store, monkeypatch):
+    waits = []
+    monkeypatch.setattr("starter.core.gateway.time.sleep", waits.append)
+    gateway = build_gateway(store, latency=(0.35, 1.0))
+    gateway.call("send_message", {"to": "ann", "body": "hi"}, case_id="c1")
+    gateway.call("list_items", {}, case_id="c1")
+    assert len(waits) == 1 and 0.35 <= waits[0] <= 1.0
