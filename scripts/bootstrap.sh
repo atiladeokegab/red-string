@@ -4,15 +4,18 @@
 # (the IAM grants re-add a binding that is already there, which leaves the policy unchanged).
 #   PROJECT=<gcp-project-id> [REGION=europe-west1] [STATE_BUCKET=<PROJECT>-state] \
 #     [DEPLOY_AS=<account that will run deploy.sh; default: you>] \
-#     ANTHROPIC_API_KEY=... ADMIN_PASSWORD=... scripts/bootstrap.sh
-# A secret's value is read only when the secret is created; rotate one as docs/deploy.md says.
+#     ANTHROPIC_API_KEY=... [ADMIN_PASSWORD=...] scripts/bootstrap.sh
+# The secrets are the SECRETS list in scripts/deploy.sh. A value is read only when its secret is
+# created; rotate one as docs/deploy.md says.
 set -euo pipefail
 
 : "${PROJECT:?set PROJECT to the GCP project id}"
 REGION="${REGION:-europe-west1}"
 STATE_BUCKET="${STATE_BUCKET:-$PROJECT-state}"
 DEPLOY_AS="${DEPLOY_AS:-$(gcloud config get-value account)}"
-SECRETS="anthropic-api-key admin-password"
+SECRETS="$(sed -n 's/^SECRETS="\(.*\)"$/\1/p' "$(dirname "$0")/deploy.sh")"
+: "${SECRETS:?no SECRETS= line in scripts/deploy.sh}"
+GENERATED="admin-password"  # made up when created without a value; nobody has to type one
 APIS="run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
   secretmanager.googleapis.com storage.googleapis.com iam.googleapis.com iamcredentials.googleapis.com"
 DEPLOYER="deployer@$PROJECT.iam.gserviceaccount.com"  # deploy.sh impersonates this account
@@ -49,15 +52,22 @@ grant gcloud storage buckets add-iam-policy-binding "gs://$STATE_BUCKET" "${P[@]
   --member "serviceAccount:$RUNTIME" --role roles/storage.objectUser
 
 # Secrets: the value comes from the env var named after the secret (anthropic-api-key reads
-# ANTHROPIC_API_KEY), printf so no trailing newline lands in it.
+# ANTHROPIC_API_KEY), printf so no trailing newline lands in it; a GENERATED one with no value
+# gets a random one.
 for secret in $SECRETS; do
   var="$(tr 'a-z-' 'A-Z_' <<<"$secret")"
   if ! found gcloud secrets describe "$secret" "${P[@]}"; then
-    if [[ -z "${!var:-}" ]]; then
+    value="${!var:-}"
+    if [[ -z "$value" && " $GENERATED " == *" $secret "* ]]; then
+      value="$(openssl rand -hex 24)"
+      echo "bootstrap: generated $secret; read it with" \
+        "gcloud secrets versions access latest --secret $secret --project $PROJECT"
+    fi
+    if [[ -z "$value" ]]; then
       echo "bootstrap: secret $secret does not exist yet; rerun with $var set to its value" >&2
       exit 1
     fi
-    printf '%s' "${!var}" | gcloud secrets create "$secret" --data-file=- "${P[@]}"
+    printf '%s' "$value" | gcloud secrets create "$secret" --data-file=- "${P[@]}"
   fi
   grant gcloud secrets add-iam-policy-binding "$secret" "${P[@]}" \
     --member "serviceAccount:$RUNTIME" --role roles/secretmanager.secretAccessor

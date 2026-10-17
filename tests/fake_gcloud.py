@@ -54,7 +54,7 @@ elif "describe" in args and not exists:
 """
 
 
-def run(script: str, tmp: Path, env: dict[str, str], *, dirty: bool = False):
+def run(script: str, tmp: Path, env: dict[str, str], *, dirty=False, scripts=ROOT / "scripts"):
     """Runs scripts/<script> from a fresh one-commit git repo in tmp; returns (process, calls)."""
     bin_dir, repo, log = tmp / "bin", tmp / "repo", tmp / "calls.jsonl"
     bin_dir.mkdir()
@@ -73,7 +73,7 @@ def run(script: str, tmp: Path, env: dict[str, str], *, dirty: bool = False):
     # A bare environment: no real credentials, project or impersonation leak in from the caller.
     base = {"PATH": f"{bin_dir}:{os.environ['PATH']}", "HOME": str(tmp), "FAKE_LOG": str(log)}
     proc = subprocess.run(
-        ["bash", str(ROOT / "scripts" / script)],
+        ["bash", str(scripts / script)],
         cwd=repo,
         env={**base, **env},
         capture_output=True,

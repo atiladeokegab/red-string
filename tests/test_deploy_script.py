@@ -26,6 +26,8 @@ def test_deploys_the_commit_then_checks_health_and_runs_the_live_smoke(tmp_path)
     assert flag(deploy, "--set-env-vars") == env_vars
     assert flag(deploy, "--min-instances") == "0" and flag(deploy, "--max-instances") == "3"
     assert "--quiet" in deploy and "--allow-unauthenticated" in deploy
+    mounts = "ANTHROPIC_API_KEY=anthropic-api-key:latest,ADMIN_PASSWORD=admin-password:latest"
+    assert flag(deploy, "--set-secrets") == mounts  # from the one SECRETS list
 
     deployer = "deployer@demo-proj.iam.gserviceaccount.com"  # made by scripts/bootstrap.sh
     assert {c.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT") for c in calls} == {deployer}

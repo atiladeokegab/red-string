@@ -18,7 +18,9 @@ afterwards (an idle instance is billed).
 
 Every setting the service reads is listed in `.env.example` at its local default, and
 `tests/test_env_example.py` fails when that list and `starter/runtime/config.py` drift apart. A new
-setting that cloud needs goes in `deploy.sh` (`--set-env-vars`, or a secret) in the same change.
+setting that cloud needs goes in `deploy.sh` in the same change: `--set-env-vars`, or, for a
+secret, its name in the one `SECRETS=` list (`resend-api-key` mounts as `RESEND_API_KEY`), then rerun
+`make bootstrap` with that variable set to create it.
 Real email and calls need `EFFECTS=live` plus the `RESEND_API_KEY`/`EMAIL_FROM` or `ELEVENLABS_*`
 settings on the service (keys as secrets); without them a live send fails with 503, sending nothing.
 
@@ -26,14 +28,15 @@ settings on the service (keys as secrets); without them a live send fails with 5
 
 ```bash
 gcloud auth login
-PROJECT=<gcp-project-id> ANTHROPIC_API_KEY=<key> ADMIN_PASSWORD=<password> make bootstrap
+PROJECT=<gcp-project-id> ANTHROPIC_API_KEY=<key> make bootstrap
 ```
 
 `scripts/bootstrap.sh` enables the APIs, creates the Artifact Registry repository, the state bucket
 (private, versioned), the secrets, and a `deployer` service account that `deploy.sh` impersonates
 for every gcloud call; it grants the Cloud Run service account the bucket, the secrets and Cloud
 Build. Each step describes first and creates only what is missing, so rerunning it is safe and
-creates nothing. A secret's value is read only when the secret is created.
+creates nothing. A secret's value is read only when the secret is created. `ADMIN_PASSWORD` is
+optional: without it a random password is generated, and bootstrap prints the command that reads it.
 
 Whoever runs `deploy.sh` must be allowed to impersonate the deployer: you by default, or
 `DEPLOY_AS=<service-account-email>` (the hub VM's account, when `hub live` deploys). Rerun with each

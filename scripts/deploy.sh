@@ -13,12 +13,16 @@ REGION="${REGION:-europe-west1}"
 SERVICE="${SERVICE:-hackathon-starter}"
 STATE_BUCKET="${STATE_BUCKET:-$PROJECT-state}"
 MIN_INSTANCES="${MIN_INSTANCES:-0}"  # the event playbook sets 1 on demo day: no cold start
+# The one list of secrets: each mounts as its upper-cased name (anthropic-api-key is
+# ANTHROPIC_API_KEY), and scripts/bootstrap.sh creates and grants exactly these.
+SECRETS="anthropic-api-key admin-password"
 
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "deploy: the working tree is dirty; commit first so the commit label names what ships" >&2
   exit 1
 fi
 COMMIT="$(git rev-parse --short=12 HEAD)"
+MOUNTS="$(for s in $SECRETS; do printf '%s=%s:latest,' "$(tr 'a-z-' 'A-Z_' <<<"$s")" "$s"; done)"
 
 # State is one JSON object in GCS written with compare-and-swap (GcsStore), so it survives a
 # redeploy and instances share it.
@@ -26,7 +30,7 @@ COMMIT="$(git rev-parse --short=12 HEAD)"
 # sharded store.
 gcloud run deploy "$SERVICE" --source . --region "$REGION" --project "$PROJECT" \
   --allow-unauthenticated \
-  --set-secrets ANTHROPIC_API_KEY=anthropic-api-key:latest,ADMIN_PASSWORD=admin-password:latest \
+  --set-secrets "${MOUNTS%,}" \
   --set-env-vars "MODE=cloud,DATA_PATH=gs://$STATE_BUCKET/store.json" \
   --labels "commit=$COMMIT" \
   --min-instances "$MIN_INSTANCES" \

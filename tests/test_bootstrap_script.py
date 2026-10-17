@@ -1,7 +1,10 @@
 """scripts/bootstrap.sh, the real shell, against a fake gcloud (tests/fake_gcloud.py): a first run
 creates every resource, a rerun on a project that has them creates and overwrites nothing."""
 
-from tests.fake_gcloud import run
+import re
+import shutil
+
+from tests.fake_gcloud import ROOT, run
 
 APIS = """run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
 secretmanager.googleapis.com storage.googleapis.com iam.googleapis.com
@@ -78,3 +81,28 @@ def test_a_missing_secret_with_no_value_stops_before_it_is_created(tmp_path):
     proc, calls = run("bootstrap.sh", tmp_path, {**ENV, "ANTHROPIC_API_KEY": ""})
     assert proc.returncode == 1 and "ANTHROPIC_API_KEY" in proc.stderr
     assert not any(c["args"][:2] == ["secrets", "create"] for c in calls)
+
+
+def test_the_admin_password_is_generated_when_none_is_given(tmp_path):
+    proc, calls = run("bootstrap.sh", tmp_path, {**ENV, "ADMIN_PASSWORD": ""})
+    assert proc.returncode == 0, proc.stderr
+    [made] = [c for c in calls if c["args"][:3] == ["secrets", "create", "admin-password"]]
+    assert re.fullmatch(r"[0-9a-f]{48}", made["stdin"])
+    assert made["stdin"] not in proc.stdout  # says where to read it, never prints it
+
+
+def test_the_secrets_are_the_list_in_deploy_sh(tmp_path):
+    scripts = tmp_path / "scripts"
+    shutil.copytree(ROOT / "scripts", scripts, ignore=shutil.ignore_patterns("__pycache__"))
+    deploy = scripts / "deploy.sh"
+    text = deploy.read_text().replace('SECRETS="', 'SECRETS="resend-api-key ', 1)
+    deploy.write_text(text)
+    env = {**ENV, "RESEND_API_KEY": "re-test"}
+    proc, calls = run("bootstrap.sh", tmp_path, env, scripts=scripts)
+    assert proc.returncode == 0, proc.stderr
+    made = {c["args"][2]: c["stdin"] for c in calls if c["args"][:2] == ["secrets", "create"]}
+    assert made == {
+        "resend-api-key": "re-test",
+        "anthropic-api-key": "sk-test",
+        "admin-password": "pw-test",
+    }
