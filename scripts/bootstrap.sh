@@ -77,6 +77,8 @@ done
 # the admin password, which the live smoke at the end of deploy.sh logs in with.
 found gcloud iam service-accounts describe "$DEPLOYER" "${P[@]}" ||
   gcloud iam service-accounts create deployer --display-name "scripts/deploy.sh" "${P[@]}"
+# run.admin, not run.developer: --allow-unauthenticated sets the service's IAM policy, which
+# run.developer cannot.
 for role in roles/run.admin roles/run.sourceDeveloper roles/serviceusage.serviceUsageConsumer \
   roles/logging.viewer; do
   grant gcloud projects add-iam-policy-binding "$PROJECT" --condition None \
@@ -92,7 +94,8 @@ case "$DEPLOY_AS" in
   *.gserviceaccount.com) member="serviceAccount:$DEPLOY_AS" ;;
   *) member="user:$DEPLOY_AS" ;;
 esac
+echo "bootstrap: $member may deploy as $DEPLOYER (roles/iam.serviceAccountTokenCreator)"
 grant gcloud iam service-accounts add-iam-policy-binding "$DEPLOYER" "${P[@]}" \
   --member "$member" --role roles/iam.serviceAccountTokenCreator
 
-echo "bootstrapped $PROJECT: $DEPLOY_AS deploys as $DEPLOYER"
+echo "bootstrapped $PROJECT"

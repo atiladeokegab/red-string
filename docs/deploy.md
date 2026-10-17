@@ -43,7 +43,8 @@ optional: without it a random password is generated, and bootstrap prints the co
 Whoever runs `deploy.sh` must be allowed to impersonate the deployer: you by default, or
 `DEPLOY_AS=<service-account-email>` (the hub VM's account, when `hub live` deploys). Rerun with each
 account that deploys. A grant that fails right after the deployer is created is IAM catching up;
-rerun.
+rerun. `deploy.sh` stops with "run `make bootstrap`" when the deployer does not exist yet;
+`DEPLOY_AS_SELF=1` is the one opt-out, deploying as your own account and saying so.
 
 Rotate a secret with `gcloud secrets versions add <name> --data-file=-`, then redeploy.
 

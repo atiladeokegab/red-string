@@ -75,6 +75,8 @@ def test_a_service_account_may_be_the_deployer(tmp_path):
     proc, calls = run("bootstrap.sh", tmp_path, {**ENV, "DEPLOY_AS": hub})
     assert proc.returncode == 0, proc.stderr
     assert (f"serviceAccount:{hub}", "roles/iam.serviceAccountTokenCreator") in grants(calls)
+    said = f"bootstrap: serviceAccount:{hub} may deploy as deployer@demo-proj"
+    assert said in proc.stdout  # printed before the grant, so a wrong account is seen
 
 
 def test_a_missing_secret_with_no_value_stops_before_it_is_created(tmp_path):

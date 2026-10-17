@@ -46,4 +46,6 @@ def test_every_get_route_answers_below_500(client, auth, path):
 def test_a_request_without_the_token_is_refused(client, auth):
     assert client.post("/api/runs", json={}).status_code == 401  # the route that spends money
     assert client.post("/api/mcp/token").status_code == 401
-    assert client.post("/api/mcp/token", headers=auth).status_code == 200  # and the token works
+    # and the token works. Minting an MCP token on every deploy is safe: tokens are signed, not
+    # stored (mcp_door.issue_token), so this POST writes nothing.
+    assert client.post("/api/mcp/token", headers=auth).status_code == 200

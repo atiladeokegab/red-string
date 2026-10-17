@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 # Deploy the committed HEAD to Cloud Run and prove it answers.
 #   PROJECT=<gcp-project-id> [REGION=europe-west1] [SERVICE=hackathon-starter] \
-#     [STATE_BUCKET=<PROJECT>-state] [MIN_INSTANCES=0] scripts/deploy.sh
+#     [STATE_BUCKET=<PROJECT>-state] [MIN_INSTANCES=0] [DEPLOY_AS_SELF=1] scripts/deploy.sh
 # One-time GCP setup: scripts/bootstrap.sh. Rollback: docs/deploy.md.
 set -euo pipefail
 
 : "${PROJECT:?set PROJECT to the GCP project id}"
-# Every gcloud call below runs as the deployer scripts/bootstrap.sh made, never as you: its roles
-# bound what a deploy can change.
-export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT="deployer@$PROJECT.iam.gserviceaccount.com"
 REGION="${REGION:-europe-west1}"
 SERVICE="${SERVICE:-hackathon-starter}"
 STATE_BUCKET="${STATE_BUCKET:-$PROJECT-state}"
@@ -22,6 +19,20 @@ if [[ -n "$(git status --porcelain)" ]]; then
   exit 1
 fi
 COMMIT="$(git rev-parse --short=12 HEAD)"
+
+# Every gcloud call below runs as the deployer scripts/bootstrap.sh made, never as you: its roles
+# bound what a deploy can change. DEPLOY_AS_SELF=1 is the one opt-out, said out loud.
+unset CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT  # only this script decides who deploys
+if [[ "${DEPLOY_AS_SELF:-}" == 1 ]]; then
+  echo "deploy: deploying as $(gcloud config get-value account), not the deployer"
+else
+  DEPLOYER="deployer@$PROJECT.iam.gserviceaccount.com"
+  if ! gcloud iam service-accounts describe "$DEPLOYER" --project "$PROJECT" >/dev/null 2>&1; then
+    echo "deploy: no $DEPLOYER; run \`make bootstrap\` once for $PROJECT (scripts/bootstrap.sh)" >&2
+    exit 1
+  fi
+  export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT="$DEPLOYER"
+fi
 MOUNTS="$(for s in $SECRETS; do printf '%s=%s:latest,' "$(tr 'a-z-' 'A-Z_' <<<"$s")" "$s"; done)"
 
 # State is one JSON object in GCS written with compare-and-swap (GcsStore), so it survives a

@@ -3,7 +3,9 @@ ships through this one script, so a typo in it would break all of them at the wo
 
 from tests.fake_gcloud import REVISION, URL, head, run
 
-ENV = {"PROJECT": "demo-proj"}
+ENV = {"PROJECT": "demo-proj", "FAKE_EXISTING": "1"}  # bootstrapped: the deployer exists
+DEPLOYER = "deployer@demo-proj.iam.gserviceaccount.com"  # made by scripts/bootstrap.sh
+IMPERSONATE = "CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
 
 
 def flag(args, name):
@@ -29,12 +31,13 @@ def test_deploys_the_commit_then_checks_health_and_runs_the_live_smoke(tmp_path)
     mounts = "ANTHROPIC_API_KEY=anthropic-api-key:latest,ADMIN_PASSWORD=admin-password:latest"
     assert flag(deploy, "--set-secrets") == mounts  # from the one SECRETS list
 
-    deployer = "deployer@demo-proj.iam.gserviceaccount.com"  # made by scripts/bootstrap.sh
-    assert {c.get("CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT") for c in calls} == {deployer}
+    check, *rest = calls  # does the deployer exist, asked as the caller; then all as the deployer
+    assert check["args"][:4] == ["iam", "service-accounts", "describe", DEPLOYER]
+    assert IMPERSONATE not in check and {c.get(IMPERSONATE) for c in rest} == {DEPLOYER}
 
-    steps = [c["cmd"] if c["cmd"] != "gcloud" else " ".join(c["args"][:2]) for c in calls]
+    steps = [c["cmd"] if c["cmd"] != "gcloud" else " ".join(c["args"][:2]) for c in rest]
     assert steps == ["run deploy", "run services", "curl", "secrets versions", "uv"]
-    assert f"{URL}/health" in calls[2]["args"]
+    assert f"{URL}/health" in rest[2]["args"]
     release = f"release: commit={head(tmp_path)} revision={REVISION} url={URL}"
     assert release in proc.stdout.splitlines()
     smoke = calls[-1]
@@ -57,7 +60,7 @@ def test_no_project_is_refused_before_any_cloud_call(tmp_path):
 def test_a_failed_deploy_fails_the_script_and_smokes_nothing(tmp_path):
     proc, calls = run("deploy.sh", tmp_path, {**ENV, "FAKE_FAIL": "gcloud run deploy"})
     assert proc.returncode != 0
-    assert [c["cmd"] for c in calls] == ["gcloud"]
+    assert [c["cmd"] for c in calls] == ["gcloud", "gcloud"]  # the deployer check, the deploy
 
 
 def test_a_failed_live_smoke_fails_the_deploy(tmp_path):
@@ -73,3 +76,19 @@ def test_settings_reach_the_deploy(tmp_path):
     assert deploy[2] == "svc" and flag(deploy, "--region") == "us-central1"
     assert flag(deploy, "--min-instances") == "1"
     assert "DATA_PATH=gs://bkt/store.json" in flag(deploy, "--set-env-vars")
+
+
+def test_a_project_without_the_deployer_is_told_to_bootstrap(tmp_path):
+    proc, calls = run("deploy.sh", tmp_path, {**ENV, "FAKE_EXISTING": ""})
+    assert proc.returncode == 1
+    assert "run `make bootstrap` once for demo-proj (scripts/bootstrap.sh)" in proc.stderr
+    assert [c["args"][:3] for c in calls] == [["iam", "service-accounts", "describe"]]
+
+
+def test_deploy_as_self_is_the_one_opt_out_and_says_so(tmp_path):
+    env = {**ENV, "FAKE_EXISTING": "", "DEPLOY_AS_SELF": "1", IMPERSONATE: "someone@else"}
+    proc, calls = run("deploy.sh", tmp_path, env)
+    assert proc.returncode == 0, proc.stderr
+    assert "deploy: deploying as me@example.com, not the deployer" in proc.stdout
+    assert not any(IMPERSONATE in c for c in calls)  # not even one inherited from the shell
+    assert gcloud(calls, "run", "deploy") and not gcloud(calls, "iam")
