@@ -124,18 +124,19 @@ own product, but not to resell as a hosted database service.
 ## Deploy
 
 ```bash
+make bootstrap PROJECT=<gcp-project-id>     # once per project; safe to rerun
 make deploy PROJECT=<gcp-project-id>        # from a clean, committed main
 ```
 
 Builds the Dockerfile on Cloud Build, deploys to Cloud Run with the commit as a label, prints the
-URL and checks `/health`. One-time setup and rollback: `docs/deploy.md`.
+URL, checks `/health` and runs the live smoke against it. Setup and rollback: `docs/deploy.md`.
 
 ## Provider checklist (the night before)
 
 - [ ] `ANTHROPIC_API_KEY` works: `uv run scripts/run_cases.py cases/sample` writes answers whose
       `trace.jsonl` first line says `"provider": "claude"`.
 - [ ] The model in `MODEL` (default `claude-opus-5-5`) answers on this key.
-- [ ] GCP project with billing; `gcloud auth login` done; APIs enabled and both secrets created
+- [ ] GCP project with billing; `gcloud auth login` done; `make bootstrap` ran clean
       (`docs/deploy.md`).
 - [ ] `make deploy PROJECT=<id>` prints a URL whose `/health` says `"anthropic": "configured"`.
 - [ ] The admin password secret is set and shared with the team out of band.

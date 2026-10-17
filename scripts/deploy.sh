@@ -2,10 +2,13 @@
 # Deploy the committed HEAD to Cloud Run and prove it answers.
 #   PROJECT=<gcp-project-id> [REGION=europe-west1] [SERVICE=hackathon-starter] \
 #     [STATE_BUCKET=<PROJECT>-state] [MIN_INSTANCES=0] scripts/deploy.sh
-# One-time GCP setup and rollback: docs/deploy.md.
+# One-time GCP setup: scripts/bootstrap.sh. Rollback: docs/deploy.md.
 set -euo pipefail
 
 : "${PROJECT:?set PROJECT to the GCP project id}"
+# Every gcloud call below runs as the deployer scripts/bootstrap.sh made, never as you: its roles
+# bound what a deploy can change.
+export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT="deployer@$PROJECT.iam.gserviceaccount.com"
 REGION="${REGION:-europe-west1}"
 SERVICE="${SERVICE:-hackathon-starter}"
 STATE_BUCKET="${STATE_BUCKET:-$PROJECT-state}"

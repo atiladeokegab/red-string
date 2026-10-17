@@ -1,4 +1,4 @@
-.PHONY: dev check smoke smoke-cases e2e demo eval deploy mcp
+.PHONY: dev check smoke smoke-cases e2e demo eval bootstrap deploy mcp
 
 MCP_URL ?= http://127.0.0.1:8000/mcp
 
@@ -33,6 +33,9 @@ demo:
 eval:
 	@test -n "$$ANTHROPIC_API_KEY" || { echo "make eval needs ANTHROPIC_API_KEY"; exit 1; }
 	-EFFECTS=simulate uv run scripts/run_cases.py cases/sample --out ANSWERS
+
+bootstrap:
+	scripts/bootstrap.sh
 
 deploy:
 	scripts/deploy.sh

@@ -26,35 +26,19 @@ settings on the service (keys as secrets); without them a live send fails with 5
 
 ```bash
 gcloud auth login
-export PROJECT=<gcp-project-id>
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
-  artifactregistry.googleapis.com secretmanager.googleapis.com --project "$PROJECT"
-
-# The two secrets the service reads. printf, not echo: no trailing newline in the value.
-printf '%s' "$ANTHROPIC_API_KEY" | gcloud secrets create anthropic-api-key --data-file=- --project "$PROJECT"
-printf '%s' '<admin password>' | gcloud secrets create admin-password --data-file=- --project "$PROJECT"
-
-# Cloud Run runs as the default compute service account; let it read both secrets.
-SA="$(gcloud projects describe "$PROJECT" --format 'value(projectNumber)')-compute@developer.gserviceaccount.com"
-for s in anthropic-api-key admin-password; do
-  gcloud secrets add-iam-policy-binding "$s" --project "$PROJECT" \
-    --member "serviceAccount:$SA" --role roles/secretmanager.secretAccessor
-done
-
-# The store's bucket: private, versioned, writable by the service account.
-gcloud storage buckets create "gs://$PROJECT-state" --project "$PROJECT" \
-  --location europe-west1 --uniform-bucket-level-access --public-access-prevention
-gcloud storage buckets update "gs://$PROJECT-state" --project "$PROJECT" --versioning
-gcloud storage buckets add-iam-policy-binding "gs://$PROJECT-state" --project "$PROJECT" \
-  --member "serviceAccount:$SA" --role roles/storage.objectUser
+PROJECT=<gcp-project-id> ANTHROPIC_API_KEY=<key> ADMIN_PASSWORD=<password> make bootstrap
 ```
 
-If the first deploy fails with a Cloud Build permission error, the same account also builds:
+`scripts/bootstrap.sh` enables the APIs, creates the Artifact Registry repository, the state bucket
+(private, versioned), the secrets, and a `deployer` service account that `deploy.sh` impersonates
+for every gcloud call; it grants the Cloud Run service account the bucket, the secrets and Cloud
+Build. Each step describes first and creates only what is missing, so rerunning it is safe and
+creates nothing. A secret's value is read only when the secret is created.
 
-```bash
-gcloud projects add-iam-policy-binding "$PROJECT" \
-  --member "serviceAccount:$SA" --role roles/run.builder
-```
+Whoever runs `deploy.sh` must be allowed to impersonate the deployer: you by default, or
+`DEPLOY_AS=<service-account-email>` (the hub VM's account, when `hub live` deploys). Rerun with each
+account that deploys. A grant that fails right after the deployer is created is IAM catching up;
+rerun.
 
 Rotate a secret with `gcloud secrets versions add <name> --data-file=-`, then redeploy.
 
