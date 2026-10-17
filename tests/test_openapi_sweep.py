@@ -1,5 +1,8 @@
 """The QA sweep: every GET in the OpenAPI spec answers below 500. A route that only breaks at
-runtime (a bad seed, a missing key, a renamed field) fails the merge gate, not the demo."""
+runtime (a bad seed, a missing key, a renamed field) fails the merge gate, not the demo.
+
+Marked live: scripts/deploy.sh runs this file again against the deployed service (BASE_URL), so
+"it deployed" also means every page answers and the token is enforced there."""
 
 import re
 import tempfile
@@ -10,6 +13,8 @@ import pytest
 from starter.core.store import Store
 from starter.runtime.config import Settings
 from starter.runtime.factory import create_app
+
+pytestmark = pytest.mark.live
 
 
 def _get_paths() -> list[str]:
@@ -36,3 +41,9 @@ def test_every_get_route_answers_below_500(client, auth, path):
     url = _fill(client, auth, path)
     r = client.get(url, headers=auth)  # the admin token: harmless on public routes
     assert r.status_code < 500, f"GET {url} -> {r.status_code}: {r.text[:300]}"
+
+
+def test_a_request_without_the_token_is_refused(client, auth):
+    assert client.post("/api/runs", json={}).status_code == 401  # the route that spends money
+    assert client.post("/api/mcp/token").status_code == 401
+    assert client.post("/api/mcp/token", headers=auth).status_code == 200  # and the token works

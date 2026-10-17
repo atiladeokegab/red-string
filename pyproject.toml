@@ -28,7 +28,10 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["tests", "starter"]
 addopts = "-m 'not e2e'"  # make check stays offline; make e2e selects them with -m e2e
-markers = ["e2e: browser tests in tests/e2e, run by make e2e (needs Chromium)"]
+markers = [
+    "e2e: browser tests in tests/e2e, run by make e2e (needs Chromium)",
+    "live: also run against BASE_URL after a deploy (scripts/deploy.sh); read-only",
+]
 
 [dependency-groups]
 dev = [

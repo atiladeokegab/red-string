@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 @contextlib.contextmanager
-def serve(tmp: Path, cases: list[str], demo_latency: str = "") -> Iterator[str]:
+def serve(
+    tmp: Path, cases: list[str], demo_latency: str = "", password: str = "admin"
+) -> Iterator[str]:
     """Yields the base URL. demo_latency is DEMO_LATENCY for this server only: set explicitly, so a
     value in the caller's shell never reaches the tests."""
     with socket.socket() as s:
@@ -29,6 +31,7 @@ def serve(tmp: Path, cases: list[str], demo_latency: str = "") -> Iterator[str]:
         "EFFECTS": "simulate",
         "DATA_PATH": str(tmp / "store.json"),
         "DEMO_LATENCY": demo_latency,
+        "ADMIN_PASSWORD": password,
     }
     log = open(tmp / "server.log", "w")  # closed in the finally below
     cmd = [sys.executable, "-m", "uvicorn", "starter.main:app", "--port", str(port)]
@@ -36,7 +39,7 @@ def serve(tmp: Path, cases: list[str], demo_latency: str = "") -> Iterator[str]:
     base = f"http://127.0.0.1:{port}"
     try:
         _wait_healthy(base, proc, tmp / "server.log")
-        token = httpx2.post(f"{base}/api/login", json={"password": "admin"}).json()["token"]
+        token = httpx2.post(f"{base}/api/login", json={"password": password}).json()["token"]
         for case in cases:
             body = (ROOT / "cases" / "sample" / case / "index.md").read_text()
             run = httpx2.post(

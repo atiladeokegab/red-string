@@ -1,3 +1,6 @@
+import os
+
+import httpx2
 import pytest
 from fastapi.testclient import TestClient
 
@@ -6,6 +9,14 @@ from starter.core.tracing import EXPORTER
 from starter.runtime.config import Settings
 from starter.runtime.deps import session_token
 from starter.runtime.factory import create_app
+
+LIVE_ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")  # read before offline_env clears it
+
+
+def live_url(request) -> str | None:
+    """BASE_URL, for a test marked live: only those run against a deployed service, so a stray
+    BASE_URL never sends the other tests' writes to production."""
+    return os.environ.get("BASE_URL") if request.node.get_closest_marker("live") else None
 
 
 @pytest.fixture(autouse=True)
@@ -29,10 +40,18 @@ def store(tmp_path):
 
 
 @pytest.fixture
-def client(store):
-    return TestClient(create_app(Settings(), store))
+def client(store, request):
+    """The app in-process; a live test with BASE_URL set talks to that service instead."""
+    if url := live_url(request):
+        with httpx2.Client(base_url=url, timeout=30) as live:
+            yield live
+    else:
+        yield TestClient(create_app(Settings(), store))
 
 
 @pytest.fixture
-def auth():
-    return {"Authorization": f"Bearer {session_token(Settings().admin_password)}"}
+def auth(request):
+    password = LIVE_ADMIN_PASSWORD if live_url(request) else Settings().admin_password
+    if password is None:
+        pytest.fail("a live run needs ADMIN_PASSWORD, the deployed service's admin password")
+    return {"Authorization": f"Bearer {session_token(password)}"}

@@ -35,3 +35,9 @@ URL="$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PR
 echo "deployed $COMMIT to $URL"
 curl -fsS --max-time 30 "$URL/health"
 echo
+
+# The live smoke: every GET answers below 500 and a request without the token is refused, on the
+# real service (the tests marked live, tests/test_openapi_sweep.py).
+# A plain assignment, so a failed read stops the deploy here instead of smoking with no password.
+ADMIN_PASSWORD="$(gcloud secrets versions access latest --secret admin-password --project "$PROJECT")"
+BASE_URL="$URL" ADMIN_PASSWORD="$ADMIN_PASSWORD" timeout 300 uv run pytest -q -m live -p no:cacheprovider
