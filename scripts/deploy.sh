@@ -28,7 +28,7 @@ if [[ "${DEPLOY_AS_SELF:-}" == 1 ]]; then
 else
   DEPLOYER="deployer@$PROJECT.iam.gserviceaccount.com"
   if ! gcloud iam service-accounts describe "$DEPLOYER" --project "$PROJECT" >/dev/null 2>&1; then
-    echo "deploy: no $DEPLOYER; run \`make bootstrap\` once for $PROJECT (scripts/bootstrap.sh)" >&2
+    echo "deploy: no $DEPLOYER, or you cannot see it; run \`make bootstrap\` once for $PROJECT (scripts/bootstrap.sh)" >&2
     exit 1
   fi
   export CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT="$DEPLOYER"
