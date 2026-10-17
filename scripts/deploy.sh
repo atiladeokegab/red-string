@@ -37,9 +37,11 @@ gcloud run deploy "$SERVICE" --source . --region "$REGION" --project "$PROJECT" 
   --max-instances 3 \
   --quiet
 
-URL="$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT" \
-  --format 'value(status.url)')"
-echo "deployed $COMMIT to $URL"
+RELEASE="$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT" \
+  --format 'value(status.url,status.latestReadyRevisionName)')"
+URL="${RELEASE%%$'\t'*}"
+# The release record, one line: what is live, by commit, revision and URL. hub live forwards it.
+echo "release: commit=$COMMIT revision=${RELEASE#*$'\t'} url=$URL"
 curl -fsS --max-time 30 "$URL/health"
 echo
 

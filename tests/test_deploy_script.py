@@ -1,7 +1,7 @@
 """scripts/deploy.sh, the real shell, against a fake gcloud (tests/fake_gcloud.py). Every project
 ships through this one script, so a typo in it would break all of them at the worst moment."""
 
-from tests.fake_gcloud import URL, head, run
+from tests.fake_gcloud import REVISION, URL, head, run
 
 ENV = {"PROJECT": "demo-proj"}
 
@@ -35,6 +35,8 @@ def test_deploys_the_commit_then_checks_health_and_runs_the_live_smoke(tmp_path)
     steps = [c["cmd"] if c["cmd"] != "gcloud" else " ".join(c["args"][:2]) for c in calls]
     assert steps == ["run deploy", "run services", "curl", "secrets versions", "uv"]
     assert f"{URL}/health" in calls[2]["args"]
+    release = f"release: commit={head(tmp_path)} revision={REVISION} url={URL}"
+    assert release in proc.stdout.splitlines()
     smoke = calls[-1]
     assert smoke["args"][:3] == ["run", "pytest", "-q"] and "live" in smoke["args"]
     assert (smoke["BASE_URL"], smoke["ADMIN_PASSWORD"]) == (URL, "live-pw")
