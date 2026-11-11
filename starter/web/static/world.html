@@ -128,6 +128,7 @@ import { addScenery } from './scenery.js';
 import { say } from './voice.js';
 import * as sfx from './sfx.js';
 import * as casefile from './casefile.js';
+import * as board from './board.js';
 import { banter } from './persona.js';
 const BANTER = {};
 const $ = id => document.getElementById(id);
@@ -329,7 +330,7 @@ let done;
 function run(url) { for (const k in BANTER) delete BANTER[k];
   stop(); done = false; reset($('premise').value); casefile.start($('premise').value, CREW, pretty); $('go').disabled = $('replay').disabled = true;
   es = new EventSource(url);
-  es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); chatter(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); board.on(e, pretty); chatter(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
   es.onerror = () => {  // EventSource reconnects by default, which would restart the run
     if (!done) { $('verdict').textContent = 'The investigation stopped before a verdict. Press Investigate or Replay to run it again.'; $('verdict').hidden = false; }
     stop();
