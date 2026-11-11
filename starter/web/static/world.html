@@ -220,15 +220,20 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
     b.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), EDGE));
     b.position.set(x, hang ? y + h / 2 : y, 0); up.add(b); return b; };
   const skin = new THREE.MeshLambertMaterial({ color: '#f5cd30' }), face = new THREE.MeshPhongMaterial({ map: FACE, shininess: 40 });
-  const a = { g, name, color, home: [125 * Math.cos(i * 1.257), 125 * Math.sin(i * 1.257)],
+  const a = { g, up, name, color, facing:i * 1.257 + Math.PI / 2, home: [125 * Math.cos(i * 1.257), 125 * Math.sin(i * 1.257)],
     legs: [box(5.8, 10, 5.8, '#2f5fa8', -3, 5, 1), box(5.8, 10, 5.8, '#2f5fa8', 3, 5, 1)], el: document.createElement('div') };
   box(12, 12, 6, color, 0, 16);
   a.arms = [box(5.5, 12, 5.5, skin, -8.8, 16, 1), box(5.5, 12, 5.5, skin, 8.8, 16, 1)];
-  box(8, 7.5, 7.5, [skin, skin, skin, skin, skin, face], 0, 25.8);  // face on -z: the way the figure walks
-  g.scale.setScalar(3); scene.add(g);
+  a.head = box(8, 7.5, 7.5, [skin, skin, skin, skin, skin, face], 0, 25.8);  // face on -z: the way the figure walks
+  g.rotation.z = a.facing; g.scale.setScalar(3); scene.add(g);
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
+window.crewLook = (who, to) => {
+  const a = CREW[who], b = CREW[to];
+  if (!a?.g || !b?.g || a === b) return false;
+  a.lookTarget = b; a.lookUntil = performance.now() + 2000; return true;
+};
 function chatter(e) {  // crew personality: banter lines from persona.js, spoken and shown over the speaker's head
   for (const l of banter(e, BANTER)) { const a = CREW[l.who]; if (!a) continue;
     a.hop = 30; a.el.innerHTML = `<b>${l.who}</b> ${l.emoji || ''} ${esc(l.text)}`; window.crewLook?.(l.who, l.to);
@@ -244,6 +249,7 @@ function node(id, kind, o = {}) {
     N.set(id, n);
     if (kind !== 'source') {
       n.el = document.createElement('div'); n.el.className = 'lb ' + kind;
+      if (kind === 'question') n.el.style.display = 'none';
       n.el.textContent = n.label || ''; $('labels').append(n.el);
     }
   }
@@ -408,7 +414,7 @@ function drawThreads() {
     const color = n.red ? '#d5e4ec' : n.color; m.material[0].color.set(color); m.material[4].color.set(color);
     if (n.el) {
       place(n.el, n.x, n.y, m.position.z + m.scale.z + 6);
-      if (n.kind === 'question' && n !== hovered && (n !== activeCrew.target || activeCrew.hop <= 0 || fs)) n.el.style.display = 'none';
+      if (n.kind === 'question' && n !== hovered) n.el.style.display = 'none';
       if (fs && !fs.includes(n) && n !== hovered) n.el.style.display = 'none';
     }
   }
@@ -416,11 +422,21 @@ function drawThreads() {
     const p = a.g.position, t = fs ? fs[i % fs.length] : a.target;
     const tx = t && t.x !== undefined ? t.x + Math.cos(i * 1.257) * 90 : a.home[0], ty = t && t.x !== undefined ? t.y + Math.sin(i * 1.257) * 90 : a.home[1];
     const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy), moving = dist > 3;
-    if (moving) { const s = Math.min(dist, Math.max(6, dist * (1 - Math.exp(-elapsed / 220)))) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
-    a.legs[0].rotation.x = moving ? Math.sin(T * .4) * .8 : 0; a.legs[1].rotation.x = -a.legs[0].rotation.x;
-    a.arms[0].rotation.x = -a.legs[0].rotation.x; a.arms[1].rotation.x = a.legs[0].rotation.x;
+    if (moving) { const s = Math.min(dist, Math.max(6, dist * (1 - Math.exp(-elapsed / 220)))) / dist; p.x += dx * s; p.y += dy * s; a.facing = Math.atan2(dy, dx) - Math.PI / 2; }
+    const looking = now < a.lookUntil && a.lookTarget, partner = looking && a.lookTarget.g.position;
+    const facing = partner && Math.hypot(partner.x - p.x, partner.y - p.y) > 1
+      ? Math.atan2(partner.y - p.y, partner.x - p.x) - Math.PI / 2 : a.facing;
+    const turn = Math.atan2(Math.sin(facing - a.g.rotation.z), Math.cos(facing - a.g.rotation.z));
+    a.g.rotation.z += turn * (1 - Math.exp(-elapsed / 110));
+    const phase = now * .012 + i * 1.7, breath = Math.sin(now * .002 + i);
+    const stride = moving ? Math.sin(phase) * .7 : 0, settle = 1 - Math.exp(-elapsed / 90);
+    a.legs[0].rotation.x += (stride - a.legs[0].rotation.x) * settle; a.legs[1].rotation.x = -a.legs[0].rotation.x;
+    a.arms[0].rotation.x = -a.legs[0].rotation.x * .8; a.arms[1].rotation.x = -a.arms[0].rotation.x;
+    a.up.rotation.z = moving ? Math.sin(phase) * .045 : breath * .012;
+    const glance = looking ? 0 : Math.sin(now * .00065 + i * 1.3) ** 9 * .45;
+    a.head.rotation.y += (glance - a.head.rotation.y) * settle;
     if (a.hop > 0) { a.hop--; p.z = Math.abs(Math.sin(a.hop * .2)) * 14; if (!moving) a.arms[0].rotation.x = a.arms[1].rotation.x = Math.PI; }  // jump, arms up
-    else p.z = moving ? Math.abs(Math.sin(T * .4)) * 2 : 0;  // bob while walking
+    else p.z = moving ? Math.abs(Math.sin(phase)) * 2 : 1 + breath * .8;
     a.el.classList.toggle('speaking', a === activeCrew && a.hop > 0);
     place(a.el, p.x, p.y, 108);
   }
