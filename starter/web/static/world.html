@@ -80,6 +80,10 @@
   .lb.question { color:#ffd84a; background:none; }
   .lb.agent { background:#ffffffee; color:#1b1b1b; border:2px solid #1b1b1b; border-radius:12px; text-shadow:none; font-weight:800; }
   .lb.agent b { color:#1b1b1b; background:var(--c); padding:0 5px; border-radius:6px; margin-right:3px; }
+  #tag { position:fixed; top:66px; left:190px; font-weight:900; color:#fff; font-size:15px;
+    text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 3px 0 #000; }
+  #tag b { color:var(--red); }
+  @media (max-width:900px) { #tag { display:none; } }
 </style>
 </head>
 <body>
@@ -87,6 +91,7 @@
 <div id="labels"></div>
 <header>
   <h1>Red <b>String</b></h1>
+  <span id="tag">5 block detectives read the web. A <b>red string</b> means the sources disagree.</span>
   <input id="premise" value="Hurricane Maria death toll in Puerto Rico" aria-label="What should we investigate?">
   <button id="go">Investigate</button>
   <button id="replay" class="ghost" title="Replay a saved real run, no network needed">Replay</button>
