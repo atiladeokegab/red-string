@@ -346,8 +346,9 @@ def _same_fact(question: dict, claims: list[dict], values: list[str]) -> bool:
         "article was written; a figure as of different times (a running count that grew, before "
         "vs after a change, different years' reports); different things measured (a part vs the "
         "total, one person's share vs everyone's); or one value is only a vaguer or rounder form "
-        "of another ('over 500' vs 555). If both values could be true at once, or you are "
-        "unsure, answer same=false.",
+        "of another ('over 500' vs 555); or the quotes hedge their figures as estimates "
+        "('around three days' vs 'roughly two days'). If both values could be true at once, or "
+        "you are unsure, answer same=false.",
         schema=_obj(same={"type": "boolean"}),
     )["text"]
     return parse_json(answer).get("same") is True

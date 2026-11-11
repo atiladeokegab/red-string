@@ -66,7 +66,7 @@ uv run uvicorn starter.main:app --port 8000
 ```
 
 **Replay** plays back a saved real run with no network, for when the venue Wi-Fi does not cooperate.
-Add `?replay` to the URL to start the OpenAI run on load (152 sources, 70 claims, 1 contradiction), or
+`?replay=maria` plays Hurricane Maria (112 sources, 68 claims, 1 contradiction: a NOAA page dates landfall 22 September against 20 September everywhere else), `?replay=openai` the OpenAI board run (142 sources, 62 claims, sources agree), or
 `?replay=murdoch` for the Murdoch succession dispute (126 sources, 93 claims, where the sources agree and no red string is drawn).
 
 The page is a 3D world: every answer is a tower whose height is the number of sources that state it,

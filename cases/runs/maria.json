@@ -1,0 +1,2026 @@
+[
+ {
+  "type": "entity",
+  "id": "e1",
+  "name": "Ricardo Rossell\u00f3",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e2",
+  "name": "Carmen Yul\u00edn Cruz",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e3",
+  "name": "Donald Trump",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e4",
+  "name": "Milken Institute School of Public Health (George Washington University)",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e5",
+  "name": "Government of Puerto Rico",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e6",
+  "name": "Harvard T.H. Chan School of Public Health",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e7",
+  "name": "Puerto Rico Department of Public Safety",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e8",
+  "name": "Alexis Santos",
+  "kind": "person"
+ },
+ {
+  "type": "question",
+  "id": "q1",
+  "text": "On what date did Hurricane Maria make landfall in Puerto Rico?",
+  "kind": "date"
+ },
+ {
+  "type": "question",
+  "id": "q2",
+  "text": "How many deaths did the Puerto Rico government's official count list after Hurricane Maria before it was revised?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q3",
+  "text": "On what date did Governor Ricardo Rossell\u00f3 announce the revised official Hurricane Maria death toll based on the GWU study?",
+  "kind": "date"
+ },
+ {
+  "type": "question",
+  "id": "q4",
+  "text": "How many deaths did the Harvard Chan School study estimate for Puerto Rico after Hurricane Maria?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q5",
+  "text": "On what date did the Puerto Rico government update its official death toll to 64 after previously reporting fewer deaths?",
+  "kind": "date"
+ },
+ {
+  "type": "question",
+  "id": "q6",
+  "text": "How many deaths did the initial Puerto Rico Department of Public Safety count list on December 8, 2017?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q7",
+  "text": "On what date did the study commissioned by the Puerto Rico government get publicly released?",
+  "kind": "date"
+ },
+ {
+  "type": "stats",
+  "searches": 0,
+  "sources": 0,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 2.7
+ },
+ {
+  "type": "source",
+  "id": "s1",
+  "url": "https://www.gao.gov/products/gao-19-486",
+  "title": "Disaster Response: Federal Assistance and Selected States and Territory Efforts to Identify Deaths from 2017 Hurricanes | U.S. GAO",
+  "domain": "gao.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s2",
+  "url": "https://www.nytimes.com/2017/12/18/us/puerto-rico-hurricane-maria-death-toll-review.html",
+  "title": "Puerto Rico Orders Review and Recount of Hurricane Deaths - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s3",
+  "url": "https://www.nytimes.com/2018/08/28/us/puerto-rico-hurricane-maria-deaths.html",
+  "title": "Nearly a Year After Hurricane Maria, Puerto Rico Revises Death Toll to 2,975 - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s4",
+  "url": "https://www.nytimes.com/2018/08/09/us/puerto-rico-death-toll-maria.html",
+  "title": "Puerto Rican Government Acknowledges Hurricane Death Toll of 1,427 - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2018-08-09",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s5",
+  "url": "https://www.bbc.com/news/world-us-canada-45338080",
+  "title": "Puerto Rico increases Hurricane Maria death toll to 2,975",
+  "domain": "bbc.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s6",
+  "url": "https://www.cnn.com/2018/08/29/us/puerto-rico-growing-death-toll",
+  "title": "Puerto Rico\u2019s death toll from Hurricane Maria: How it climbed from 64 to 2,975 | CNN",
+  "domain": "cnn.com",
+  "publish_date": "2018-08-29",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s7",
+  "url": "https://www.cnn.com/2018/08/28/health/puerto-rico-gw-report-excess-deaths",
+  "title": "Puerto Rico revises Hurricane Maria death toll to 2,975 after study | CNN",
+  "domain": "cnn.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s8",
+  "url": "https://www.snopes.com/news/2018/06/04/death-toll-hurricane-maria-puerto-rico/",
+  "title": "What Was the Actual Death Toll from Hurricane Maria in Puerto Rico? | Snopes.com",
+  "domain": "snopes.com",
+  "publish_date": "2018-06-04",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s9",
+  "url": "https://www.npr.org/2018/06/13/619440877/puerto-rico-releases-data-on-hundreds-of-deaths-following-hurricane-maria",
+  "title": "Puerto Rico Releases Data On Hundreds Of Deaths Following Hurricane Maria : NPR",
+  "domain": "npr.org",
+  "publish_date": "2018-06-13",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s10",
+  "url": "https://edition.cnn.com/2018/08/28/health/puerto-rico-gw-report-excess-deaths/index.html",
+  "title": "Puerto Rico revises Hurricane Maria death toll to 2,975 after study | CNN",
+  "domain": "edition.cnn.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s11",
+  "url": "https://www.nytimes.com/2018/06/02/us/puerto-rico-death-tolls.html",
+  "title": "Puerto Rico: How Do We Know 3,000 People Died as a Result of Hurricane Maria? - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2018-06-02",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s12",
+  "url": "https://www.cnn.com/2018/08/29/US/puerto-rico-growing-death-toll/index.html",
+  "title": "Puerto Rico's death toll from Hurricane Maria: How it climbed from 64 to 2,975 - CNN",
+  "domain": "cnn.com",
+  "publish_date": "2018-08-29",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s13",
+  "url": "https://www.nytimes.com/interactive/2017/12/08/us/puerto-rico-hurricane-maria-death-toll.html",
+  "title": "Official Toll in Puerto Rico: 64. Actual Deaths May Be 1,052. - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2017-12-08",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s14",
+  "url": "https://abcnews.com/US/death-toll-hurricane-maria-3000-puerto-rico-study/story?id=57179291",
+  "title": "Death toll in Puerto Rico from Hurricane Maria officially raised to 2,975 from 64 - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2018-08-30",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s15",
+  "url": "https://recuperacion.pr.gov/download/22da-enmienda-al-plan-de-accion-cdbg-dr-sustancial-borrador-para-comentarios-publicos?filename=17-M_Puerto-Rico-Post-Maria-2018-Center-for-Puerto-Rican-Studies-City-University-of-New-York.pdf&ind=1636483433996&refresh=83919156&wpdmdl=68308",
+  "title": "PUERTO RICO POST-MARIA",
+  "domain": "recuperacion.pr.gov",
+  "publish_date": "2018-06-11",
+  "primary": true,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s16",
+  "url": "https://www.snopes.com/news/2018/06/04/death-toll-hurricane-maria-puerto-rico",
+  "title": "What Was the Actual Death Toll from Hurricane Maria in Puerto Rico? | Snopes.com",
+  "domain": "snopes.com",
+  "publish_date": "2018-06-04",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s17",
+  "url": "https://recuperacion.pr.gov/en/download/22nd-amendment-to-the-cdbg-dr-action-plan-substantial-draft-for-public-comments?filename=17-M_Puerto-Rico-Post-Maria-2018-Center-for-Puerto-Rican-Studies-City-University-of-New-York.pdf&ind=1636483433996&refresh=bc2a1f08&wpdmdl=68309",
+  "title": "PUERTO RICO POST-MARIA",
+  "domain": "recuperacion.pr.gov",
+  "publish_date": "2018-06-11",
+  "primary": true,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s18",
+  "url": "https://apnews.com/article/a705e74a39494a089955ffdea6237fae",
+  "title": "Hurricane's death toll in Puerto Rico put at nearly 3,000 | AP News",
+  "domain": "apnews.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s19",
+  "url": "https://qz.com/1372233/puerto-ricos-official-death-toll-from-hurricane-maria-is-now-2975",
+  "title": "Puerto Rico's official death toll from Hurricane Maria is now 2,975",
+  "domain": "qz.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s20",
+  "url": "https://www.npr.org/2019/09/24/763958799/2-years-after-hurricane-maria-hit-puerto-rico-the-exact-death-toll-remains-unkno",
+  "title": "2 Years After Hurricane Maria Hit Puerto Rico, The Exact Death Toll Remains Unknown : NPR",
+  "domain": "npr.org",
+  "publish_date": "2019-09-24",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s21",
+  "url": "https://www.cnn.com/2017/12/09/us/puerto-rico-hurricane-deaths-and-assistance/",
+  "title": "Puerto Rico: Hurricane death toll climbs to 64 | CNN",
+  "domain": "cnn.com",
+  "publish_date": "2017-12-09",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s22",
+  "url": "https://hazards.colorado.edu/public-health-disaster/excess-mortality-and-associated-risk-factors-related-to-hurricane-maria-in-puerto-rico",
+  "title": "Excess Mortality and Associated Risk Factors Related to Hurricane Maria in Puerto Rico | Natural Hazards Center",
+  "domain": "hazards.colorado.edu",
+  "publish_date": "2026-05-27",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "stats",
+  "searches": 2,
+  "sources": 22,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 6.9
+ },
+ {
+  "type": "source",
+  "id": "s23",
+  "url": "https://www.wral.com/archive/17173957",
+  "title": "Puerto Rico: Death toll from hurricane climbs to 64 with 2 'indirect deaths' :: WRAL.com",
+  "domain": "wral.com",
+  "publish_date": "2017-12-10",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s24",
+  "url": "https://abcnews.com/US/puerto-ricos-hurricane-maria-death-toll-climbs-64/story?id=51698527",
+  "title": "Puerto Rico's Hurricane Maria death toll climbs to 64, as FEMA assistance tops $1 billion - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2017-12-10",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s25",
+  "url": "https://www.news8000.com/news/national-world/puerto-rico-death-toll-from-hurricane-climbs-to-64-with-2-indirect-deaths/article_f64568f4-04c4-51c6-917b-ede6dfb54187.html",
+  "title": "Puerto Rico: Death toll from hurricane climbs to 64 with 2 \u2018indirect deaths\u2019 | National & World News | news8000.com",
+  "domain": "news8000.com",
+  "publish_date": "2017-12-10",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s26",
+  "url": "https://nypost.com/2017/12/08/hurricane-death-toll-in-puerto-rico-far-higher-than-official-count",
+  "title": "Hurricane death toll in Puerto Rico likely higher than official count | New York Post",
+  "domain": "nypost.com",
+  "publish_date": "2017-12-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s27",
+  "url": "https://www.cnn.com/2017/12/18/health/puerto-rico-maria-death-count-review/index.html",
+  "title": "Puerto Rico to review deaths after Hurricane Maria | CNN",
+  "domain": "cnn.com",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s28",
+  "url": "https://www.pbs.org/newshour/nation/puerto-rico-governor-orders-review-of-all-deaths-reported-since-hurricane-maria",
+  "title": "Puerto Rico governor orders review of all deaths reported since Hurricane Maria | PBS News",
+  "domain": "pbs.org",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s29",
+  "url": "https://abcnews.com/US/puerto-ricos-governor-orders-review-deaths-hurricane-maria/story?id=51858964",
+  "title": "Puerto Rico's governor orders review of deaths after Hurricane Maria 'regardless' of listed cause - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s30",
+  "url": "https://en.wikipedia.org/wiki/Hurricane_Maria",
+  "title": "Hurricane Maria - Wikipedia",
+  "domain": "en.wikipedia.org",
+  "publish_date": "2017-09-16",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s31",
+  "url": "https://psmag.com/environment/puerto-ricos-governor-orders-review-of-all-deaths-since-hurricane-maria/",
+  "title": "Puerto Rico\u2019s Governor Orders Review of All Deaths Since Hurricane Maria",
+  "domain": "psmag.com",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s32",
+  "url": "https://www.nejm.org/doi/full/10.1056/NEJMsa1803972",
+  "title": "Mortality in Puerto Rico after Hurricane Maria | New England Journal of Medicine",
+  "domain": "nejm.org",
+  "publish_date": "2018-07-12",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s33",
+  "url": "https://www.nist.gov/document/proj4aug2018hurricanemariamortalityfinalpdf",
+  "title": "nist.gov",
+  "domain": "nist.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s34",
+  "url": "https://www.latinorebels.com/2017/12/13/government-of-puerto-rico-responds-to-hurricane-maria-death-count-story/",
+  "title": "Government of Puerto Rico Responds to Hurricane Mar\u00eda Death Count Story - Latino Rebels",
+  "domain": "latinorebels.com",
+  "publish_date": "2017-12-13",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s35",
+  "url": "https://www.latinousa.org/2017/12/13/government-puerto-rico-responds-hurricane-maria-death-count-story/",
+  "title": "Government of Puerto Rico Responds to Hurricane Mar\u00eda Death Count Story - Latino USA",
+  "domain": "latinousa.org",
+  "publish_date": "2017-12-13",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s36",
+  "url": "https://www.buzzfeednews.com/article/tasneemnashrulla/puerto-rico-orders-death-toll-recount",
+  "title": "Puerto Rico\u2019s Governor Has Ordered A Recount To Find Out How Many People Really Died In The Hurricane",
+  "domain": "buzzfeednews.com",
+  "publish_date": "2017-12-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s37",
+  "url": "https://abcnews.com/us/puerto-ricos-governor-orders-review-deaths-hurricane-maria/story?id=51858964",
+  "title": "Puerto Rico's governor orders review of deaths after ...",
+  "domain": "abcnews.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "stats",
+  "searches": 4,
+  "sources": 37,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.2
+ },
+ {
+  "type": "source",
+  "id": "s38",
+  "url": "https://www.latimes.com/espanol/noticas-mas/articulo/2018-08-28/efe-3732164-14556399-20180828",
+  "title": "El gobernador de P.Rico dice que la cifra de 2.975 muertes por Mar\u00eda variar\u00e1 - Los Angeles Times",
+  "domain": "latimes.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s39",
+  "url": "https://noticel.com/en/ultima-hora/20180828/rossello-oficializa-nueva-cifra-de-muertes-por-huracan-maria/",
+  "title": "Rossell\u00f3 oficializa nueva cifra de muertes por hurac\u00e1n Mar\u00eda - NotiCel - La verdad como es - Noticias de Puerto Rico - NOTICEL",
+  "domain": "noticel.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s40",
+  "url": "https://www.latinorebels.com/2018/08/28/2975lostlives",
+  "title": "Eleven Months Later, Government of Puerto Rico Says Official Hurricane Mar\u00eda Death Toll Has Gone From 64 to 2,975 Lost Lives - Latino Rebels",
+  "domain": "latinorebels.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s41",
+  "url": "https://thehill.com/policy/energy-environment/404064-puerto-rico-officially-updates-hurricane-maria-death-toll",
+  "title": "Puerto Rico officially updates Hurricane Maria death toll to 2,975",
+  "domain": "thehill.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s42",
+  "url": "https://www.nbcnews.com/storyline/puerto-rico-crisis/hurricane-maria-death-toll-puerto-rico-may-be-closer-2-n904426",
+  "title": "Hurricane Maria kills 2,975; Puerto Rico updates official death toll   ",
+  "domain": "nbcnews.com",
+  "publish_date": "2018-08-09",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s43",
+  "url": "https://www.foxnews.com/us/puerto-rico-governor-raises-hurricane-maria-death-toll-from-64-to-2975",
+  "title": "Puerto Rico governor raises Hurricane Maria death toll from 64 to 2,975 | Fox News",
+  "domain": "foxnews.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s44",
+  "url": "https://www.breitbart.com/politics/2018/08/28/puerto-rico-to-revise-death-toll-from-hurricane-maria-upwards-based-on-estimate/",
+  "title": "Puerto Rico to Revise Death Toll from Hurricane Maria Upwards Based on 'Estimate'",
+  "domain": "breitbart.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s45",
+  "url": "https://www.abc.net.au/news/2018-08-29/puerto-rico-hurricane-maria-death-toll-raised-by-governor/10176592",
+  "title": "Puerto Rico Governor raises Hurricane Maria death toll from 64 to 2,975 - ABC News",
+  "domain": "abc.net.au",
+  "publish_date": "2018-08-29",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s46",
+  "url": "https://www.npr.org/2018/08/28/642615337/hurricane-maria-caused-2-975-deaths-in-puerto-rico-independent-study-estimates",
+  "title": "Hurricane Maria Caused 2,975 Deaths In Puerto Rico, Independent Study Estimates : NPR",
+  "domain": "npr.org",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s47",
+  "url": "https://en.wikipedia.org/wiki/Hurricane_Maria_death_toll_controversy",
+  "title": "Hurricane Maria death toll controversy - Wikipedia",
+  "domain": "en.wikipedia.org",
+  "publish_date": "2018-06-23",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s48",
+  "url": "https://www.govinfo.gov/content/pkg/GOVPUB-D103-PURL-gpo190526/pdf/GOVPUB-D103-PURL-gpo190526.pdf",
+  "title": "Getting the lights back on: the U.S. Army Corps of Engineers responds to Hurricane Maria, 2017-2018",
+  "domain": "govinfo.gov",
+  "publish_date": "2022-06-09",
+  "primary": true,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s49",
+  "url": "https://thehill.com/policy/energy-environment/404064-puerto-rico-officially-updates-hurricane-maria-death-toll/",
+  "title": "Puerto Rico officially updates Hurricane Maria death toll to 2,975",
+  "domain": "thehill.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s50",
+  "url": "https://files.gao.gov/reports/GAO-19-486/index.html",
+  "title": "Disaster Response: Federal Assistance and Selected States and Territory Efforts to Identify Deaths from 2017 Hurricanes",
+  "domain": "files.gao.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s51",
+  "url": "https://www.hstoday.us/subject-matter-areas/emergency-preparedness/after-new-study-puerto-rico-hikes-hurricane-maria-death-toll-up-to-2975/",
+  "title": "After New Study, Puerto Rico Hikes Hurricane Maria Death Toll Up to 2,975",
+  "domain": "hstoday.us",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s52",
+  "url": "https://www.theguardian.com/world/2018/aug/28/hurricane-maria-new-death-toll-estimate-is-close-to-3000",
+  "title": "Hurricane Maria: Puerto Rico raises official death toll from 64 to 2,975 | Hurricane Maria | The Guardian",
+  "domain": "theguardian.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "stats",
+  "searches": 6,
+  "sources": 52,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.2
+ },
+ {
+  "type": "source",
+  "id": "s53",
+  "url": "https://weather.com/weather/monthly/l/18.46633,-66.10572",
+  "title": "Weather for San Juan, San Juan, Puerto Rico",
+  "domain": "weather.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s54",
+  "url": "https://www.weather.gov/sju/maria2017",
+  "title": "Major Hurricane Maria - September 20, 2017",
+  "domain": "weather.gov",
+  "publish_date": "2021-07-13",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s55",
+  "url": "https://www.britannica.com/event/Hurricane-Maria",
+  "title": "Hurricane Maria | Puerto Rico, Dominica, Disaster Response, Deaths, Impact, Recovery, & Facts | Britannica",
+  "domain": "britannica.com",
+  "publish_date": "2025-09-05",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s56",
+  "url": "https://www.nasa.gov/centers-and-facilities/goddard/maria-atlantic-ocean/",
+  "title": "Maria (Atlantic Ocean) - NASA",
+  "domain": "nasa.gov",
+  "publish_date": "2017-10-02",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s57",
+  "url": "https://hurricanescience.org/history/storms/2010s/maria/index.html",
+  "title": "Hurricanes: Science and Society: 2017 - Hurricane Maria",
+  "domain": "hurricanescience.org",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s58",
+  "url": "https://www.climate.gov/news-features/understanding-climate/hurricane-marias-devastation-puerto-rico",
+  "title": "Hurricane Maria's devastation of Puerto Rico | NOAA Climate.gov",
+  "domain": "climate.gov",
+  "publish_date": "2018-08-01",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s59",
+  "url": "https://pubs.usgs.gov/publication/sir20225040/full",
+  "title": "U.S. Geological Survey response to Hurricane Maria flooding in Puerto Rico and characterization of peak streamflows observed September 20\u201322, 2017",
+  "domain": "pubs.usgs.gov",
+  "publish_date": "2022-06-29",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s60",
+  "url": "https://courses.ems.psu.edu/earth107/node/1516",
+  "title": "Hurricane Maria: September 2017 | EARTH 107: Coastal Processes, Hazards and Society",
+  "domain": "courses.ems.psu.edu",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s61",
+  "url": "https://www.usgs.gov/data/data-files-usgs-response-hurricane-maria-flooding-puerto-rico-and-characterization-peak",
+  "title": "Data Files for USGS Response to Hurricane Maria Flooding in Puerto Rico and Characterization of Peak Streamflows Observed September 20-22, 2017 | U.S. Geological Survey",
+  "domain": "usgs.gov",
+  "publish_date": "2022-07-20",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s62",
+  "url": "https://www.usgs.gov/mission-areas/natural-hazards/science/puerto-rico-natural-hazards-hurricanes-peligros-naturales-de",
+  "title": "Puerto Rico Natural Hazards: Hurricanes | Peligros naturales de Puerto Rico: Huracanes | U.S. Geological Survey",
+  "domain": "usgs.gov",
+  "publish_date": "2021-09-07",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s63",
+  "url": "https://prod-01-asg-www-climate.woc.noaa.gov/news-features/understanding-climate/hurricane-marias-devastation-puerto-rico",
+  "title": "Hurricane Maria's devastation of Puerto Rico | NOAA Climate.gov",
+  "domain": "prod-01-asg-www-climate.woc.noaa.gov",
+  "publish_date": "2018-08-01",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s64",
+  "url": "https://www.nhc.noaa.gov/data/tcr/AL152017_Maria.pdf",
+  "title": "NATIONAL HURRICANE CENTER TROPICAL CYCLONE REPORT",
+  "domain": "nhc.noaa.gov",
+  "publish_date": "2023-01-03",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s65",
+  "url": "https://oceanservice.noaa.gov/annualreport/2017/hurricane-maria.html",
+  "title": "Hurricane Maria: NOS Fiscal Year 2017 Year in Review",
+  "domain": "oceanservice.noaa.gov",
+  "publish_date": "2017-12-11",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s66",
+  "url": "https://www.nhc.noaa.gov/archive/2017/al15/al152017.update.09201034.shtml",
+  "title": "nhc.noaa.gov",
+  "domain": "nhc.noaa.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s67",
+  "url": "https://pubs.usgs.gov/publication/ofr20191065",
+  "title": "Monitoring storm tide, flooding, and precipitation from Hurricane Maria in Puerto Rico and the U.S. Virgin Islands, September 2017",
+  "domain": "pubs.usgs.gov",
+  "publish_date": "2019-07-23",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s68",
+  "url": "https://recovery.pr.gov/en/hurricanes",
+  "title": "Puerto Rico Disaster Recovery Transparency Portal - COR3",
+  "domain": "recovery.pr.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s69",
+  "url": "https://www.usgs.gov/publications/us-geological-survey-response-hurricane-maria-flooding-puerto-rico-and",
+  "title": "U.S. Geological Survey response to Hurricane Maria flooding in Puerto Rico and characterization of peak streamflows observed September 20\u201322, 2017 | U.S. Geological Survey",
+  "domain": "usgs.gov",
+  "publish_date": "2022-06-29",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s70",
+  "url": "https://www.nesdis.noaa.gov/news/noaas-goes-16-provides-critical-data-hurricane-maria",
+  "title": "NOAA\u2019s GOES-16 Provides Critical Data on Hurricane Maria | NESDIS | National Environmental Satellite, Data, and Information Service",
+  "domain": "nesdis.noaa.gov",
+  "publish_date": "2017-09-21",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s71",
+  "url": "https://recovery.pr.gov/documents/FEMA_PR_MAT_v6_508_11072018.pdf",
+  "title": "Hurricanes Irma and Maria in Puerto Rico",
+  "domain": "recovery.pr.gov",
+  "publish_date": "2018-11-02",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s72",
+  "url": "https://www.govinfo.gov/content/pkg/BILLS-117hres1376ih/html/BILLS-117hres1376ih.htm",
+  "title": "govinfo.gov",
+  "domain": "govinfo.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s73",
+  "url": "https://recovery.pr.gov/documents/Transformation%20and%20Innovation%20in%20the%20Wake%20of%20Devastation%20An%20Economic%20and%20Disaster%20Recovery%20Plan%20for%20Puerto%20Rico%20(Preliminary%20Draft)%20(July%209,%202018).pdf",
+  "title": "Transformation and Innovation in the Wake of Devastation",
+  "domain": "recovery.pr.gov",
+  "publish_date": "2018-07-09",
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "stats",
+  "searches": 8,
+  "sources": 73,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.5
+ },
+ {
+  "type": "source",
+  "id": "s74",
+  "url": "https://www.hsph.harvard.edu/news/press-releases/death-rate-increase-puerto-rico-hurricane-maria",
+  "title": "Puerto Rico death rate increase post-Hurricane Maria | News | Harvard T.H. Chan School of Public Health",
+  "domain": "hsph.harvard.edu",
+  "publish_date": "2018-05-29",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s75",
+  "url": "https://www.reuters.com/article/business/environment/study-hikes-puerto-ricos-hurricane-maria-death-toll-to-4645-idUSKCN1IU2HF",
+  "title": "Study hikes Puerto Rico's Hurricane Maria death toll to 4,645 | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s76",
+  "url": "https://www.politico.com/story/2018/05/29/puerto-rico-hurricane-maria-death-toll-610265",
+  "title": "Study: 4,645 people died after Hurricane Maria, far more than official estimate - POLITICO",
+  "domain": "politico.com",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s77",
+  "url": "https://www.hsph.harvard.edu/news/features/hurricane-maria-deaths",
+  "title": "Uncovering Hurricane Maria\u2019s true toll | News | Harvard T.H. Chan School of Public Health",
+  "domain": "hsph.harvard.edu",
+  "publish_date": "2018-09-28",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s78",
+  "url": "https://www.npr.org/sections/health-shots/2018/05/29/615120123/study-puts-puerto-rico-death-toll-at-5-000-from-hurricane-maria-in-2017",
+  "title": "Hurricane Maria: 4,645 Died In Puerto Rico From Storm In 2017, Study Says : Shots - Health News : NPR",
+  "domain": "npr.org",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s79",
+  "url": "https://www.hsph.harvard.edu/news/hsph-in-the-news/hurricane-maria-study-popular-paper-2018",
+  "title": "Hurricane Maria study most popular paper of 2018 | News | Harvard T.H. Chan School of Public Health",
+  "domain": "hsph.harvard.edu",
+  "publish_date": "2018-12-13",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s80",
+  "url": "https://fxb.harvard.edu/puerto-rico-all-cause-mortality-study/",
+  "title": "Puerto Rico All-Cause Mortality Study \u2013 FXB Center",
+  "domain": "fxb.harvard.edu",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s81",
+  "url": "https://www.scientificamerican.com/article/hurricane-maria-contributed-to-nearly-5-000-deaths-researchers-say",
+  "title": "Hurricane Maria Contributed to Nearly 5,000 Deaths, Researchers Say | Scientific American",
+  "domain": "scientificamerican.com",
+  "publish_date": "2018-05-30",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s82",
+  "url": "https://www.nytimes.com/2018/05/29/us/puerto-rico-deaths-hurricane.html",
+  "title": "Puerto Rico\u2019s Hurricane Maria Death Toll Could Exceed 4,000, New Study Estimates - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s83",
+  "url": "https://www.chicagotribune.com/2018/05/29/harvard-study-estimates-4645-people-died-in-puerto-rico-due-to-hurricane-maria-the-official-toll-is-64",
+  "title": "Harvard study estimates 4,645 people died in Puerto Rico due to Hurricane Maria. The official toll is 64. \u2013 Chicago Tribune",
+  "domain": "chicagotribune.com",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s84",
+  "url": "https://www.ovid.com/journals/nejm/abstract/10.1056/nejmsa1803972~mortality-in-puerto-rico-after-hurricane-maria?redirectionsource=fulltextview",
+  "title": "Mortality in Puerto Rico after Hurricane Maria : New England Journal of Medicine",
+  "domain": "ovid.com",
+  "publish_date": "2018-07-12",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s85",
+  "url": "https://abcnews.com/US/puerto-rico-death-toll-maria-70-times-official/story?id=55506315",
+  "title": "Puerto Rico death toll from Maria may be 70 times the official estimate, new report suggests  - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2018-05-30",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s86",
+  "url": "https://fxb.harvard.edu/blog/2018/05/29/study-estimates-prolonged-increase-in-puerto-rican-death-rate-after-hurricane-maria/",
+  "title": "Study Estimates Prolonged Increase in Puerto Rican Death Rate After Hurricane Maria \u2013 FXB Center",
+  "domain": "fxb.harvard.edu",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s87",
+  "url": "https://fxb.harvard.edu/2018/10/01/leading-with-science-one-year-after-hurricane-maria",
+  "title": "Leading with Science: One Year After Hurricane Maria \u2013 FXB Center for Health & Human Rights | Harvard University",
+  "domain": "fxb.harvard.edu",
+  "publish_date": "2018-10-01",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s88",
+  "url": "https://publichealth.gwu.edu/milken-institute-school-public-health-statement-new-study-estimate-excess-mortality-puerto-rico",
+  "title": "Milken Institute School of Public Health Statement on New Study to Estimate Excess Mortality in Puerto Rico Tied to Hurricane Maria | Milken Institute School of Public Health | The George Washington University",
+  "domain": "publichealth.gwu.edu",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s89",
+  "url": "https://www.congress.gov/crs_external_products/R/PDF/R46609/R46609.7.pdf",
+  "title": "The Status of Puerto Rico's Recovery and Ongoing Challenges Following Hurricanes Irma and Mar\u00eda: FEMA, SBA, and HUD Assistance",
+  "domain": "congress.gov",
+  "publish_date": "2025-07-26",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s90",
+  "url": "https://jamanetwork.com/journals/jama/fullarticle/2696479",
+  "title": "Use of Death Counts From Vital Statistics to Calculate Excess Deaths in Puerto Rico Following Hurricane Maria | Global Health | JAMA | JAMA Network",
+  "domain": "jamanetwork.com",
+  "publish_date": "2018-08-02",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s91",
+  "url": "https://chc.house.gov/media-center/press-releases/chc-chair-on-new-puerto-rico-death-toll-study",
+  "title": "CHC Chair on New Puerto Rico Death Toll Study | Congressional Hispanic Caucus",
+  "domain": "chc.house.gov",
+  "publish_date": "2018-05-30",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s92",
+  "url": "https://www.thelancet.com/journals/lanplh/article/PIIS2542-5196%2818%2930209-2/fulltext",
+  "title": "Differential and persistent risk of excess mortality from Hurricane Maria in Puerto Rico: a time-series analysis - The Lancet Planetary Health",
+  "domain": "thelancet.com",
+  "publish_date": "2018-11-01",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s93",
+  "url": "https://www.sciencedaily.com/releases/2018/05/180531084249.htm",
+  "title": "Study estimates increased death rate in Puerto Rico in months after Hurricane Maria | ScienceDaily",
+  "domain": "sciencedaily.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s94",
+  "url": "https://www.congress.gov/crs-product/R46609",
+  "title": "The Status of Puerto Rico\u2019s Recovery and Ongoing Challenges Following Hurricanes Irma and Mar\u00eda: FEMA, SBA, and HUD Assistance | Congress.gov | Library of Congress",
+  "domain": "congress.gov",
+  "publish_date": "2020-11-13",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s95",
+  "url": "https://fxb.harvard.edu/2018/09/13/beyond-maria-leading-with-science",
+  "title": "Beyond Maria: Leading With Science \u2013 FXB Center for Health & Human Rights | Harvard University",
+  "domain": "fxb.harvard.edu",
+  "publish_date": "2018-09-13",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "stats",
+  "searches": 10,
+  "sources": 95,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.7
+ },
+ {
+  "type": "source",
+  "id": "s96",
+  "url": "https://www.axios.com/2018/08/28/hurricane-maria-2975-deaths-puerto-rico-government?lctg=66d1f0979b09aec63d025b8f&stream=top",
+  "title": "Government-backed study says Hurricane Maria killed nearly 3,000 people in Puerto Rico",
+  "domain": "axios.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s97",
+  "url": "https://archivodeborinquen.org/en/territories/puerto-rico/documents/gwu-maria-mortality-study-2018",
+  "title": "George Washington University Hurricane Mar\u00eda Mortality Study (2018) | El Archivo de Borinquen",
+  "domain": "archivodeborinquen.org",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s98",
+  "url": "https://democrats-homeland.house.gov/news/press-releases/thompson-statement-new-hurricane-maria-death-toll-study",
+  "title": "Thompson Statement on New Hurricane Maria Death Toll Study",
+  "domain": "democrats-homeland.house.gov",
+  "publish_date": "2018-08-28",
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s99",
+  "url": "https://www.cbsnews.com/news/hurricane-maria-death-toll-puerto-rico-2975-killed-by-storm-study-finds/",
+  "title": "\n    Hurricane Maria: Death toll in Puerto Rico much higher, estimated at 2,975, new study finds - CBS News",
+  "domain": "cbsnews.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s100",
+  "url": "https://www.estadisticas.pr.gov/en-us/blogposts/instituto-de-estadisticas-ordena-publicacion-de-datos-de-mortalidad---puerto-rico-institute-of-statistics-orders-publication-of-mortality-data",
+  "title": "Puerto Rico Statistics | Institute of Statistics orders publication of mortality data - Puerto Rico Institute of Statistics orders publication of mortality data",
+  "domain": "estadisticas.pr.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s101",
+  "url": "https://www.wgbh.org/news/national/2018-08-28/hurricane-maria-caused-2-975-deaths-in-puerto-rico-independent-study-estimates",
+  "title": "Hurricane Maria Caused 2,975 Deaths In Puerto Rico, Independent Study Estimates | GBH",
+  "domain": "wgbh.org",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s102",
+  "url": "https://bbcbreakingnews.pages.dev/news/world-45521414",
+  "title": "Puerto Rico hurricane: How was the 3,000 death toll worked out?",
+  "domain": "bbcbreakingnews.pages.dev",
+  "publish_date": "2026-11-05",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s103",
+  "url": "https://velazquez.house.gov/media-center/press-releases/vel-zquez-latest-puerto-rico-hurricane-death-estimate",
+  "title": "Vel\u00e1zquez on Latest Puerto Rico Hurricane Death Estimate | Congresswoman Nydia Vel\u00e1zquez",
+  "domain": "velazquez.house.gov",
+  "publish_date": "2018-08-28",
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s104",
+  "url": "https://americanoversight.org/press-release/new-foias-trump-disputes-hurricane-marias-death-toll",
+  "title": "New FOIAs: Trump Disputes Hurricane Maria\u2019s Death Toll - American Oversight",
+  "domain": "americanoversight.org",
+  "publish_date": "2018-10-15",
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s105",
+  "url": "https://baynews9.com/fl/tampa/news/2018/08/28/nearly-3-000-deaths-in-puerto-rico-linked-to-maria--report-says",
+  "title": "Puerto Rico raises official death toll from Hurricane Maria",
+  "domain": "baynews9.com",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s106",
+  "url": "https://www.rand.org/content/dam/rand/pubs/research_reports/RR2500/RR2595/RAND_RR2595.pdf",
+  "title": "After Hurricane Maria: Predisaster Conditions, Hurricane Damage, and Recovery Needs in Puerto Rico",
+  "domain": "rand.org",
+  "publish_date": "2020-09-09",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s107",
+  "url": "https://www.markey.senate.gov/news/press-releases/warren-lawmakers-press-fema-hhs-on-updated-hurricane-death-toll-in-puerto-rico",
+  "title": "Warren, Lawmakers Press FEMA, HHS on Updated Hurricane Death Toll in Puerto Rico",
+  "domain": "markey.senate.gov",
+  "publish_date": "2018-09-11",
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s108",
+  "url": "https://www.cortezmasto.senate.gov/news/press-releases/cortez-masto-house-and-senate-democrats-press-fema-hhs-on-updated-hurricane-death-toll-in-puerto-rico/",
+  "title": "Cortez Masto, House and Senate Democrats Press FEMA, HHS on Updated Hurricane Death Toll in Puerto Rico - Senator Catherine Cortez Masto",
+  "domain": "cortezmasto.senate.gov",
+  "publish_date": "2018-09-12",
+  "primary": true,
+  "question_id": "q7"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 108,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.1
+ },
+ {
+  "type": "source",
+  "id": "s109",
+  "url": "https://www.nbcnews.com/health/health-news/puerto-rico-issues-new-data-hurricane-maria-deaths-n882816",
+  "title": "Puerto Rico issues new data on Hurricane Maria deaths",
+  "domain": "nbcnews.com",
+  "publish_date": "2018-06-13",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s110",
+  "url": "https://www.bbc.co.uk/news/world-us-canada-45338080",
+  "title": "Puerto Rico increases Hurricane Maria death toll to 2,975 - BBC News",
+  "domain": "bbc.co.uk",
+  "publish_date": "2018-08-28",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s111",
+  "url": "http://www.pbs.org/wgbh/frontline/article/hurricane-marias-uncertain-death-toll-in-puerto-rico",
+  "title": "Hurricane Maria\u2019s Uncertain Death Toll in Puerto Rico | FRONTLINE | PBS | Official Site | Documentary Series",
+  "domain": "pbs.org",
+  "publish_date": "2018-07-17",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s112",
+  "url": "https://www.bbc.com/news/world-us-canada-44294366",
+  "title": "Hurricane Maria 'killed 4,600 in Puerto Rico'",
+  "domain": "bbc.com",
+  "publish_date": "2018-05-29",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.9
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 12.1
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 14.1
+ },
+ {
+  "type": "claim",
+  "id": "c1",
+  "source_id": "s47",
+  "question_id": "q5",
+  "value": "December 9",
+  "normalized": "2017-12-09",
+  "quote": "On December 9, the official death toll reported by the government was 64;"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 1,
+  "conflicts": 0,
+  "seconds": 14.8
+ },
+ {
+  "type": "claim",
+  "id": "c2",
+  "source_id": "s67",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria made landfall south of Yabucoa Harbor, Puerto Rico, as a category 4 hurricane with maximum sustained winds of 155 miles per hour on September 20, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c3",
+  "source_id": "s68",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Two weeks later, Maria hit the Island on September 20, 2017 as a Category 4 hurricane."
+ },
+ {
+  "type": "claim",
+  "id": "c4",
+  "source_id": "s69",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria struck the island of Puerto Rico on September 20, 2017, as a Category 4 storm."
+ },
+ {
+  "type": "claim",
+  "id": "c5",
+  "source_id": "s70",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Maria, which made landfall on September 20 near Yabucoa, Puerto Rico, around 6:15 a.m. EDT as a category 4 hurricane."
+ },
+ {
+  "type": "claim",
+  "id": "c6",
+  "source_id": "s71",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria was a Category 4 hurricane when it made landfall in Puerto Rico on September 20, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c7",
+  "source_id": "s72",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Whereas, on September 20, 2017, Hurricane Maria made landfall in Puerto Rico;"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 7,
+  "conflicts": 0,
+  "seconds": 15.2
+ },
+ {
+  "type": "claim",
+  "id": "c8",
+  "source_id": "s75",
+  "question_id": "q4",
+  "value": "4,645",
+  "normalized": "4645",
+  "quote": "Hurricane Maria claimed the lives of 4,645 people in Puerto Rico last year and not the 64 long pegged by the island's government as the official death toll"
+ },
+ {
+  "type": "claim",
+  "id": "c9",
+  "source_id": "s76",
+  "question_id": "q4",
+  "value": "at least 4,645",
+  "normalized": "4645",
+  "quote": "At least 4,645 people died amid the devastation wrought by Hurricane Maria in Puerto Rico \u2014 more than 70 times the official government death toll of 64"
+ },
+ {
+  "type": "claim",
+  "id": "c10",
+  "source_id": "s82",
+  "question_id": "q4",
+  "value": "roughly 4,600",
+  "normalized": "4600",
+  "quote": "The latest estimate: roughly 4,600, many of them from delayed medical care."
+ },
+ {
+  "type": "claim",
+  "id": "c11",
+  "source_id": "s83",
+  "question_id": "q4",
+  "value": "4,645 excess deaths",
+  "normalized": "4645",
+  "quote": "or 4,645 \"excess deaths.\""
+ },
+ {
+  "type": "claim",
+  "id": "c12",
+  "source_id": "s84",
+  "question_id": "q4",
+  "value": "4645 excess deaths (95% CI, 793 to 8498)",
+  "normalized": "4645",
+  "quote": "This rate yielded a total of 4645 excess deaths during this period (95% CI, 793 to 8498)"
+ },
+ {
+  "type": "claim",
+  "id": "c13",
+  "source_id": "s89",
+  "question_id": "q4",
+  "value": "4,645 excess deaths",
+  "normalized": "4645",
+  "quote": "estimated a total of 4,645 excess deaths during the period from September 20 through December 31, 2017"
+ },
+ {
+  "type": "claim",
+  "id": "c14",
+  "source_id": "s91",
+  "question_id": "q4",
+  "value": "4,645 excess deaths",
+  "normalized": "4645",
+  "quote": "estimated 4,645 excess deaths as a result of Hurricane Maria in Puerto Rico"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 14,
+  "conflicts": 0,
+  "seconds": 15.3
+ },
+ {
+  "type": "claim",
+  "id": "c15",
+  "source_id": "s97",
+  "question_id": "q7",
+  "value": "August 28, 2018",
+  "normalized": "2018-08-28",
+  "quote": "George Washington University Milken Institute School of Public Health Commissioned by the Government of Puerto Rico Published August 28, 2018"
+ },
+ {
+  "type": "claim",
+  "id": "c16",
+  "source_id": "s106",
+  "question_id": "q7",
+  "value": "August 28, 2018",
+  "normalized": "2018-08-28",
+  "quote": "The results of the study, released on August 28, 2018, estimated that there were 2,975 \"excess deaths\" in Puerto Rico due to Hurricane Maria"
+ },
+ {
+  "type": "claim",
+  "id": "c17",
+  "source_id": "s18",
+  "question_id": "q7",
+  "value": "Tuesday, Aug. 28, 2018",
+  "normalized": "2018-08-28",
+  "quote": "The findings issued Tuesday, Aug. 28, 2018, by the Milken Institute School of Public Health at George Washington University contrast sharply with the official death toll of 64."
+ },
+ {
+  "type": "claim",
+  "id": "c18",
+  "source_id": "s105",
+  "question_id": "q7",
+  "value": "Tuesday",
+  "normalized": "2018-08-28",
+  "quote": "according to a long-awaited independent study ordered by the U.S. territory's government that was released Tuesday"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 18,
+  "conflicts": 0,
+  "seconds": 15.3
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 18,
+  "conflicts": 0,
+  "seconds": 16.3
+ },
+ {
+  "type": "claim",
+  "id": "c19",
+  "source_id": "s54",
+  "question_id": "q1",
+  "value": "September 20th",
+  "normalized": "2017-09-20",
+  "quote": "The eye of Hurricane Maria made landfall across this region on the morning of September 20th, within the municipality of Yabucoa."
+ },
+ {
+  "type": "claim",
+  "id": "c20",
+  "source_id": "s55",
+  "question_id": "q1",
+  "value": "September 20",
+  "normalized": "2017-09-20",
+  "quote": "Maria made landfall in Yabucoa, Puerto Rico, at approximately 6:15 am local time on September 20 with a wind speed of 135 knots"
+ },
+ {
+  "type": "claim",
+  "id": "c21",
+  "source_id": "s56",
+  "question_id": "q1",
+  "value": "Sept. 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria made landfall near Yabucoa, Puerto Rico, around 6:15 a.m. EDT/AST on Sept. 20."
+ },
+ {
+  "type": "claim",
+  "id": "c22",
+  "source_id": "s58",
+  "question_id": "q1",
+  "value": "September 22, 2017",
+  "normalized": "2017-09-22",
+  "quote": "Category 4 Hurricane Mar\u00eda made landfall on Puerto Rico's southeast coast on September 22, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c23",
+  "source_id": "s59",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria made landfall on September 20, 2017, in the Yabucoa Municipio, Puerto Rico, as a strong category 4 hurricane"
+ },
+ {
+  "type": "claim",
+  "id": "c24",
+  "source_id": "s60",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "The storm made landfall there near Yabucoa on the southeast coast at 10 AM on September 20, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c25",
+  "source_id": "s61",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria made landfall the Island of Puerto Rico on September 20, 2017 and was one of the deadliest storms in U.S. history."
+ },
+ {
+  "type": "claim",
+  "id": "c26",
+  "source_id": "s62",
+  "question_id": "q1",
+  "value": "20 September 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria, which made landfall on 20 September 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c27",
+  "source_id": "s63",
+  "question_id": "q1",
+  "value": "September 22, 2017",
+  "normalized": "2017-09-22",
+  "quote": "Category 4 Hurricane Mar\u00eda made landfall on Puerto Rico's southeast coast on September 22, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c28",
+  "source_id": "s32",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "The tropical cyclone Hurricane Maria made landfall in Puerto Rico, a territory of the United States, on September 20, 2017."
+ },
+ {
+  "type": "claim",
+  "id": "c29",
+  "source_id": "s65",
+  "question_id": "q1",
+  "value": "September 20, 2017",
+  "normalized": "2017-09-20",
+  "quote": "Hurricane Maria made landfall as a high-end Category 4 storm on Puerto Rico on September 20, 2017."
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 29,
+  "conflicts": 0,
+  "seconds": 16.6
+ },
+ {
+  "type": "claim",
+  "id": "c30",
+  "source_id": "s47",
+  "question_id": "q3",
+  "value": "August 28, 2018",
+  "normalized": "2018-08-28",
+  "quote": "On August 28, 2018, Governor Rossell\u00f3 acknowledged the results of the George Washington University study and revised the island's official death toll to 2,975 people."
+ },
+ {
+  "type": "claim",
+  "id": "c31",
+  "source_id": "s48",
+  "question_id": "q3",
+  "value": "August 28, 2018",
+  "normalized": "2018-08-28",
+  "quote": "On the same day the GWU report was released publicly, August 28, 2018, Governor Rossell\u00f3 increased the commonwealth's offcial death toll from Hurricane"
+ },
+ {
+  "type": "claim",
+  "id": "c32",
+  "source_id": "s40",
+  "question_id": "q3",
+  "value": "Tuesday",
+  "normalized": "2018-08-28",
+  "quote": "governor Ricardo Rossell\u00f3 announced on Tuesday that the official death count has moved from 64 lost lives to 2,975 deaths."
+ },
+ {
+  "type": "claim",
+  "id": "c33",
+  "source_id": "s44",
+  "question_id": "q3",
+  "value": "Tuesday",
+  "normalized": "2018-08-28",
+  "quote": "Puerto Rico Governor Ricardo Rossell\u00f3 announced Tuesday that he would sign an executive order revising the official death toll"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 33,
+  "conflicts": 0,
+  "seconds": 17.9
+ },
+ {
+  "type": "claim",
+  "id": "c34",
+  "source_id": "s2",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "the official count of 64"
+ },
+ {
+  "type": "claim",
+  "id": "c35",
+  "source_id": "s3",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The new assessment is many times greater than the previous official tally of 64, which was not revised for nearly a year"
+ },
+ {
+  "type": "claim",
+  "id": "c36",
+  "source_id": "s5",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The revised death toll is nearly 50 times the previous estimate of 64."
+ },
+ {
+  "type": "claim",
+  "id": "c37",
+  "source_id": "s7",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "the previous toll the Puerto Rican government released in December 2017, when officials said 64 people had died as a result of the storm"
+ },
+ {
+  "type": "claim",
+  "id": "c38",
+  "source_id": "s8",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico officials originally set the hurricane's death toll at 64"
+ },
+ {
+  "type": "claim",
+  "id": "c39",
+  "source_id": "s9",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The island's government still lists the official death toll from the hurricane as 64"
+ },
+ {
+  "type": "claim",
+  "id": "c40",
+  "source_id": "s10",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "the previous toll the Puerto Rican government released in December 2017, when officials said 64 people had died as a result of the storm"
+ },
+ {
+  "type": "claim",
+  "id": "c41",
+  "source_id": "s11",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "While the government in the early weeks reported that 64 people had died in the storm"
+ },
+ {
+  "type": "claim",
+  "id": "c42",
+  "source_id": "s12",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "after maintaining for months that 64 people had died as a result of the storm"
+ },
+ {
+  "type": "claim",
+  "id": "c43",
+  "source_id": "s14",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "raising the official death toll from Hurricane Maria to 2,975 from 64"
+ },
+ {
+  "type": "claim",
+  "id": "c44",
+  "source_id": "s15",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The Government of Puerto Rico\u2019s official death count is 64."
+ },
+ {
+  "type": "claim",
+  "id": "c45",
+  "source_id": "s16",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico officials originally set the hurricane's death toll at 64"
+ },
+ {
+  "type": "claim",
+  "id": "c46",
+  "source_id": "s17",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The Government of Puerto Rico\u2019s official death count is 64."
+ },
+ {
+  "type": "claim",
+  "id": "c47",
+  "source_id": "s18",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico\u2019s governor raised the U.S. territory\u2019s official death toll from Hurricane Maria from 64 to 2,975"
+ },
+ {
+  "type": "claim",
+  "id": "c48",
+  "source_id": "s21",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The number of people who died in Puerto Rico because of Hurricane Maria has risen to 64, the island\u2019s Department of Public Safety said Saturday."
+ },
+ {
+  "type": "claim",
+  "id": "c49",
+  "source_id": "s22",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "the governor changed the official death toll from 64 to 2,975 deaths"
+ },
+ {
+  "type": "claim",
+  "id": "c50",
+  "source_id": "s4",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The government\u2019s official count eventually grew to 64, as more people died from suicide, bacterial diseases, lack of access to health care and other factors."
+ },
+ {
+  "type": "claim",
+  "id": "c51",
+  "source_id": "s1",
+  "question_id": "q2",
+  "value": "65 deaths",
+  "normalized": "65",
+  "quote": "Initially, Puerto Rico had reported 65 deaths directly related to Hurricane Maria, but later revised the official count to 2,975."
+ },
+ {
+  "type": "claim",
+  "id": "c52",
+  "source_id": "s20",
+  "question_id": "q2",
+  "value": "64",
+  "normalized": "64",
+  "quote": "while the government's official count was stuck at 64"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 52,
+  "conflicts": 0,
+  "seconds": 18.4
+ },
+ {
+  "type": "claim",
+  "id": "c53",
+  "source_id": "s21",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The number of people who died in Puerto Rico because of Hurricane Maria has risen to 64, the island's Department of Public Safety said Saturday."
+ },
+ {
+  "type": "claim",
+  "id": "c54",
+  "source_id": "s24",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico's official death toll from Hurricane Maria -- which slammed into the U.S. territory September 20 as a Category 4 storm -- has risen to 64, the island's Department of Public Safety (DPS) announced Saturday."
+ },
+ {
+  "type": "claim",
+  "id": "c55",
+  "source_id": "s23",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The number of people who died in Puerto Rico because of Hurricane Maria has risen to 64, the country's Department of Public Safety said Saturday."
+ },
+ {
+  "type": "claim",
+  "id": "c56",
+  "source_id": "s25",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The number of people who died in Puerto Rico because of Hurricane Maria has risen to 64, the island's Department of Public Safety said Saturday."
+ },
+ {
+  "type": "claim",
+  "id": "c57",
+  "source_id": "s10",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The new figure is 46 times larger than the previous toll the Puerto Rican government released in December 2017, when officials said 64 people had died as a result of the storm."
+ },
+ {
+  "type": "claim",
+  "id": "c58",
+  "source_id": "s32",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "In early December 2017, the official death count in Puerto Rico stood at 64"
+ },
+ {
+  "type": "claim",
+  "id": "c59",
+  "source_id": "s4",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Although the official death count from the Puerto Rico Department of Public Safety was initially 64, the toll appears to be much higher"
+ },
+ {
+  "type": "claim",
+  "id": "c60",
+  "source_id": "s1",
+  "question_id": "q6",
+  "value": "65",
+  "normalized": "65",
+  "quote": "Initially, Puerto Rico had reported 65 deaths directly related to Hurricane Maria, but later revised the official count to 2,975."
+ },
+ {
+  "type": "claim",
+  "id": "c61",
+  "source_id": "s35",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "As for the deaths directly and indirectly related to hurricane Maria today, December 13, 2017, there are 64."
+ },
+ {
+  "type": "claim",
+  "id": "c62",
+  "source_id": "s29",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico's official death toll from Maria -- which slammed into the United States territory September 20 as a Category 4 storm -- reached 64 earlier this month, according to the island's Department of Public Safety."
+ },
+ {
+  "type": "claim",
+  "id": "c63",
+  "source_id": "s36",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The official death toll currently stands at 64 people."
+ },
+ {
+  "type": "claim",
+  "id": "c64",
+  "source_id": "s30",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "The deaths of 64 people were initially directly attributed to the hurricane by the government of Puerto Rico."
+ },
+ {
+  "type": "claim",
+  "id": "c65",
+  "source_id": "s2",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "that the number of deaths traceable to the storm was probably far higher than the official count of 64."
+ },
+ {
+  "type": "claim",
+  "id": "c66",
+  "source_id": "s28",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Gov. Ricardo Rossello said it's possible the toll is higher than the 64 deaths currently attributed to Hurricane Maria."
+ },
+ {
+  "type": "claim",
+  "id": "c67",
+  "source_id": "s37",
+  "question_id": "q6",
+  "value": "64",
+  "normalized": "64",
+  "quote": "Puerto Rico's official death toll from Maria -- which slammed into the United States territory September 20 as a Category 4 storm -- reached 64 earlier this month, according to the island's Department of Public Safety."
+ },
+ {
+  "type": "claim",
+  "id": "c68",
+  "source_id": "s26",
+  "question_id": "q6",
+  "value": "at least 1,065 fatalities",
+  "normalized": "1065",
+  "quote": "There were at least 1,065 fatalities on the water-and-electricity-starved island in the 42 days after the storm struck"
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 68,
+  "conflicts": 0,
+  "seconds": 19.6
+ },
+ {
+  "type": "conflict",
+  "id": "k1",
+  "question_id": "q1",
+  "claim_ids": [
+   "c2",
+   "c3",
+   "c4",
+   "c5",
+   "c6",
+   "c7",
+   "c19",
+   "c20",
+   "c21",
+   "c22",
+   "c23",
+   "c24",
+   "c25",
+   "c26",
+   "c27",
+   "c28",
+   "c29"
+  ],
+  "values": [
+   "2017-09-20",
+   "2017-09-22"
+  ],
+  "primary_value": "2017-09-20",
+  "summary": "Sources give 2 different answers to \u201cOn what date did Hurricane Maria make landfall in Puerto Rico?\u201d: 2017-09-20 (15 sources), 2017-09-22 (2 sources). A primary source says 2017-09-20."
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 68,
+  "conflicts": 1,
+  "seconds": 25.2
+ },
+ {
+  "type": "verdict",
+  "text": "Sources agree that Governor Ricardo Rossell\u00f3 announced the revised official death toll based on the GWU study on 2018-08-28, that the GWU study was publicly released that same day, that the Harvard Chan School study estimated 4,645 deaths, and that the Puerto Rico government updated its official toll to 64 on 2017-12-09. Sources disagree on the date Hurricane Maria made landfall in Puerto Rico, with most reporting 2017-09-20 and a few reporting 2017-09-22. A primary source gives 2017-09-20 where others say 2017-09-22."
+ },
+ {
+  "type": "stats",
+  "searches": 14,
+  "sources": 112,
+  "claims": 68,
+  "conflicts": 1,
+  "seconds": 26.9
+ }
+]
