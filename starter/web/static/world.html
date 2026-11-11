@@ -7,7 +7,7 @@
 <style>
   :root { --red:#ff2d2d; --gold:#ffd24a; --ink:#efe9df; --dim:#9a9185; }
   * { box-sizing:border-box; }
-  html,body { margin:0; height:100%; background:#07060a; color:var(--ink); overflow:hidden;
+  html,body { margin:0; height:100%; background:#8fc9f0; color:var(--ink); overflow:hidden;
     font:14px/1.4 ui-sans-serif,system-ui,sans-serif; }
   #g { position:fixed; inset:0; }
   #labels { position:fixed; inset:0; pointer-events:none; overflow:hidden; }
@@ -107,11 +107,25 @@ const SIZE = n => n.kind === 'source' ? [7, 7, 7] : n.kind === 'entity' ? [16, 1
 let N, L, S, dirty, es, orbit = true, ang = 0, T = 0, R = 400;
 const C = { x: 0, y: 0 };
 const BOX = new THREE.BoxGeometry(1, 1, 1).translate(0, 0, .5);  // unit block standing on the floor
+const EDGES = new THREE.EdgesGeometry(BOX), EDGE = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: .35 });
+const canvasTex = (w, h, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d')); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+const STUD = canvasTex(64, 64, x => {  // one toy-brick stud, tiled across the baseplate
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 64, 64);
+  x.fillStyle = '#d4d4d4'; x.beginPath(); x.arc(34, 34, 20, 0, 7); x.fill();
+  x.fillStyle = '#f4f4f4'; x.beginPath(); x.arc(30, 30, 18, 0, 7); x.fill();
+});
+STUD.wrapS = STUD.wrapT = THREE.RepeatWrapping; STUD.repeat.set(200, 200);
+const FACE = canvasTex(64, 64, x => {  // two dot eyes and a smile
+  x.fillStyle = '#f5cd30'; x.fillRect(0, 0, 64, 64); x.fillStyle = '#111';
+  x.beginPath(); x.ellipse(22, 26, 4, 7, 0, 0, 7); x.ellipse(42, 26, 4, 7, 0, 0, 7); x.fill();
+  x.lineWidth = 4; x.lineCap = 'round'; x.strokeStyle = '#111'; x.beginPath(); x.arc(32, 34, 13, .5, Math.PI - .5); x.stroke();
+});
 const G = new ForceGraph3D($('g')).numDimensions(2)
-  .backgroundColor('#07060a').showNavInfo(false)
+  .backgroundColor('#8fc9f0').showNavInfo(false)
   .nodeThreeObject(n => {  // a block that drops from the sky; the frame loop grows and recolours it
     const g = new THREE.Group();
-    n.mesh = new THREE.Mesh(BOX, new THREE.MeshLambertMaterial({ color: n.color }));
+    n.mesh = new THREE.Mesh(BOX, new THREE.MeshPhongMaterial({ color: n.color, shininess: 60 }));  // shiny toy plastic
+    n.mesh.add(new THREE.LineSegments(EDGES, EDGE));
     n.mesh.position.z = 260; n.mesh.scale.set(...SIZE(n)); g.add(n.mesh); return g;
   })
   .nodeLabel(n => esc(n.tip || ''))
@@ -124,7 +138,10 @@ const G = new ForceGraph3D($('g')).numDimensions(2)
 G.d3Force('link').distance(l => l.red ? 150 : l.far ? 150 : l.faint ? 30 : 80);
 G.d3Force('charge').strength(-60);
 const scene = G.scene(); scene.rotation.x = -Math.PI / 2;  // the graph's flat plane becomes the ground
-const grid = new THREE.GridHelper(3000, 100, 0x5a1515, 0x1d1a24); grid.rotation.x = Math.PI / 2; grid.position.z = -1; scene.add(grid);
+const plate = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.MeshLambertMaterial({ color: '#4b974b', map: STUD }));
+plate.position.z = -1; scene.add(plate);  // studded green baseplate
+scene.add(new THREE.HemisphereLight(0xffffff, 0x4b974b, 1.2));
+scene.fog = new THREE.Fog(0x8fc9f0, 1800, 4200);
 $('g').addEventListener('pointerdown', () => orbit = false);
 addEventListener('resize', () => G.width(innerWidth).height(innerHeight));
 const V = new THREE.Vector3();
@@ -138,11 +155,17 @@ const place = (el, x, y, z) => {  // pin an HTML label to a point in the world
 const CREW = {};
 for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff'],['Timekeeper','#f2b84b'],['Sceptic','#ff2d2d'],['Editor','#4bd28f']].entries()) {
   const g = new THREE.Group(), up = new THREE.Group(); up.rotation.x = Math.PI / 2; g.add(up);
-  const box = (w, h, d, c, x, y) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshLambertMaterial({ color: c }));
-    b.position.set(x, y, 0); up.add(b); return b; };
+  const box = (w, h, d, c, x, y, hang) => {  // hang: pivot at the top so limbs swing from hip and shoulder
+    const geo = new THREE.BoxGeometry(w, h, d); if (hang) geo.translate(0, -h / 2, 0);
+    const b = new THREE.Mesh(geo, Array.isArray(c) ? c : new THREE.MeshPhongMaterial({ color: c, shininess: 40 }));
+    b.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), EDGE));
+    b.position.set(x, hang ? y + h / 2 : y, 0); up.add(b); return b; };
+  const skin = new THREE.MeshPhongMaterial({ color: '#f5cd30', shininess: 40 }), face = new THREE.MeshPhongMaterial({ map: FACE, shininess: 40 });
   const a = { g, name, color, home: [60 * Math.cos(i * 1.257), 60 * Math.sin(i * 1.257)],
-    legs: [box(4, 10, 4, '#22222a', -3, 5), box(4, 10, 4, '#22222a', 3, 5)], el: document.createElement('div') };
-  box(12, 13, 6, color, 0, 16.5); box(4, 12, 4, color, -8, 17); box(4, 12, 4, color, 8, 17); box(9, 9, 9, '#f1c27d', 0, 27.5);
+    legs: [box(5.8, 10, 5.8, '#2f5fa8', -3, 5, 1), box(5.8, 10, 5.8, '#2f5fa8', 3, 5, 1)], el: document.createElement('div') };
+  box(12, 12, 6, color, 0, 16);
+  a.arms = [box(5.5, 12, 5.5, skin, -8.8, 16, 1), box(5.5, 12, 5.5, skin, 8.8, 16, 1)];
+  box(8, 7.5, 7.5, [skin, skin, skin, skin, skin, face], 0, 25.8);  // face on -z: the way the figure walks
   g.scale.setScalar(2); scene.add(g);
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
@@ -175,7 +198,10 @@ function reset(premise) {
 }
 
 function on(e) {
-  if (e.type === 'entity') { const n = node(e.id, 'entity', { label: e.name }); link('p', e.id, { far: 1 }); send('Identifier', n, 'found ' + e.name); }
+  if (e.type === 'entity') {
+    const g = N.get('g|' + e.name.toLowerCase());  // already standing: it was named in the typed premise
+    if (g) return send('Identifier', g, 'confirmed ' + e.name);
+    const n = node(e.id, 'entity', { label: e.name }); link('p', e.id, { far: 1 }); send('Identifier', n, 'found ' + e.name); }
   else if (e.type === 'question') {
     S.q[e.id] = { ...e, answers: {} };
     const n = node(e.id, 'question', { label: clip(e.text, 46), qid: e.id });
@@ -247,7 +273,14 @@ function run(url) {
 }
 const qs = new URLSearchParams(location.search);
 const saved = () => qs.get('replay') || (/openai|altman/i.test($('premise').value) ? 'openai' : 'murdoch');
-$('go').onclick = () => run('/api/investigate?premise=' + encodeURIComponent($('premise').value));
+$('go').onclick = () => {
+  const premise = $('premise').value;
+  run('/api/investigate?premise=' + encodeURIComponent(premise));
+  // instant blocks: the names typed in the premise stand up before the first answer comes back
+  for (const m of premise.replace(/^(The|A|An)\s+/, '').match(/[A-Z][\w’']*(?:\s+[A-Z][\w’']*)*/g) || []) {
+    node('g|' + m.toLowerCase(), 'entity', { label: m }); link('p', 'g|' + m.toLowerCase(), { far: 1 });
+  }
+};
 $('replay').onclick = () => run('/api/investigate/replay?name=' + saved());
 $('premise').onkeydown = e => e.key === 'Enter' && $('go').click();
 
@@ -275,6 +308,7 @@ setInterval(() => {
     const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy), moving = dist > 3;
     if (moving) { const s = Math.min(dist, 6) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
     a.legs[0].rotation.x = moving ? Math.sin(T * .4) * .8 : 0; a.legs[1].rotation.x = -a.legs[0].rotation.x;
+    a.arms[0].rotation.x = -a.legs[0].rotation.x; a.arms[1].rotation.x = a.legs[0].rotation.x;
     place(a.el, p.x, p.y, 72);
   }
   requestAnimationFrame(frame);
