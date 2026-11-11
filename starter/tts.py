@@ -111,9 +111,11 @@ AUDIO = {
 @router.post("/api/stt")
 async def stt(request: Request) -> dict:
     """The mic: raw audio body (MediaRecorder blob) in, {"text": ...} out."""
-    audio = await request.body()
-    if len(audio) > STT_MAX:
-        raise HTTPException(413, "audio over 2 MB")
+    audio = bytearray()
+    async for chunk in request.stream():  # count as it arrives: never buffer more than the cap
+        audio += chunk
+        if len(audio) > STT_MAX:
+            raise HTTPException(413, "audio over 2 MB")
     if not audio:
         raise HTTPException(400, "no audio")
     key = os.environ.get("OPENAI_API_KEY")
@@ -127,7 +129,7 @@ async def stt(request: Request) -> dict:
             httpx2.post,
             STT_URL,
             data={"model": "gpt-4o-transcribe"},
-            files={"file": (name, audio)},
+            files={"file": (name, bytes(audio))},
             headers={"Authorization": f"Bearer {key}"},
             timeout=15,
         )

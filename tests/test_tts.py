@@ -114,3 +114,28 @@ def test_per_process_limit_never_resets(client, fresh_budget, monkeypatch):
     _line(client, 1, ip="a"), _line(client, 2, ip="b")
     tts._calls.clear()  # a minute later, the per-minute window is empty
     assert _line(client, 3, ip="c").status_code == 429
+
+
+def test_stt_cap_aborts_a_chunked_body_mid_stream(store, monkeypatch):
+    """No Content-Length, 1 MB chunks: the route answers 413 after chunk three, not chunk ten."""
+    import asyncio
+
+    from starter.runtime.config import Settings
+    from starter.runtime.factory import create_app
+
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    sent = []
+
+    async def body():
+        for i in range(10):
+            sent.append(i)
+            yield b"x" * (1024 * 1024)
+
+    async def go():
+        app = create_app(Settings(), store)
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://t") as http:
+            return await http.post("/api/stt", content=body())
+
+    assert asyncio.run(go()).status_code == 413
+    assert len(sent) == 3
