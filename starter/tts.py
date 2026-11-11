@@ -4,6 +4,9 @@ The key comes only from OPENAI_API_KEY and never leaves the server; without it t
 
 import hashlib
 import os
+import threading
+import time
+from collections import defaultdict, deque
 from pathlib import Path
 
 import httpx2
@@ -27,13 +30,42 @@ VOICES = {  # who: (voice, instructions)
 router = APIRouter()  # public like investigate.router: the demo front end has no login
 
 
+# Cost guard for both paid routes (cache hits are free): OpenAI calls per minute, process, IP.
+PER_MINUTE, PER_PROCESS, PER_IP_MINUTE = 40, 600, 30
+_calls: deque[float] = deque()
+_by_ip: defaultdict[str, deque[float]] = defaultdict(deque)
+_total = 0
+_lock = threading.Lock()
+
+
+def _ip(request: Request) -> str:
+    # shortcut: X-Forwarded-For is spoofable; the global caps are the real ceiling. Fine for a demo.
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
+
+
+def spend(request: Request) -> None:
+    """Count one OpenAI call or raise 429. Call it after validation, just before the request."""
+    global _total
+    now, ip = time.monotonic(), _ip(request)
+    with _lock:
+        for q in (_calls, _by_ip[ip]):
+            while q and now - q[0] > 60:
+                q.popleft()
+        if _total >= PER_PROCESS or len(_calls) >= PER_MINUTE or len(_by_ip[ip]) >= PER_IP_MINUTE:
+            raise HTTPException(429, "voice budget spent; the browser voice takes over")
+        _total += 1
+        _calls.append(now)
+        _by_ip[ip].append(now)
+
+
 class Line(BaseModel):
     text: str
     who: str
 
 
 @router.post("/api/tts")
-def tts(line: Line) -> FileResponse:
+def tts(line: Line, request: Request) -> FileResponse:
     if not 1 <= len(line.text) <= 300 or line.who not in VOICES:
         raise HTTPException(400, "text must be 1-300 chars and who a crew name")
     path = CACHE / (hashlib.sha256(f"{line.who}|{line.text}".encode()).hexdigest() + ".mp3")
@@ -41,6 +73,7 @@ def tts(line: Line) -> FileResponse:
         key = os.environ.get("OPENAI_API_KEY")
         if not key:
             raise HTTPException(503, "OPENAI_API_KEY is not set")
+        spend(request)
         voice, instructions = VOICES[line.who]
         body = {
             "model": "gpt-4o-mini-tts",
@@ -86,6 +119,7 @@ async def stt(request: Request) -> dict:
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         raise HTTPException(503, "OPENAI_API_KEY is not set")
+    spend(request)
     ext = request.headers.get("content-type", "").split(";")[0].split("/")[-1]
     name = f"premise.{ext if ext in AUDIO else 'webm'}"
     try:
