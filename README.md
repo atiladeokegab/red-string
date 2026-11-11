@@ -1,176 +1,67 @@
-# hackathon-starter
+# Red String
 
-One FastAPI image with one store, one tool gateway and one agent loop. Copy it into an event repo
-as the first commit, then build verticals on it.
+**Type a story. Watch fifty sources get pinned to the wall, and a red string snap between every
+two that contradict each other.**
 
-## Run
+Red String is a citation crawler for journalists. You give it an investigative premise. It works out
+who is in the story, reads the web's reporting on it, quotes what each source says about the
+checkable facts (when did it happen, how much was it), and shows you where the sources disagree,
+with the primary record (court, regulator, filing) marked in gold beside the press.
+
+Built in two hours at the Agentic Web build night (Parallel x No Agenda, London, 11 Nov 2026).
+
+## What you see
+
+1. **One box, one button.** Type a premise, press Investigate.
+2. **Who's who.** The people and organisations in the story appear first.
+3. **The wall fills.** Each checkable question gets a panel. Every source is pinned under the
+   answer it gives, with its exact quote and a link.
+4. **Red string.** Where sources give different dates or amounts, a red string joins the
+   disagreeing answers. Click it to read the quotes side by side.
+5. **The verdict.** A short editor's note: what the sources agree on, where they differ, and what
+   the primary record says.
+
+Every quote on the wall is checked to be a real substring of the text the source returned. A claim
+whose quote cannot be found is dropped, not shown. The tool reports what sources say; it makes no
+claims of its own.
+
+## How it uses Parallel
+
+| Step | Parallel API | What it does |
+|---|---|---|
+| Identify the people and the checkable questions | Responses (`/v1/responses`) | One web-grounded answer, returned as JSON |
+| Read the reporting | Search (`/v1/search`) | One search per question, run concurrently, about ten sources each |
+| Quote what each source says | Responses | One call per question over that question's excerpts |
+| Find the contradictions | none | Plain code: more than one distinct date or number for the same question |
+
+The counter at the top of the page shows the real number of Parallel searches and sources read in
+the run on screen.
+
+## Run it
 
 ```bash
 uv sync
-make dev            # http://127.0.0.1:8000, offline, seeded; no keys needed
+echo "PARALLEL_API_KEY=your-key" > .env      # from platform.parallel.ai
+set -a; . ./.env; set +a
+uv run uvicorn starter.main:app --port 8000
+# open http://localhost:8000/static/wall.html
 ```
 
-The runs page is `/`; health is `/health` (`/healthz` also works locally); log in with `POST /api/login {"password": "admin"}`
-(local default) and send the token as `Authorization: Bearer <token>`.
+**Replay** plays back a saved real run (`cases/runs/murdoch.json`) with no network, for when the
+venue Wi-Fi does not cooperate. Add `?replay` to the URL to start it on load.
 
-With `ANTHROPIC_API_KEY` set, the agent uses Claude (`MODEL`, default `claude-opus-5-5`). Without
-it, `FakeProvider` takes one simulated action and says so in every answer.
-
-A tool with an external effect never acts unless `EFFECTS=live`. By default, locally and in the
-cloud, the gateway checks its arguments and answers `SIMULATED` without running it; `/health`
-shows `"effects"`.
-
-Each case has a budget: `CASE_TIMEOUT_S` (default 120 s), at most `MAX_ITERATIONS` model calls
-(default 8) at `EFFORT` (default `medium`). When the budget runs out, or the runner gives up on
-the case, no further tool runs, nothing more is written, and the case ends `ERROR` with "case
-budget exhausted".
-
-## Check
-
-```bash
-make check          # ruff + pytest, offline
-make smoke          # check, then the sample cases offline with any key forced off: the merge gate
-make eval           # the sample cases on the real model (needs ANTHROPIC_API_KEY); never a gate
-make e2e            # the pages in Chromium (tests/e2e; downloads it once); not part of check
-```
-
-## Recording the demo
-
-```bash
-make demo           # docs/media/demo.mp4 (H.264) and demo.gif (8 fps, 640 px); needs ffmpeg
-```
-
-`scripts/demo/record.py` starts the app as the e2e tests do (offline, seeded), plays the `SCENES`
-list at the top of the file in a 1280x720 Chromium window scaled to 1920x1080, and encodes it. A
-scene is a page, a selector it waits for, and how long it holds: edit the list, not the code. Every
-simulated effect waits a random `DEMO_LATENCY` (default `0.35-1.0` s) so the screen grows at a
-believable pace; it shows only in a scene that starts work. Only the recorder sets it, so smoke and
-the tests never see it. Re-record after a fix, from `main`.
-
-## Run cases
-
-```bash
-uv run scripts/run_cases.py cases/sample    # writes ANSWERS/<n>/{ANSWER.md, REASONING.md, trace.jsonl, spans.jsonl}
-```
-
-A case is a folder with `index.md` and optionally `history.md`. Any `## Outcome` section is cut
-before the model sees the case. Each `ANSWER.md` has a `Final state:` line (DONE, NEEDS_INFO,
-ESCALATED or ERROR); each `trace.jsonl` line has `tool`, `status` and `error`, so
-`grep '"status": "ERROR"' ANSWERS/*/trace.jsonl` lists every failed tool call. One case in five is a holdout (`starter/eval/holdout.py`; sample
-case `004` is one): never tune on it.
-
-`spans.jsonl` holds the case's OpenTelemetry spans (`case`, `model`, one `gateway.call` per tool
-call), secrets redacted; its `trace_id` is the one in `trace.jsonl`. The server prints the same span
-lines for every request to stdout, and each request log line carries its `trace_id`.
-
-## MCP door
-
-The gateway's tools are also an MCP server at `/mcp` (Streamable HTTP), so Claude Code or any MCP
-client can call them. Every call goes through the gateway: it is validated, simulated unless
-`EFFECTS=live`, and logged with case id `mcp-<session>`.
-
-```bash
-make dev                      # one terminal
-make mcp                      # prints the claude mcp add line for http://127.0.0.1:8000/mcp
-ADMIN_PASSWORD=<admin password> make mcp MCP_URL=<service url>/mcp    # a deployed service
-```
-
-Each `make mcp` mints a new session token; `POST /api/mcp/token` with the admin token does the same.
-
-## System rules
-
-- **One factory.** Every app, router and page is mounted by `create_app()` in `starter/runtime/factory.py`.
-- **One store.** All state goes through `starter/core/store.py` (`snapshot`, `mutate`, `publish`).
-- **One gateway.** Every tool call and external effect goes through `starter/core/gateway.py`.
-- **No simulated success outside the gateway.** Only it may simulate an effect, marked `SIMULATED`.
-- **`make dev` runs every part**, offline with no keys; a new part joins it in the same change.
-- **Current docs.** Read a library's current docs before using its API.
-- **Files stay under 1,000 lines** (`tests/test_file_sizes.py`). Split before you cross it.
-- **Run `make check` before `DONE:`.**
-
-In an event repo these rules live in the kit's AGENTS.md §1.
-
-## Add a vertical
-
-Copy `starter/verticals/example.py`. Export a `router`; optionally `seed(store)` for local data and
-`register_tools(gateway)` for agent tools. The factory and the gateway pick it up; nothing else
-changes. Follow the system rules above.
-
-## Email and phone calls
-
-`starter/verticals/notify.py` gives the agent `send_email` (Resend) and `place_call` (an
-ElevenLabs voice agent calling from a Twilio number imported into ElevenLabs). Both are simulated
-unless `EFFECTS=live`; live, each needs its settings in `.env.example` or fails with 503, never a
-fake send. A repeat in the same case sends once, and Resend gets an `Idempotency-Key` as well.
-
-## SurrealDB store
-
-Off by default. `STORE=surreal` swaps the store for `SurrealStore` (`starter/core/surreal_store.py`):
-the same `snapshot`/`mutate`/`publish`, with compare-and-swap so concurrent writers lose nothing.
-Locally it runs embedded in memory (`SURREAL_URL=mem://`, the default), offline with no server.
-Against a server, set `SURREAL_URL` (`wss://host/rpc`), `SURREAL_NS`, `SURREAL_DB`, `SURREAL_USER`
-and `SURREAL_PASS`; cloud mode refuses to start without all five. The store's connection is
-`store.db`, so a vertical can use SurrealQL graph relations next to the store:
-
-```python
-store.db.query("RELATE fact:deadline->derived_from->source:brief")
-# returns ["Event brief"]
-store.db.query("SELECT VALUE ->derived_from->source.title FROM ONLY fact:deadline")
-```
-
-The Python SDK is Apache-2.0. The SurrealDB server is BSL 1.1: free to use and self-host for our
-own product, but not to resell as a hosted database service.
-
-## Deploy
-
-```bash
-make bootstrap PROJECT=<gcp-project-id>     # once per project; safe to rerun
-make deploy PROJECT=<gcp-project-id>        # from a clean, committed main
-```
-
-Builds the Dockerfile on Cloud Build, deploys to Cloud Run with the commit as a label, prints the
-URL, checks `/health` and runs the live smoke against it. Setup and rollback: `docs/deploy.md`.
-
-## Provider checklist (the night before)
-
-- [ ] `ANTHROPIC_API_KEY` works: `uv run scripts/run_cases.py cases/sample` writes answers whose
-      `trace.jsonl` first line says `"provider": "claude"`.
-- [ ] The model in `MODEL` (default `claude-opus-5-5`) answers on this key.
-- [ ] GCP project with billing; `gcloud auth login` done; `make bootstrap` ran clean
-      (`docs/deploy.md`).
-- [ ] `make deploy PROJECT=<id>` prints a URL whose `/health` says `"anthropic": "configured"`.
-- [ ] The admin password secret is set and shared with the team out of band.
-- [ ] Each event-specific provider (email, voice, browser, analytics) has its own line here.
+`make check` runs the lint and the offline tests.
 
 ## Pre-existing work
 
-This repository starts from `hackathon-starter`, a private template prepared before the event: an
-app factory, a JSON store, a tool gateway, an agent loop with an offline stand-in, a case runner and
-a deploy script. It contains no event-specific logic, data or prompts. Everything after the first
-commit, "chore: pre-existing starter from hackathon-starter@<sha>", was built during the event.
-Check the event's rules on pre-existing code before publishing, and extend this paragraph if they
-ask for more.
+The FastAPI app factory, store, agent loop and deploy scripts under `starter/` come from a starter
+kit written before the event. Written at the event: `starter/parallel.py`,
+`starter/investigate.py`, `starter/web/static/wall.html`, their tests, and this README.
 
-## Architecture
+## Known limits
 
-Drawn from the code by `docs/architecture/c4.py`; redraw with `uv run docs/architecture/c4.py`
-after changing a box or an arrow.
-
-**Context:** who uses the starter and what it depends on.
-
-![System context](docs/architecture/c4_context.png)
-
-**Containers:** the web app, the case runner and the eval scripts; one store (a local file, or a GCS
-object in the cloud) and one model.
-
-![Containers](docs/architecture/c4_container.png)
-
-**Components:** inside the web app, every tool call (API, agent loop or MCP door) goes through the
-gateway, which simulates effects unless `EFFECTS=live`.
-
-![Components](docs/architecture/c4_component.png)
-
-**Code:** the signatures the rest of the code depends on, including the case budget (`deadline`,
-`cancel`).
-
-![Code](docs/architecture/c4_code.png)
+- "Primary record" is a domain rule (courts, government, regulators, filings, archives), not a
+  judgement about the document.
+- It reads the excerpts Parallel's search returns, not every full page.
+- Parallel's Monitor API (re-check the story on a schedule and push new contradictions) is wired in
+  the client but not used by the page yet.
