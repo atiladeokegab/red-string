@@ -44,11 +44,13 @@
   @keyframes pull { to { stroke-dashoffset:0; } }
   .q { border:1px solid var(--line); border-radius:4px; padding:18px; background:#191512; }
   .q.conflict { border-color:var(--red); }
+  .q.empty { opacity:.45; padding:12px 18px; } .q.empty h2 { font-size:14px; margin:0; } .q.empty .read { display:none; }
+  .q.empty h2::after { content:' — no source stated this'; font:11px var(--mono); color:var(--dim); }
   .q h2 { font-size:19px; margin:0 0 14px; font-weight:600; line-height:1.25; }
   .q h2 small { display:block; margin-bottom:6px; }
   .q.conflict h2 small { color:var(--red); }
-  .groups { display:flex; gap:44px; flex-wrap:wrap; }
-  .g { flex:1; min-width:150px; }
+  .groups { display:flex; gap:36px; }
+  .g { flex:1; min-width:0; }
   .pin { display:inline-block; font:600 15px var(--mono); padding:5px 10px; border-radius:3px; background:#2a2420; margin-bottom:10px; position:relative; z-index:4; }
   .pin.primary { background:var(--gold); color:#1d1a17; }
   .pin small { font-weight:400; opacity:.7; margin-left:6px; }
@@ -56,7 +58,7 @@
           font-size:13.5px; line-height:1.35; box-shadow:0 2px 0 rgba(0,0,0,.4); animation:drop .25s ease-out; }
   .card:nth-child(odd) { transform:rotate(-.5deg); } .card:nth-child(even) { transform:rotate(.4deg); }
   .card.primary { border-left:4px solid var(--gold); }
-  .card a { font:10.5px var(--mono); color:#6b5f52; text-decoration:none; display:block; margin-top:6px; }
+  .card a { overflow-wrap:anywhere; font:10.5px var(--mono); color:#6b5f52; text-decoration:none; display:block; margin-top:6px; }
   .card:nth-child(n+5) { display:none; } .g.open .card { display:block; }
   .more { font:11px var(--mono); color:var(--dim); cursor:pointer; background:none; border:0; padding:0; }
   @keyframes drop { from { opacity:0; transform:translateY(-8px); } }
@@ -101,6 +103,16 @@
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 let es, S;
+const pretty = v => {
+  const m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(v);
+  if (m && (m[2] || +m[1] > 1500 && +m[1] < 2100)) {
+    const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2] - 1];
+    return [m[3] && +m[3], mon, m[1]].filter(Boolean).join(' ');
+  }
+  const n = Number(v); if (!isFinite(n) || v === '') return v;
+  for (const [k, u] of [[1e12, 'tn'], [1e9, 'bn'], [1e6, 'm']]) if (Math.abs(n) >= k) return +(n / k).toFixed(2) + u;
+  return n.toLocaleString('en-GB');
+};
 
 function reset() {
   S = { sources: {}, claims: {}, questions: {}, conflicts: [] };
@@ -147,7 +159,7 @@ function on(e) {
     let g = q.groups[e.normalized];
     if (!g) {
       g = q.groups[e.normalized] = el('div', 'g');
-      const pin = el('span', 'pin', e.value); pin.append(el('small', '', '0')); g.append(pin);
+      const pin = el('span', 'pin', pretty(e.normalized)); pin.append(el('small', '', '0')); g.append(pin);
       q.node.querySelector('.groups').append(g);
     }
     const card = el('div', 'card' + (src.primary ? ' primary' : ''), '“' + e.quote + '”');
@@ -164,6 +176,9 @@ function on(e) {
     ['sources', 'claims', 'conflicts', 'searches'].forEach(k => { if (e[k] != null) $('n-' + k).textContent = e[k]; });
   } else if (e.type === 'verdict') {
     $('verdict').querySelector('span').textContent = e.text; $('verdict').style.display = 'block';
+    for (const q of Object.values(S.questions)) if (!Object.keys(q.groups).length) { q.node.classList.add('empty'); $('wall').append(q.node); }
+    for (const c of S.conflicts) { const q = S.questions[c.question_id]; if (q) $('wall').prepend(q.node); }
+    $('wall').prepend($('strings'));
   }
   requestAnimationFrame(draw);
 }
@@ -173,7 +188,7 @@ function draw() {
   const svg = $('strings'), box = $('wall').getBoundingClientRect(), have = new Set();
   for (const c of S.conflicts) {
     const q = S.questions[c.question_id]; if (!q) continue;
-    const pins = Object.values(q.groups).map(g => g.querySelector('.pin')).filter(Boolean);
+    const pins = Object.entries(q.groups).filter(([v]) => !c.values || c.values.includes(v)).map(([, g]) => g.querySelector('.pin'));
     for (let i = 0; i + 1 < pins.length; i++) {
       const id = c.id + '-' + i; have.add(id);
       const a = pins[i].getBoundingClientRect(), b = pins[i + 1].getBoundingClientRect();
