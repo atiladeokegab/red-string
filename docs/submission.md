@@ -3,7 +3,7 @@
 **Pitch**: 5 block detectives read the web; a red string means the sources disagree.
 
 ### What It Does
-Speak into the mic or type a premise. Five block detectives answer aloud in the Investigators' channel, read dozens of sources, and stack checkable claims into rising towers. A red string snaps between disagreeing sources with side-by-side literal quotes. (Hurricane Maria replay: 112 sources, 68 claims, 1 red string on landfall date; gold primary record).
+Speak into the mic or type a premise. Five block detectives answer aloud with newsroom banter in a 3D block town, stacking checkable facts into rising towers with sound effects. A glowing red thread snaps between disagreeing sources with side-by-side literal quotes on case-file cards. (Hurricane Maria replay: 112 sources, 68 claims, 1 red string on landfall date; gold primary record).
 
 ### How It Uses Parallel
 - **Search (`/v1/search`)**: Discovers reporting and primary public records concurrently.
