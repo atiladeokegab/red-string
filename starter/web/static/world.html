@@ -79,7 +79,12 @@
   .lb.premise { font:900 20px 'Nunito', ui-rounded, sans-serif; }
   .lb.question { color:#ffd84a; background:none; }
   .lb.agent { background:#ffffffee; color:#1b1b1b; border:2px solid #1b1b1b; border-radius:12px; text-shadow:none; font-weight:800; }
-  .lb.agent b { color:#1b1b1b; background:var(--c); padding:0 5px; border-radius:6px; margin-right:3px; }
+  .lb.agent { font-size:0; padding:3px 5px; white-space:nowrap; }
+  .lb.agent b { color:#1b1b1b; background:var(--c); padding:1px 5px; border-radius:6px; font-size:14px; }
+  .lb.agent.speaking { font-size:12px; max-width:210px; white-space:normal; }
+  .lb.agent.speaking b { display:block; }
+  .lb.question, .lb.entity, .lb.answer { font-size:14px; }
+  .lb.answer.red { background:#e6eff2; color:#1b1b1b; border:2px solid #1b1b1b; text-shadow:none; }
   #tag { position:fixed; top:66px; left:190px; font-weight:900; color:#fff; font-size:15px;
     text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 3px 0 #000; }
   #tag b { color:var(--red); }
@@ -136,7 +141,7 @@ const COLOR = { premise:'#ffffff', entity:'#6fb1ff', question:'#f2b84b', answer:
 const SIZE = n => n.kind === 'source' ? [7, 7, 7] : n.kind === 'entity' ? [16, 16, 30] : n.kind === 'question' ? [22, 22, 50]
   : n.kind === 'premise' ? [44, 44, 80] : [24, 24, 10 + n.claims.length * 9];
 
-let N, L, S, dirty, es, orbit = true, ang = 0, T = 0, R = 400;
+let N, L, S, dirty, es, hovered, orbit = true, T = 0, R = 570;
 const C = { x: 0, y: 0 };
 const BOX = new THREE.BoxGeometry(1, 1, 1).translate(0, 0, .5);  // unit block standing on the floor
 const EDGES = new THREE.EdgesGeometry(BOX), EDGE = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: .35 });
@@ -159,22 +164,30 @@ const G = new ForceGraph3D($('g')).numDimensions(2)
     const [sw, sd] = SIZE(n), top = STUD.clone(); top.repeat.set(Math.max(1, Math.round(sw / 7)), Math.max(1, Math.round(sd / 7)));
     const side = new THREE.MeshPhongMaterial({ color: n.color, shininess: 60 }), cap = new THREE.MeshPhongMaterial({ color: n.color, map: top, shininess: 60 });
     n.mesh = new THREE.Mesh(BOX, [side, side, side, side, cap, side]);  // shiny toy plastic, studs on top
+    n.mesh.castShadow = n.mesh.receiveShadow = true;
     n.mesh.add(new THREE.LineSegments(EDGES, EDGE));
     n.mesh.position.z = 260; n.mesh.scale.set(...SIZE(n)); g.add(n.mesh); return g;
   })
   .nodeLabel(n => esc(n.tip || ''))
   .linkColor(l => l.red ? '#ff2020' : l.faint ? '#2e2a35' : '#7d776c')
-  .linkWidth(l => l.red ? 5 : 0).linkOpacity(.6).linkCurvature(l => l.red ? .6 : 0).linkCurveRotation(Math.PI / 2)
-  .linkDirectionalParticles(l => l.red ? 8 : 0).linkDirectionalParticleWidth(4)
+  .linkWidth(0).linkOpacity(.25).linkCurvature(0).linkCurveRotation(Math.PI / 2)
+  .linkDirectionalParticles(0).linkDirectionalParticleWidth(4)
   .linkDirectionalParticleSpeed(.012).linkDirectionalParticleColor(() => '#ff5a4d')
   .onNodeClick(n => n.kind === 'source' ? open(n.url, '_blank', 'noopener') : n.qid && detail(n.qid))
+  .onNodeHover(n => hovered = n)
   .onLinkClick(l => l.red && detail(l.qid));
 G.d3Force('link').distance(l => l.red ? 150 : l.far ? 150 : l.faint ? 30 : 80);
 G.d3Force('charge').strength(-60);
 const scene = G.scene(); scene.rotation.x = -Math.PI / 2;  // the graph's flat plane becomes the ground
 const plate = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.MeshLambertMaterial({ color: '#4b974b', map: STUD }));
-plate.position.z = -1; scene.add(plate);  // studded green baseplate
-scene.add(new THREE.HemisphereLight(0xffffff, 0x4b974b, .5));
+plate.position.z = -1; plate.receiveShadow = true; scene.add(plate);
+G.renderer().shadowMap.enabled = true; G.renderer().shadowMap.type = THREE.PCFSoftShadowMap;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x658451, 1.5));
+const sunlight = new THREE.DirectionalLight(0xfff1d2, 2.2);
+sunlight.position.set(-300, -450, 900); sunlight.castShadow = true;
+sunlight.shadow.mapSize.set(2048, 2048);
+Object.assign(sunlight.shadow.camera, { left:-900, right:900, top:900, bottom:-900, near:1, far:2200 });
+sunlight.shadow.bias = -.0005; sunlight.shadow.normalBias = 1; scene.add(sunlight);
 scene.fog = new THREE.Fog(0x8fc9f0, 1800, 4200);
 const scenery = addScenery(scene, THREE);  // trees, drifting clouds and a sun outside the case area
 $('g').addEventListener('pointerdown', () => orbit = false);
@@ -182,26 +195,32 @@ addEventListener('resize', () => G.width(innerWidth).height(innerHeight));
 const V = new THREE.Vector3();
 const place = (el, x, y, z) => {  // pin an HTML label to a point in the world
   V.set(x, y, z); scene.localToWorld(V); V.project(G.camera());
-  el.style.transform = `translate(${(V.x + 1) / 2 * innerWidth + 8}px,${(1 - V.y) / 2 * innerHeight - 10}px)`;
+  let px = (V.x + 1) / 2 * innerWidth + 8, py = (1 - V.y) / 2 * innerHeight - 10;
+  if (el.classList.contains('agent')) {
+    px = Math.max(6, Math.min(innerWidth - el.offsetWidth - 6, px - el.offsetWidth / 2));
+    py = Math.max(6, Math.min(innerHeight - el.offsetHeight - 6, py));
+  }
+  el.style.transform = `translate(${px}px,${py}px)`;
   el.style.display = V.z < 1 ? '' : 'none';
 };
 
 // the investigators: block people who run to whatever they are working on
 const CREW = {};
-for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff'],['Timekeeper','#f2b84b'],['Sceptic','#ff2d2d'],['Editor','#4bd28f']].entries()) {
+for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff'],['Timekeeper','#f2b84b'],['Sceptic','#f7a93b'],['Editor','#4bd28f']].entries()) {
   const g = new THREE.Group(), up = new THREE.Group(); up.rotation.x = Math.PI / 2; g.add(up);
   const box = (w, h, d, c, x, y, hang) => {  // hang: pivot at the top so limbs swing from hip and shoulder
     const geo = new THREE.BoxGeometry(w, h, d); if (hang) geo.translate(0, -h / 2, 0);
     const b = new THREE.Mesh(geo, Array.isArray(c) ? c : new THREE.MeshPhongMaterial({ color: c, shininess: 40 }));
+    b.castShadow = b.receiveShadow = true;
     b.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), EDGE));
     b.position.set(x, hang ? y + h / 2 : y, 0); up.add(b); return b; };
   const skin = new THREE.MeshLambertMaterial({ color: '#f5cd30' }), face = new THREE.MeshPhongMaterial({ map: FACE, shininess: 40 });
-  const a = { g, name, color, home: [60 * Math.cos(i * 1.257), 60 * Math.sin(i * 1.257)],
+  const a = { g, name, color, home: [125 * Math.cos(i * 1.257), 125 * Math.sin(i * 1.257)],
     legs: [box(5.8, 10, 5.8, '#2f5fa8', -3, 5, 1), box(5.8, 10, 5.8, '#2f5fa8', 3, 5, 1)], el: document.createElement('div') };
   box(12, 12, 6, color, 0, 16);
   a.arms = [box(5.5, 12, 5.5, skin, -8.8, 16, 1), box(5.5, 12, 5.5, skin, 8.8, 16, 1)];
   box(8, 7.5, 7.5, [skin, skin, skin, skin, skin, face], 0, 25.8);  // face on -z: the way the figure walks
-  g.scale.setScalar(2); scene.add(g);
+  g.scale.setScalar(3); scene.add(g);
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
@@ -323,31 +342,79 @@ setInterval(() => {
   if (!dirty) return;
   dirty = false; G.graphData({ nodes: [...N.values()], links: L.slice() });  // a copy: the simulation owns the array it is given
 }, 250);
+// Lift the contradiction above its towers so the string stays visible from any angle.
+const threads = new Map(), threadRed = new THREE.MeshBasicMaterial({ color:0xff2424 });
+const threadGlow = new THREE.MeshBasicMaterial({ color:0xff2424, transparent:true, opacity:.16, depthWrite:false });
+const pinGeometry = new THREE.SphereGeometry(6, 12, 8);
+let lastFrame = performance.now();
+function drawThreads() {
+  for (const [l, thread] of threads) if (!L.includes(l)) {
+    scene.remove(thread.group); thread.core.geometry.dispose(); thread.glow.geometry.dispose(); threads.delete(l);
+  }
+  for (const l of L) if (l.red && typeof l.source === 'object' && typeof l.target === 'object') {
+    const a = l.source, b = l.target;
+    if (!a.mesh || !b.mesh || !Number.isFinite(a.x) || !Number.isFinite(b.x)) continue;
+    let thread = threads.get(l);
+    if (!thread) {
+      const group = new THREE.Group(), core = new THREE.Mesh(new THREE.BufferGeometry(), threadRed);
+      const glow = new THREE.Mesh(new THREE.BufferGeometry(), threadGlow);
+      const pins = [new THREE.Mesh(pinGeometry, threadRed), new THREE.Mesh(pinGeometry, threadRed)];
+      group.add(glow, core, ...pins); scene.add(group);
+      thread = { group, core, glow, pins, started:performance.now() }; threads.set(l, thread);
+    }
+    const progress = Math.min(1, (performance.now() - thread.started) / 1800);
+    if (T % 6 === 0 || !thread.curve) {
+      const start = new THREE.Vector3(a.x, a.y, a.mesh.scale.z + 9);
+      const finish = new THREE.Vector3(b.x, b.y, b.mesh.scale.z + 9);
+      const middle = start.clone().lerp(finish, .5); middle.z += Math.max(55, start.distanceTo(finish) * .25);
+      thread.curve = new THREE.CatmullRomCurve3([start, middle, finish]);
+      for (const [mesh, radius] of [[thread.core, 2.8], [thread.glow, 7]]) {
+        mesh.geometry.dispose(); mesh.geometry = new THREE.TubeGeometry(thread.curve, 48, radius, 8, false);
+      }
+      thread.pins[0].position.copy(start); thread.pins[1].position.copy(finish);
+    }
+    for (const mesh of [thread.core, thread.glow]) mesh.geometry.setDrawRange(0, Math.floor(mesh.geometry.index.count * progress / 6) * 6);
+    thread.pins[1].visible = progress === 1;
+  }
+}
 (function frame() {
+  const now = performance.now(), elapsed = Math.min(100, now - lastFrame); lastFrame = now;
   T++; scenery(T / 60);
-  let far = 200;
-  if (N) for (const n of N.values()) if (n.x !== undefined) far = Math.max(far, Math.hypot(n.x, n.y));
+  let far = 190;
+  if (N) for (const n of N.values()) if (n.kind !== 'source' && Number.isFinite(n.x)) far = Math.max(far, Math.hypot(n.x, n.y));
   const fs = S && S.focus && S.focus.every(n => n.x !== undefined) ? S.focus : null;
   const f = fs && { x: fs.reduce((t, n) => t + n.x, 0) / fs.length, y: fs.reduce((t, n) => t + n.y, 0) / fs.length };  // fly to the newest contradiction
-  R += ((f ? 480 : far * .95 + 130) - R) * .03;
-  C.x += ((f ? f.x : 0) - C.x) * .03; C.y += ((f ? f.y : 0) - C.y) * .03;
-  if (orbit) { ang += .003; G.cameraPosition({ x: C.x + R * Math.sin(ang), y: R * .55, z: -C.y + R * Math.cos(ang) }, { x: C.x, y: 0, z: -C.y }); }
+  const activeCrew = fs ? CREW.Sceptic : Object.values(CREW).reduce((a, b) => a.hop > b.hop ? a : b), active = activeCrew.g.position;
+  const center = f || { x:active.x * .25, y:active.y * .25 };
+  let radius = f ? 160 : far;
+  const framing = fs || Object.values(CREW).map(a => a.g.position);
+  for (const p of framing) radius = Math.max(radius, Math.hypot(p.x - center.x, p.y - center.y));
+  R += ((radius * (f ? 1.9 : 1.65) + 180) * Math.max(1, innerHeight / innerWidth) - R) * (1 - Math.exp(-elapsed / 650));
+  C.x += (center.x - C.x) * (1 - Math.exp(-elapsed / 850)); C.y += (center.y - C.y) * (1 - Math.exp(-elapsed / 850));
+  if (orbit) G.cameraPosition({ x:C.x + R * .35, y:R * .8 + 80, z:-C.y + R }, { x:C.x, y:65, z:-C.y });
   if (N) for (const n of N.values()) if (n.mesh && n.x !== undefined) {
     const [w, d, h] = SIZE(n), m = n.mesh;
-    m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15); m.material[0].color.set(n.color); m.material[4].color.set(n.color);
-    if (n.el) place(n.el, n.x, n.y, m.position.z + m.scale.z + 6);
+    m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15);
+    const color = n.red ? '#d5e4ec' : n.color; m.material[0].color.set(color); m.material[4].color.set(color);
+    if (n.el) {
+      place(n.el, n.x, n.y, m.position.z + m.scale.z + 6);
+      if (n.kind === 'question' && n !== hovered && (n !== activeCrew.target || activeCrew.hop <= 0 || fs)) n.el.style.display = 'none';
+      if (fs && !fs.includes(n) && n !== hovered) n.el.style.display = 'none';
+    }
   }
-  for (const a of Object.values(CREW)) {
-    const p = a.g.position, t = a.target;
-    const tx = t && t.x !== undefined ? t.x + 26 : a.home[0], ty = t && t.x !== undefined ? t.y + 26 : a.home[1];
+  for (const [i, a] of Object.values(CREW).entries()) {
+    const p = a.g.position, t = fs ? fs[i % fs.length] : a.target;
+    const tx = t && t.x !== undefined ? t.x + Math.cos(i * 1.257) * 90 : a.home[0], ty = t && t.x !== undefined ? t.y + Math.sin(i * 1.257) * 90 : a.home[1];
     const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy), moving = dist > 3;
-    if (moving) { const s = Math.min(dist, 6) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
+    if (moving) { const s = Math.min(dist, Math.max(6, dist * (1 - Math.exp(-elapsed / 220)))) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
     a.legs[0].rotation.x = moving ? Math.sin(T * .4) * .8 : 0; a.legs[1].rotation.x = -a.legs[0].rotation.x;
     a.arms[0].rotation.x = -a.legs[0].rotation.x; a.arms[1].rotation.x = a.legs[0].rotation.x;
     if (a.hop > 0) { a.hop--; p.z = Math.abs(Math.sin(a.hop * .2)) * 14; if (!moving) a.arms[0].rotation.x = a.arms[1].rotation.x = Math.PI; }  // jump, arms up
     else p.z = moving ? Math.abs(Math.sin(T * .4)) * 2 : 0;  // bob while walking
-    place(a.el, p.x, p.y, 72);
+    a.el.classList.toggle('speaking', a === activeCrew && a.hop > 0);
+    place(a.el, p.x, p.y, 108);
   }
+  if (L) drawThreads();
   requestAnimationFrame(frame);
 })();
 
