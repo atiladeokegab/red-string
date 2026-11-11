@@ -10,7 +10,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from starter import investigate, verticals
+from starter import investigate, tts, verticals
 from starter.agent import routes
 from starter.core.errors import ConflictError, NotFound, ProviderNotConfigured
 from starter.core.gateway import build_gateway
@@ -82,6 +82,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None) -> 
     app.add_route("/mcp", mcp_door.TokenGuard(mcp_app, settings.admin_password))
     app.include_router(routes.router)
     app.include_router(investigate.router)
+    app.include_router(tts.router)
     app.include_router(pages.router)
     app.mount("/static", pages.static, name="static")
 
