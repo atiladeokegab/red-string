@@ -128,6 +128,8 @@ import { addScenery } from './scenery.js';
 import { say } from './voice.js';
 import * as sfx from './sfx.js';
 import * as casefile from './casefile.js';
+import { banter } from './persona.js';
+const BANTER = {};
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pretty = v => {
@@ -227,6 +229,11 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
+function chatter(e) {  // crew personality: banter lines from persona.js, spoken and shown over the speaker's head
+  for (const l of banter(e, BANTER)) { const a = CREW[l.who]; if (!a) continue;
+    a.hop = 30; a.el.innerHTML = `<b>${l.who}</b> ${l.emoji || ''} ${esc(l.text)}`; window.crewLook?.(l.who, l.to);
+    say(l.who, l.text, a.el.style.getPropertyValue('--c')); }
+}
 function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; if (n) sfx.hop(name); a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; say(name, text, a.el.style.getPropertyValue('--c')); }  // every new job makes the figure hop
 const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
 
@@ -319,10 +326,10 @@ $('x').onclick = () => { $('detail').hidden = true; $('key').hidden = false; };
 function stop() { es?.close(); es = null; $('go').disabled = $('replay').disabled = false; }
 const fatal = e => e.type === 'error' && e.question_id == null;
 let done;
-function run(url) {
+function run(url) { for (const k in BANTER) delete BANTER[k];
   stop(); done = false; reset($('premise').value); casefile.start($('premise').value, CREW, pretty); $('go').disabled = $('replay').disabled = true;
   es = new EventSource(url);
-  es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); chatter(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
   es.onerror = () => {  // EventSource reconnects by default, which would restart the run
     if (!done) { $('verdict').textContent = 'The investigation stopped before a verdict. Press Investigate or Replay to run it again.'; $('verdict').hidden = false; }
     stop();
