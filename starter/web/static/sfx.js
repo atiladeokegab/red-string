@@ -61,6 +61,6 @@ export function end() {  // two-note resolve when the case is written up
 
 // speaker toggle, next to Replay, in the existing button style
 const b = document.createElement('button');
-b.className = 'ghost'; b.title = 'Sound effects on or off'; b.setAttribute('aria-pressed', 'true'); b.textContent = 'Sound on';
+b.id = 'sfx'; b.className = 'ghost'; b.title = 'Sound effects on or off'; b.setAttribute('aria-pressed', 'true'); b.textContent = 'Sound on';
 b.onclick = () => { on = !on; b.textContent = on ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', on); if (out) out.gain.value = on ? 0.22 : 0; };
 document.getElementById('replay')?.after(b);
