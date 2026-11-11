@@ -15,7 +15,7 @@
     font-size:11px; color:var(--dim); will-change:transform; }
   .lb.premise { font:600 17px Georgia,serif; color:#fff; }
   .lb.entity { color:#8fc4ff; font-size:12px; }
-  .lb.question { color:#f2b84b; font-size:11px; }
+  .lb.question { color:#f2b84b; font-size:11px; background:#07060a99; padding:0 4px; border-radius:3px; }
   .lb.answer { color:var(--ink); font:700 13px ui-monospace,Menlo,monospace; }
   .lb.answer.primary { color:var(--gold); }
   .lb.answer.red { color:#fff; background:var(--red); padding:1px 6px; border-radius:3px; text-shadow:none; }
@@ -34,8 +34,8 @@
   .st b { display:block; font:700 30px ui-monospace,Menlo,monospace; line-height:1; }
   .st span { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
   .st.red b { color:var(--red); font-size:64px; text-shadow:0 0 24px #ff2d2d88; }
-  #via { position:fixed; left:18px; bottom:14px; color:var(--dim); font-size:11px; }
-  #key { position:fixed; right:18px; bottom:14px; color:var(--dim); font-size:11px; display:grid; gap:4px; }
+  #via { position:fixed; left:18px; bottom:14px; color:var(--ink); background:#07060ab3; padding:3px 8px; border-radius:6px; font-size:11px; }
+  #key { position:fixed; right:18px; bottom:14px; color:var(--ink); background:#07060ab3; padding:8px 12px; border-radius:8px; font-size:11px; display:grid; gap:4px; }
   #key i { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; }
   #detail { position:fixed; right:14px; top:66px; bottom:14px; width:380px; overflow:auto; padding:16px;
     background:#110f15f2; border:1px solid #2c2833; border-radius:8px; }
@@ -140,7 +140,7 @@ G.d3Force('charge').strength(-60);
 const scene = G.scene(); scene.rotation.x = -Math.PI / 2;  // the graph's flat plane becomes the ground
 const plate = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.MeshLambertMaterial({ color: '#4b974b', map: STUD }));
 plate.position.z = -1; scene.add(plate);  // studded green baseplate
-scene.add(new THREE.HemisphereLight(0xffffff, 0x4b974b, 1.2));
+scene.add(new THREE.HemisphereLight(0xffffff, 0x4b974b, .5));
 scene.fog = new THREE.Fog(0x8fc9f0, 1800, 4200);
 $('g').addEventListener('pointerdown', () => orbit = false);
 addEventListener('resize', () => G.width(innerWidth).height(innerHeight));
@@ -160,7 +160,7 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
     const b = new THREE.Mesh(geo, Array.isArray(c) ? c : new THREE.MeshPhongMaterial({ color: c, shininess: 40 }));
     b.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), EDGE));
     b.position.set(x, hang ? y + h / 2 : y, 0); up.add(b); return b; };
-  const skin = new THREE.MeshPhongMaterial({ color: '#f5cd30', shininess: 40 }), face = new THREE.MeshPhongMaterial({ map: FACE, shininess: 40 });
+  const skin = new THREE.MeshLambertMaterial({ color: '#f5cd30' }), face = new THREE.MeshPhongMaterial({ map: FACE, shininess: 40 });
   const a = { g, name, color, home: [60 * Math.cos(i * 1.257), 60 * Math.sin(i * 1.257)],
     legs: [box(5.8, 10, 5.8, '#2f5fa8', -3, 5, 1), box(5.8, 10, 5.8, '#2f5fa8', 3, 5, 1)], el: document.createElement('div') };
   box(12, 12, 6, color, 0, 16);
