@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red String</title>
+<style>
+  :root { --bg:#14110f; --ink:#efe9df; --dim:#9a9185; --paper:#f3ecdf; --paper-ink:#1d1a17;
+          --red:#e0312b; --gold:#c9a24a; --line:#2c2723;
+          --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+          --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); }
+  header { display:flex; gap:24px; align-items:center; padding:20px 32px; border-bottom:1px solid var(--line); }
+  h1 { font-size:22px; margin:0; font-weight:600; letter-spacing:.01em; white-space:nowrap; }
+  h1 i { display:inline-block; width:26px; height:2px; background:var(--red); vertical-align:middle; margin-right:10px; }
+  form { display:flex; gap:10px; flex:1; }
+  input { flex:1; background:#1d1916; border:1px solid var(--line); color:var(--ink); padding:13px 16px;
+          font:18px var(--serif); border-radius:3px; }
+  input:focus { outline:2px solid var(--red); outline-offset:1px; }
+  button { background:var(--red); color:#fff; border:0; padding:13px 26px; font:600 16px var(--serif);
+           border-radius:3px; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  button.ghost { background:none; color:var(--dim); border:1px solid var(--line); font-weight:400; }
+  #strip { display:grid; grid-template-columns:repeat(4,auto) 1fr; gap:40px; align-items:end; padding:18px 32px;
+           border-bottom:1px solid var(--line); }
+  .stat b { display:block; font:600 44px/1 var(--serif); font-variant-numeric:tabular-nums; }
+  .stat span { font:11px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em; }
+  .stat.hot b { color:var(--red); }
+  #crew { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+  #crew span { font:11px var(--mono); padding:6px 10px; border:1px solid var(--line); border-radius:99px; color:var(--dim); }
+  #crew span.on { color:var(--ink); border-color:var(--ink); }
+  #crew span.done { color:var(--gold); border-color:var(--gold); }
+  main { display:grid; grid-template-columns:210px 1fr; min-height:60vh; }
+  aside { padding:24px 20px 24px 32px; border-right:1px solid var(--line); }
+  aside h2, .q h2 small { font:11px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em; margin:0 0 12px; font-weight:400; }
+  aside li { list-style:none; padding:7px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  aside ul { margin:0; padding:0; }
+  aside li small { display:block; font:10px var(--mono); color:var(--dim); }
+  #wall { position:relative; padding:24px 32px 60px; display:grid; grid-template-columns:repeat(auto-fill,minmax(440px,1fr)); gap:28px; align-content:start; }
+  #strings { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3; }
+  #strings path { stroke:var(--red); stroke-width:2.5; fill:none; pointer-events:stroke; cursor:pointer;
+                  stroke-dasharray:1200; stroke-dashoffset:1200; animation:pull .7s ease-out forwards; }
+  @keyframes pull { to { stroke-dashoffset:0; } }
+  .q { border:1px solid var(--line); border-radius:4px; padding:18px; background:#191512; }
+  .q.conflict { border-color:var(--red); }
+  .q h2 { font-size:19px; margin:0 0 14px; font-weight:600; line-height:1.25; }
+  .q h2 small { display:block; margin-bottom:6px; }
+  .q.conflict h2 small { color:var(--red); }
+  .groups { display:flex; gap:44px; flex-wrap:wrap; }
+  .g { flex:1; min-width:150px; }
+  .pin { display:inline-block; font:600 15px var(--mono); padding:5px 10px; border-radius:3px; background:#2a2420; margin-bottom:10px; position:relative; z-index:4; }
+  .pin.primary { background:var(--gold); color:#1d1a17; }
+  .pin small { font-weight:400; opacity:.7; margin-left:6px; }
+  .card { background:var(--paper); color:var(--paper-ink); padding:10px 12px; margin-bottom:8px; border-radius:2px;
+          font-size:13.5px; line-height:1.35; box-shadow:0 2px 0 rgba(0,0,0,.4); animation:drop .25s ease-out; }
+  .card:nth-child(odd) { transform:rotate(-.5deg); } .card:nth-child(even) { transform:rotate(.4deg); }
+  .card.primary { border-left:4px solid var(--gold); }
+  .card a { font:10.5px var(--mono); color:#6b5f52; text-decoration:none; display:block; margin-top:6px; }
+  .card:nth-child(n+5) { display:none; } .g.open .card { display:block; }
+  .more { font:11px var(--mono); color:var(--dim); cursor:pointer; background:none; border:0; padding:0; }
+  @keyframes drop { from { opacity:0; transform:translateY(-8px); } }
+  .read { margin-top:12px; font:10.5px var(--mono); color:var(--dim); line-height:1.7; }
+  #verdict { margin:0 32px 40px; padding:22px 26px; border-left:3px solid var(--gold); background:#191512; font-size:19px; line-height:1.5; display:none; }
+  #verdict small { display:block; font:11px var(--mono); color:var(--gold); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+  dialog { background:var(--bg); color:var(--ink); border:1px solid var(--red); border-radius:4px; max-width:960px; width:90vw; padding:26px; }
+  dialog::backdrop { background:rgba(0,0,0,.7); }
+  dialog h3 { margin:0 0 16px; font-size:21px; }
+  .vs { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:22px; }
+  .vs h4 { margin:0 0 10px; font:600 17px var(--mono); color:var(--red); }
+  .vs h4.primary { color:var(--gold); }
+  @media (max-width:800px) { main { grid-template-columns:1fr; } aside { border:0; } #strip { grid-template-columns:repeat(2,auto); } header { flex-wrap:wrap; } }
+</style>
+</head>
+<body>
+<header>
+  <h1><i></i>Red String</h1>
+  <form id="f">
+    <input id="premise" value="The Murdoch family succession dispute" aria-label="What should we investigate?">
+    <button id="go">Investigate</button>
+    <button type="button" class="ghost" id="replay" title="Replay a saved run, no network needed">Replay</button>
+  </form>
+</header>
+<section id="strip">
+  <div class="stat"><b id="n-sources">0</b><span>sources read</span></div>
+  <div class="stat"><b id="n-claims">0</b><span>claims quoted</span></div>
+  <div class="stat hot"><b id="n-conflicts">0</b><span>contradictions</span></div>
+  <div class="stat"><b id="n-searches">0</b><span>Parallel searches</span></div>
+  <div id="crew">
+    <span data-on="entity">Identifier</span><span data-on="source">Archivist</span>
+    <span data-on="claim">Timekeeper</span><span data-on="conflict">Sceptic</span><span data-on="verdict">Editor</span>
+  </div>
+</section>
+<main>
+  <aside><h2>Who's who</h2><ul id="who"></ul></aside>
+  <div id="wall"><svg id="strings"></svg></div>
+</main>
+<p id="verdict"><small>Editor's verdict</small><span></span></p>
+<dialog id="dlg"><h3></h3><div class="vs"></div><p><button class="ghost" onclick="dlg.close()">Close</button></p></dialog>
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+let es, S;
+
+function reset() {
+  S = { sources: {}, claims: {}, questions: {}, conflicts: [] };
+  $('who').replaceChildren(); $('verdict').style.display = 'none';
+  [...$('wall').querySelectorAll('.q')].forEach(n => n.remove());
+  $('strings').replaceChildren();
+  ['sources', 'claims', 'conflicts', 'searches'].forEach(k => $('n-' + k).textContent = 0);
+  document.querySelectorAll('#crew span').forEach(s => s.className = '');
+}
+
+function run(url) {
+  if (es) es.close();
+  reset(); $('go').disabled = true;
+  es = new EventSource(url);
+  const stop = () => { es.close(); $('go').disabled = false; };
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict') stop(); };
+  es.onerror = stop;  // EventSource reconnects by default, which would restart the run
+}
+
+function crew(type) {
+  const chips = [...document.querySelectorAll('#crew span')], i = chips.findIndex(c => c.dataset.on === type);
+  if (i < 0) return;
+  chips.forEach((c, j) => c.className = j < i ? 'done' : j === i ? 'on' : c.className);
+  if (type === 'verdict') chips[i].className = 'done';
+}
+
+function on(e) {
+  crew(e.type);
+  if (e.type === 'entity') {
+    const li = el('li', '', e.name); li.append(el('small', '', e.kind)); $('who').append(li);
+  } else if (e.type === 'question') {
+    const q = el('section', 'q'), h = el('h2');
+    h.append(el('small', '', e.kind === 'date' ? 'When' : 'How much'), e.text);
+    q.append(h, el('div', 'groups'), el('div', 'read'));
+    S.questions[e.id] = { node: q, groups: {} }; $('wall').append(q);
+  } else if (e.type === 'source') {
+    S.sources[e.id] = e;
+    const q = S.questions[e.question_id]; if (!q) return;
+    const read = q.node.querySelector('.read');
+    read.textContent = (read.textContent ? read.textContent + ' · ' : 'read: ') + e.domain;
+  } else if (e.type === 'claim') {
+    S.claims[e.id] = e;
+    const q = S.questions[e.question_id], src = S.sources[e.source_id] || {}; if (!q) return;
+    let g = q.groups[e.normalized];
+    if (!g) {
+      g = q.groups[e.normalized] = el('div', 'g');
+      const pin = el('span', 'pin', e.value); pin.append(el('small', '', '0')); g.append(pin);
+      q.node.querySelector('.groups').append(g);
+    }
+    const card = el('div', 'card' + (src.primary ? ' primary' : ''), '“' + e.quote + '”');
+    const a = el('a', '', (src.domain || '') + (src.publish_date ? ' · ' + src.publish_date.slice(0, 10) : '') + (src.primary ? ' · primary record' : ''));
+    a.href = src.url || '#'; a.target = '_blank'; a.rel = 'noopener'; card.append(a); g.append(card);
+    const n = g.querySelectorAll('.card').length;
+    g.querySelector('.pin small').textContent = n + (n === 1 ? ' source' : ' sources');
+    if (src.primary) g.querySelector('.pin').classList.add('primary');
+    if (n === 5) { const b = el('button', 'more', 'show all'); b.onclick = () => { g.classList.add('open'); b.remove(); draw(); }; g.append(b); }
+  } else if (e.type === 'conflict') {
+    S.conflicts.push(e);
+    const q = S.questions[e.question_id]; if (q) { q.node.classList.add('conflict'); q.node.querySelector('h2 small').textContent = 'Contradiction'; }
+  } else if (e.type === 'stats') {
+    ['sources', 'claims', 'conflicts', 'searches'].forEach(k => { if (e[k] != null) $('n-' + k).textContent = e[k]; });
+  } else if (e.type === 'verdict') {
+    $('verdict').querySelector('span').textContent = e.text; $('verdict').style.display = 'block';
+  }
+  requestAnimationFrame(draw);
+}
+
+// One red string between each neighbouring pair of disagreeing value pins in a contradicted question.
+function draw() {
+  const svg = $('strings'), box = $('wall').getBoundingClientRect(), have = new Set();
+  for (const c of S.conflicts) {
+    const q = S.questions[c.question_id]; if (!q) continue;
+    const pins = Object.values(q.groups).map(g => g.querySelector('.pin')).filter(Boolean);
+    for (let i = 0; i + 1 < pins.length; i++) {
+      const id = c.id + '-' + i; have.add(id);
+      const a = pins[i].getBoundingClientRect(), b = pins[i + 1].getBoundingClientRect();
+      const x1 = a.right - box.left, y1 = a.top + a.height / 2 - box.top, x2 = b.left - box.left, y2 = b.top + b.height / 2 - box.top;
+      const d = `M${x1},${y1} Q${(x1 + x2) / 2},${Math.max(y1, y2) + 26} ${x2},${y2}`;  // sag like string
+      let p = svg.querySelector(`[data-id="${id}"]`);
+      if (!p) { p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.dataset.id = id; p.onclick = () => compare(c); svg.append(p); }
+      p.setAttribute('d', d);
+    }
+  }
+  [...svg.children].forEach(p => have.has(p.dataset.id) || p.remove());
+}
+
+function compare(c) {
+  const q = S.questions[c.question_id], vs = $('dlg').querySelector('.vs');
+  $('dlg').querySelector('h3').textContent = q.node.querySelector('h2').lastChild.textContent;
+  vs.replaceChildren(...Object.values(q.groups).map(g => {
+    const col = el('div'), pin = g.querySelector('.pin');
+    col.append(el('h4', pin.classList.contains('primary') ? 'primary' : '', pin.firstChild.textContent));
+    g.querySelectorAll('.card').forEach(card => { const k = card.cloneNode(true); k.style.display = 'block'; col.append(k); });
+    return col;
+  }));
+  $('dlg').showModal();
+}
+
+$('wall').addEventListener('click', e => { const q = e.target.closest('.q.conflict'); if (q && !e.target.closest('a,button')) { const c = S.conflicts.find(c => S.questions[c.question_id].node === q); if (c) compare(c); } });
+$('f').onsubmit = e => { e.preventDefault(); run('/api/investigate?premise=' + encodeURIComponent($('premise').value)); };
+$('replay').onclick = () => run('/api/investigate/replay?name=murdoch');
+addEventListener('resize', draw);
+reset();
+if (new URLSearchParams(location.search).has('replay')) $('replay').click();
+</script>
+</body>
+</html>
