@@ -26,7 +26,7 @@
            border-bottom:1px solid var(--line); }
   .stat b { display:block; font:600 44px/1 var(--serif); font-variant-numeric:tabular-nums; }
   .stat span { font:11px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em; }
-  .stat.hot b { color:var(--red); }
+  .stat.hot b { color:var(--red); font-size:64px; text-shadow:0 0 22px rgba(224,49,43,.55); }
   #crew { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
   #crew span { font:11px var(--mono); padding:6px 10px; border:1px solid var(--line); border-radius:99px; color:var(--dim); }
   #crew span.on { color:var(--ink); border-color:var(--ink); }
@@ -37,13 +37,18 @@
   aside li { list-style:none; padding:7px 0; border-bottom:1px solid var(--line); font-size:15px; }
   aside ul { margin:0; padding:0; }
   aside li small { display:block; font:10px var(--mono); color:var(--dim); }
-  #wall { position:relative; padding:24px 32px 60px; display:grid; grid-template-columns:repeat(auto-fill,minmax(440px,1fr)); gap:28px; align-content:start; }
+  #wall { position:relative; padding:24px 32px 60px; display:grid; grid-template-columns:repeat(auto-fill,minmax(440px,1fr)); gap:28px; align-content:start; grid-auto-flow:dense; }
   #strings { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3; }
-  #strings path { stroke:var(--red); stroke-width:2.5; fill:none; pointer-events:stroke; cursor:pointer;
+  #strings path { stroke:var(--red); stroke-width:3.5; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(0,0,0,.7)); fill:none; pointer-events:stroke; cursor:pointer;
                   stroke-dasharray:1200; stroke-dashoffset:1200; animation:pull .7s ease-out forwards; }
   @keyframes pull { to { stroke-dashoffset:0; } }
   .q { border:1px solid var(--line); border-radius:4px; padding:18px; background:#191512; }
-  .q.conflict { border-color:var(--red); }
+  .q.conflict { border-color:var(--red); box-shadow:0 0 0 1px var(--red), 0 0 28px rgba(224,49,43,.18); }
+  .q.wide { grid-column:1/-1; }  /* 4+ answers: full width, pins wrap in rows, one clipped card each */
+  .q.wide .groups { flex-wrap:wrap; gap:26px 28px; } .q.wide .g { flex:1 1 170px; max-width:260px; }
+  .q.wide .g:not(.open) .card:nth-child(n+3) { display:none; }
+  .q.wide .g:not(.open) .qt { display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .q.wide h2 { font-size:22px; }
   .q.empty { opacity:.45; padding:12px 18px; } .q.empty h2 { font-size:14px; margin:0; } .q.empty .read { display:none; }
   .q.empty h2::after { content:' — no source stated this'; font:11px var(--mono); color:var(--dim); }
   .q h2 { font-size:19px; margin:0 0 14px; font-weight:600; line-height:1.25; }
@@ -51,24 +56,29 @@
   .q.conflict h2 small { color:var(--red); }
   .groups { display:flex; gap:36px; }
   .g { flex:1; min-width:0; }
-  .pin { display:inline-block; font:600 15px var(--mono); padding:5px 10px; border-radius:3px; background:#2a2420; margin-bottom:10px; position:relative; z-index:4; }
+  .pin { display:inline-block; font:600 15px var(--mono); padding:5px 10px; border-radius:3px; background:#2a2420; margin-bottom:12px; position:relative; z-index:4; white-space:nowrap; }
+  .q.conflict .pin { box-shadow:0 0 0 2px var(--red); }
   .pin.primary { background:var(--gold); color:#1d1a17; }
   .pin small { font-weight:400; opacity:.7; margin-left:6px; }
   .card { background:var(--paper); color:var(--paper-ink); padding:10px 12px; margin-bottom:8px; border-radius:2px;
-          font-size:13.5px; line-height:1.35; box-shadow:0 2px 0 rgba(0,0,0,.4); animation:drop .25s ease-out; }
+          font-size:13.5px; line-height:1.35; box-shadow:0 3px 8px rgba(0,0,0,.55); animation:drop .3s ease-out; position:relative; overflow-wrap:anywhere; }
+  .card::before { content:''; position:absolute; top:-4px; left:14px; width:9px; height:9px; border-radius:50%; background:var(--red); box-shadow:0 1px 2px rgba(0,0,0,.6); }
+  .card.primary::before { background:var(--gold); }
   .card:nth-child(odd) { transform:rotate(-.5deg); } .card:nth-child(even) { transform:rotate(.4deg); }
   .card.primary { border-left:4px solid var(--gold); }
   .card a { overflow-wrap:anywhere; font:10.5px var(--mono); color:#6b5f52; text-decoration:none; display:block; margin-top:6px; }
   .card:nth-child(n+5) { display:none; } .g.open .card { display:block; }
-  .more { font:11px var(--mono); color:var(--dim); cursor:pointer; background:none; border:0; padding:0; }
-  @keyframes drop { from { opacity:0; transform:translateY(-8px); } }
+  .more { font:11px var(--mono); color:var(--dim); cursor:pointer; background:none; border:0; padding:0; display:none; }
+  .g:has(.card:nth-child(5)) .more, .q.wide .g:has(.card:nth-child(3)) .more { display:block; }
+  @keyframes drop { from { opacity:0; transform:translateY(-14px) scale(1.06); } }
   .read { margin-top:12px; font:10.5px var(--mono); color:var(--dim); line-height:1.7; }
   #verdict { margin:0 32px 40px; padding:22px 26px; border-left:3px solid var(--gold); background:#191512; font-size:19px; line-height:1.5; display:none; }
+  #verdict.err { border-color:var(--red); } #verdict.err small { color:var(--red); }
   #verdict small { display:block; font:11px var(--mono); color:var(--gold); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
   dialog { background:var(--bg); color:var(--ink); border:1px solid var(--red); border-radius:4px; max-width:960px; width:90vw; padding:26px; }
   dialog::backdrop { background:rgba(0,0,0,.7); }
   dialog h3 { margin:0 0 16px; font-size:21px; }
-  .vs { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:22px; }
+  .vs { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:22px; }
   .vs h4 { margin:0 0 10px; font:600 17px var(--mono); color:var(--red); }
   .vs h4.primary { color:var(--gold); }
   @media (max-width:800px) { main { grid-template-columns:1fr; } aside { border:0; } #strip { grid-template-columns:repeat(2,auto); } header { flex-wrap:wrap; } }
@@ -116,7 +126,7 @@ const pretty = v => {
 
 function reset() {
   S = { sources: {}, claims: {}, questions: {}, conflicts: [] };
-  $('who').replaceChildren(); $('verdict').style.display = 'none';
+  $('who').replaceChildren(); $('verdict').style.display = 'none'; S.ended = false;
   [...$('wall').querySelectorAll('.q')].forEach(n => n.remove());
   $('strings').replaceChildren();
   ['sources', 'claims', 'conflicts', 'searches'].forEach(k => $('n-' + k).textContent = 0);
@@ -128,8 +138,15 @@ function run(url) {
   reset(); $('go').disabled = true;
   es = new EventSource(url);
   const stop = () => { es.close(); $('go').disabled = false; };
-  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict') stop(); };
-  es.onerror = stop;  // EventSource reconnects by default, which would restart the run
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (S.ended) stop(); };
+  // EventSource reconnects by default, which would restart the run
+  es.onerror = () => { stop(); if (!S.ended) say('The investigation stopped before a verdict. Try again, or press Replay.', true); };
+}
+
+function say(text, err) {
+  S.ended = true;
+  $('verdict').className = err ? 'err' : ''; $('verdict').querySelector('small').textContent = err ? 'Investigation failed' : "Editor's verdict";
+  $('verdict').querySelector('span').textContent = text; $('verdict').style.display = 'block';
 }
 
 function crew(type) {
@@ -162,23 +179,28 @@ function on(e) {
       const pin = el('span', 'pin', pretty(e.normalized)); pin.append(el('small', '', '0')); g.append(pin);
       q.node.querySelector('.groups').append(g);
     }
-    const card = el('div', 'card' + (src.primary ? ' primary' : ''), '“' + e.quote + '”');
+    const card = el('div', 'card' + (src.primary ? ' primary' : '')); card.append(el('span', 'qt', '“' + e.quote + '”'));
     const a = el('a', '', (src.domain || '') + (src.publish_date ? ' · ' + src.publish_date.slice(0, 10) : '') + (src.primary ? ' · primary record' : ''));
-    a.href = src.url || '#'; a.target = '_blank'; a.rel = 'noopener'; card.append(a); g.append(card);
+    a.href = src.url || '#'; a.target = '_blank'; a.rel = 'noopener'; card.append(a); g.insertBefore(card, g.querySelector('.more'));
     const n = g.querySelectorAll('.card').length;
     g.querySelector('.pin small').textContent = n + (n === 1 ? ' source' : ' sources');
     if (src.primary) g.querySelector('.pin').classList.add('primary');
-    if (n === 5) { const b = el('button', 'more', 'show all'); b.onclick = () => { g.classList.add('open'); b.remove(); draw(); }; g.append(b); }
+    if (Object.keys(q.groups).length > 3) q.node.classList.add('wide');
+    if (n === 2) { const b = el('button', 'more', 'show all'); b.onclick = () => { g.classList.add('open'); b.remove(); draw(); }; g.append(b); }
   } else if (e.type === 'conflict') {
     S.conflicts.push(e);
-    const q = S.questions[e.question_id]; if (q) { q.node.classList.add('conflict'); q.node.querySelector('h2 small').textContent = 'Contradiction'; }
+    const q = S.questions[e.question_id]; if (q) { q.node.classList.add('conflict'); q.node.querySelector('h2 small').textContent = 'Contradiction'; $('wall').prepend(q.node); }
   } else if (e.type === 'stats') {
     ['sources', 'claims', 'conflicts', 'searches'].forEach(k => { if (e[k] != null) $('n-' + k).textContent = e[k]; });
   } else if (e.type === 'verdict') {
-    $('verdict').querySelector('span').textContent = e.text; $('verdict').style.display = 'block';
+    say(e.text);
     for (const q of Object.values(S.questions)) if (!Object.keys(q.groups).length) { q.node.classList.add('empty'); $('wall').append(q.node); }
-    for (const c of S.conflicts) { const q = S.questions[c.question_id]; if (q) $('wall').prepend(q.node); }
+    for (const c of [...S.conflicts].sort((a, b) => (a.values || []).length - (b.values || []).length)) { const q = S.questions[c.question_id]; if (q) $('wall').prepend(q.node); }
     $('wall').prepend($('strings'));
+  } else if (e.type === 'error') {
+    const q = S.questions[e.question_id];
+    if (q) q.node.querySelector('.read').textContent += ' · error: ' + e.message;
+    else say(e.message || 'Unknown error', true);  // no question: the engine gave up, the stream ends here
   }
   requestAnimationFrame(draw);
 }
@@ -192,6 +214,7 @@ function draw() {
     for (let i = 0; i + 1 < pins.length; i++) {
       const id = c.id + '-' + i; have.add(id);
       const a = pins[i].getBoundingClientRect(), b = pins[i + 1].getBoundingClientRect();
+      if (Math.abs(a.top - b.top) > 20) continue;  // shortcut: no string across a row wrap, it would cut through the cards
       const x1 = a.right - box.left, y1 = a.top + a.height / 2 - box.top, x2 = b.left - box.left, y2 = b.top + b.height / 2 - box.top;
       const d = `M${x1},${y1} Q${(x1 + x2) / 2},${Math.max(y1, y2) + 26} ${x2},${y2}`;  // sag like string
       let p = svg.querySelector(`[data-id="${id}"]`);
@@ -214,12 +237,15 @@ function compare(c) {
   $('dlg').showModal();
 }
 
-$('wall').addEventListener('click', e => { const q = e.target.closest('.q.conflict'); if (q && !e.target.closest('a,button')) { const c = S.conflicts.find(c => S.questions[c.question_id].node === q); if (c) compare(c); } });
+$('wall').addEventListener('click', e => { const q = e.target.closest('.q.conflict'); if (q && !e.target.closest('a,button')) { const c = S.conflicts.find(c => (S.questions[c.question_id] || {}).node === q); if (c) compare(c); } });
 $('f').onsubmit = e => { e.preventDefault(); run('/api/investigate?premise=' + encodeURIComponent($('premise').value)); };
-$('replay').onclick = () => run('/api/investigate/replay?name=murdoch');
+const qs = new URLSearchParams(location.search);
+// ?replay=openai picks the saved run; otherwise the premise text decides
+const saved = () => qs.get('replay') || (/openai|altman/i.test($('premise').value) ? 'openai' : 'murdoch');
+$('replay').onclick = () => run('/api/investigate/replay?name=' + saved());
 addEventListener('resize', draw);
 reset();
-if (new URLSearchParams(location.search).has('replay')) $('replay').click();
+if (qs.has('replay')) $('replay').click();
 </script>
 </body>
 </html>
