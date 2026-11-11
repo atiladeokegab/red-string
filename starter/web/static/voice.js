@@ -37,22 +37,42 @@ document.body.insertAdjacentHTML('beforeend',
 if (matchMedia('(max-height:560px), (max-width:900px)').matches) $('mic').after($('mute'));
 new ResizeObserver(([e]) => document.documentElement.style.setProperty('--hdr', e.target.offsetHeight + 'px')).observe(document.querySelector('header'));
 
+let audio;  // the OpenAI line now playing
 let muted = localStorage.getItem('rs-mute') === '1', listening = false, speaking = null, timer, run = 0;
 const colors = {}, typing = [];  // crew colours for @mentions; banter lines waiting behind 'is typing'
 const waiting = [], order = [];
 const paint = () => { $('mute').textContent = muted ? 'Muted' : 'Voice on'; $('mute').setAttribute('aria-pressed', muted); };
-const hush = () => { waiting.length = 0; speaking = null; clearTimeout(timer); synth?.cancel(); };
+const hush = () => { waiting.length = 0; speaking = null; clearTimeout(timer); synth?.cancel(); audio?.pause(); };
 
 function next() {
   clearTimeout(timer); speaking?.row.classList.remove('now'); speaking = null;
   const job = waiting.shift();
   if (!job || muted || listening || !synth) return void (waiting.length = 0);
+  speaking = job; job.row.classList.add('now');
+  if (waiting[0]) tts(waiting[0]);  // prefetch: the next line downloads while this one plays
+  tts(job).then(url => {
+    if (speaking !== job) return url && URL.revokeObjectURL(url);
+    if (!url) return speakLocal(job);  // no key (503), offline or slow: the browser voice
+    audio = new Audio(url);
+    audio.onended = () => { URL.revokeObjectURL(url); if (speaking === job) next(); };  // a load error rejects play() below
+    audio.play().catch(() => speaking === job && speakLocal(job));
+    if (waiting[0]) tts(waiting[0]);
+  });
+}
+
+// OpenAI voice per crew member (POST /api/tts, cached on the server); resolves to a blob URL, or null to fall back.
+let noTts;  // the server has no voice provider (503): ask once, not once per line
+const tts = job => job.mp3 ??= noTts ? Promise.resolve(null) : fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ who: job.name, text: job.text.slice(0, 300) }), signal: AbortSignal.timeout(10000) })
+  .then(r => { noTts = r.status === 503; return r.ok ? r.blob() : null; }).then(b => b && URL.createObjectURL(b)).catch(() => null);
+
+function speakLocal(job) {
   const u = new SpeechSynthesisUtterance(`${job.name}. ${job.text}`), i = order.indexOf(job.name);
   const en = synth.getVoices().filter(v => v.lang.startsWith('en'));
   if (en.length) u.voice = en[i % en.length];
   u.pitch = PITCH[i % PITCH.length]; u.rate = 1.15;
   u.onend = u.onerror = () => speaking === job && next();
-  speaking = job; job.u = u; job.row.classList.add('now');  // job.u: Chrome drops onend if the utterance is collected
+  job.u = u;  // job.u: Chrome drops onend if the utterance is collected
   // Chrome sometimes never fires onend: cancel the stuck line so it does not sit ahead of the next one in the native queue
   timer = setTimeout(() => { if (speaking !== job) return; job.row.classList.remove('now'); speaking = null; synth.cancel(); next(); }, 15000);
   synth.speak(u);
@@ -84,8 +104,8 @@ function post(name, text, color, chat) {
   const log = $('chan-log'); log.append(row); log.scrollTop = log.scrollHeight;
   if (muted || listening || !synth) return;
   const urgent = chat || name === 'Sceptic' || name === 'Editor';  // banter, the contradiction and the write-up are always spoken
-  if (waiting.length >= MAX_WAITING) { const i = waiting.findIndex(j => !j.urgent); if (i >= 0) waiting.splice(i, 1); else if (!urgent) return; }
-  waiting.push({ name, text, row, urgent });
+  if (waiting.length >= MAX_WAITING) { const i = waiting.findIndex(j => !j.urgent); if (i >= 0) waiting.splice(i, 1); else if (!urgent) return; else if (waiting.length >= 4) waiting.shift(); }  // even banter must not run a minute behind the world
+  waiting.push({ name, text: text.replace(/@/g, ''), row, urgent });  // a spoken '@' is noise
   if (!speaking) next();
 }
 

@@ -15,7 +15,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   #cf-intro h2 { margin:4px 0 12px; font:900 22px/1.2 'Nunito', ui-rounded, sans-serif; }
   #cf-intro ul { list-style:none; margin:0; padding:0; display:grid; gap:5px; font-size:13px; }
   #cf-intro li b { background:var(--c); padding:0 6px; border-radius:6px; border:2px solid #1b1b1b; margin-right:6px; }
-  #cf-card { right:14px; top:66px; width:min(330px,calc(100vw - 170px)); max-height:calc(100vh - 250px); overflow:auto; padding:10px 14px; font-size:13px; }
+  #cf-card { right:14px; top:66px; width:min(290px,calc(100vw - 170px)); max-height:calc(100vh - 250px); overflow:auto; padding:10px 14px; font-size:13px; }
   #cf-card summary { cursor:pointer; font-weight:900; font-size:15px; line-height:1.25; list-style:none; }
   #cf-card summary::-webkit-details-marker { display:none; }
   #cf-card summary small::before { content:'▸ '; } #cf-card[open] summary small::before { content:'▾ '; }
