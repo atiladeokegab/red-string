@@ -114,6 +114,7 @@
 <script src="3d-force-graph.min.js"></script>
 <script type="module">
 import * as THREE from './three.module.min.js';
+import { addScenery } from './scenery.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pretty = v => {
@@ -170,6 +171,7 @@ const plate = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.Mesh
 plate.position.z = -1; scene.add(plate);  // studded green baseplate
 scene.add(new THREE.HemisphereLight(0xffffff, 0x4b974b, .5));
 scene.fog = new THREE.Fog(0x8fc9f0, 1800, 4200);
+const scenery = addScenery(scene, THREE);  // trees, drifting clouds and a sun outside the case area
 $('g').addEventListener('pointerdown', () => orbit = false);
 addEventListener('resize', () => G.width(innerWidth).height(innerHeight));
 const V = new THREE.Vector3();
@@ -317,7 +319,7 @@ setInterval(() => {
   dirty = false; G.graphData({ nodes: [...N.values()], links: L.slice() });  // a copy: the simulation owns the array it is given
 }, 250);
 (function frame() {
-  T++;
+  T++; scenery(T / 60);
   let far = 200;
   if (N) for (const n of N.values()) if (n.x !== undefined) far = Math.max(far, Math.hypot(n.x, n.y));
   const fs = S && S.focus && S.focus.every(n => n.x !== undefined) ? S.focus : null;
