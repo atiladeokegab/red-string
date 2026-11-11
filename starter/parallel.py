@@ -50,10 +50,19 @@ def search(objective: str, queries: list[str], max_results: int = 5) -> list[dic
 
 
 def respond(question: str, effort: str = "low") -> dict:
-    """Researched answer in ["output_text"]. effort: low ~5-10s, medium ~15-20s, high ~30-60s."""
-    return _post(
-        "responses", {"model": "parallel", "input": question, "reasoning": {"effort": effort}}
-    )
+    """Researched answer -> {text, sources: [{url, title}]}. low ~3-10s, medium ~20s, high ~60s."""
+    body = {"model": "parallel", "input": question, "reasoning": {"effort": effort}}
+    parts = [
+        c
+        for i in _post("responses", body)["output"]
+        if i["type"] == "message"
+        for c in i["content"]
+    ]
+    seen = {a["url"]: a.get("title", "") for c in parts for a in c.get("annotations", [])}
+    return {
+        "text": "".join(c.get("text", "") for c in parts),
+        "sources": [{"url": u, "title": t} for u, t in seen.items()],
+    }
 
 
 def monitor(query: str, webhook_url: str, frequency: str = "1h") -> dict:
@@ -77,4 +86,5 @@ if __name__ == "__main__":
             "no PARALLEL_API_KEY: search ran on the free MCP; respond/monitor untested"
         )
     out = respond("What year was incident.io founded?")
-    print("respond ok:", str(out.get("output_text") or out)[:200])
+    assert out["text"] and out["sources"], out
+    print("respond ok:", out["text"][:120], "|", len(out["sources"]), "sources")
