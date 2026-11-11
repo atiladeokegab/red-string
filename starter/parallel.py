@@ -33,7 +33,20 @@ def search(objective: str, queries: list[str], max_results: int = 5) -> list[dic
         "search_queries": queries,
         "advanced_settings": {"max_results": max_results},
     }
-    return _post("search", body)["results"]
+    if os.environ.get("PARALLEL_API_KEY"):
+        return _post("search", body)["results"]
+    # shortcut: no key -> the free anonymous MCP endpoint (fast mode, lower rate limits)
+    call = {"name": "web_search", "arguments": {"objective": objective, "search_queries": queries}}
+    req = urllib.request.Request(
+        "https://search.parallel.ai/mcp",
+        data=json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": call}
+        ).encode(),
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as r:
+        text = json.load(r)["result"]["content"][0]["text"]
+    return json.loads(text)["results"][:max_results]
 
 
 def respond(question: str, effort: str = "low") -> dict:
@@ -59,5 +72,9 @@ if __name__ == "__main__":
     hits = search("What is Parallel Web Systems?", ["Parallel Web Systems"], 2)
     assert hits and hits[0]["url"], hits
     print("search ok:", hits[0]["url"])
+    if not os.environ.get("PARALLEL_API_KEY"):
+        raise SystemExit(
+            "no PARALLEL_API_KEY: search ran on the free MCP; respond/monitor untested"
+        )
     out = respond("What year was incident.io founded?")
     print("respond ok:", str(out.get("output_text") or out)[:200])
