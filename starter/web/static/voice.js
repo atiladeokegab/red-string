@@ -54,7 +54,7 @@ function next() {
     if (speaking !== job) return url && URL.revokeObjectURL(url);
     if (!url) return speakLocal(job);  // no key (503), offline or slow: the browser voice
     audio = new Audio(url);
-    audio.onended = () => { URL.revokeObjectURL(url); if (speaking === job) next(); };  // a load error rejects play() below
+    audio.onended = audio.onerror = () => { URL.revokeObjectURL(url); if (speaking === job) next(); };  // a load error rejects play() below
     audio.play().catch(() => speaking === job && speakLocal(job));
     if (waiting[0]) tts(waiting[0]);
   });
@@ -67,7 +67,7 @@ const tts = job => job.mp3 ??= ttsOff ? Promise.resolve(null) : fetch('/api/tts'
   .then(r => { if (r.status === 503) ttsOff = true; return r.ok ? r.blob() : null; }).then(b => b && URL.createObjectURL(b)).catch(() => null);
 
 function speakLocal(job) {
-  const u = new SpeechSynthesisUtterance(`${job.name}. ${job.text}`), i = order.indexOf(job.name);
+  const u = new SpeechSynthesisUtterance(`${job.name}. ${job.text.slice(0, 300)}`), i = order.indexOf(job.name);
   const en = synth.getVoices().filter(v => v.lang.startsWith('en'));
   if (en.length) u.voice = en[i % en.length];
   u.pitch = PITCH[i % PITCH.length]; u.rate = 1.15;
