@@ -1,0 +1,1422 @@
+[
+ {
+  "type": "entity",
+  "id": "e1",
+  "name": "Rupert Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e2",
+  "name": "Lachlan Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e3",
+  "name": "James Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e4",
+  "name": "Elisabeth Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e5",
+  "name": "Grace Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e6",
+  "name": "Chloe Murdoch",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e7",
+  "name": "News Corporation",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e8",
+  "name": "Fox Corporation",
+  "kind": "org"
+ },
+ {
+  "type": "question",
+  "id": "q1",
+  "text": "On what date did the Nevada probate commissioner file the sealed ruling in the Murdoch family trust case (the 'Project Family' decision)?",
+  "kind": "date"
+ },
+ {
+  "type": "question",
+  "id": "q2",
+  "text": "On what date did the Nevada probate court hearing in the Murdoch trust case begin in Reno?",
+  "kind": "date"
+ },
+ {
+  "type": "question",
+  "id": "q3",
+  "text": "How much was the cash-and-stock settlement reported as being paid to Rupert Murdoch's three eldest children to resolve the succession dispute?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q4",
+  "text": "What percentage of voting control did Lachlan Murdoch hold in the newly created Murdoch Family Trust after the 2025 settlement?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q5",
+  "text": "How many total registered shares did Rupert Murdoch move to the new Murdoch Family Trust in September 2023?",
+  "kind": "number"
+ },
+ {
+  "type": "question",
+  "id": "q6",
+  "text": "On what date was the settlement of the Murdoch succession dispute announced in a statement from News Corp and Fox?",
+  "kind": "date"
+ },
+ {
+  "type": "stats",
+  "searches": 0,
+  "sources": 0,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 3.4
+ },
+ {
+  "type": "source",
+  "id": "s1",
+  "url": "https://www.nytimes.com/2024/12/09/business/media/rupert-lachlan-murdoch-family-trust.html",
+  "title": "Rupert Murdoch Fails in Bid to Change Family Trust - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2024-12-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s2",
+  "url": "https://www.nytimes.com/2024/12/09/business/media/rupert-lachlan-murdoch-family-trust.html?eafs_enabled=false",
+  "title": "Rupert Murdoch Fails in Bid to Change Family Trust - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2024-12-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s3",
+  "url": "https://en.wikipedia.org/wiki/Succession_of_Rupert_Murdoch",
+  "title": "Succession of Rupert Murdoch - Wikipedia",
+  "domain": "en.wikipedia.org",
+  "publish_date": "2024-09-13",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s4",
+  "url": "https://lawandcrime.com/high-profile/a-dishonesty-of-purpose-and-motive-probate-court-slams-bill-barr-while-rejecting-rupert-murdochs-bad-faith-bid-to-change-family-trust-as-a-carefully-crafted-charade/",
+  "title": "Probate court rejects Murdoch's bid to change family trust",
+  "domain": "lawandcrime.com",
+  "publish_date": "2024-12-10",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s5",
+  "url": "https://www.cnn.com/2024/12/09/media/robert-murdoch-family-trust",
+  "title": "Rupert Murdoch loses bid to change family trust | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2024-12-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s6",
+  "url": "https://donohew.com/2026/09/what-murdoch-trust-fight-teaches",
+  "title": " What the Murdoch Trust Fight Teaches Drafters of Trust Amendment Clauses | Monty L. Donohew, LPA",
+  "domain": "donohew.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s7",
+  "url": "https://www.reuters.com/legal/rupert-murdoch-fails-bid-change-family-trust-new-york-times-reports-2024-12-09",
+  "title": "Rupert Murdoch fails in bid to change family trust, New York Times reports | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2024-12-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s8",
+  "url": "https://ctacquisitions.com/guides/family-office-succession-wealth-transfer-tracker-2024-2026/",
+  "title": "FO Succession + Wealth Transfer Tracker 2024-2026 | CT Acquisitions",
+  "domain": "ctacquisitions.com",
+  "publish_date": "2026-05-25",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s9",
+  "url": "https://abcnews.com/US/rupert-murdoch-loses-legal-fight-change-family-trust/story?id=116619335",
+  "title": "Rupert Murdoch loses legal fight to change family trust - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2024-12-11",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s10",
+  "url": "https://www.watoday.com.au/business/companies/carefully-crafted-charade-how-it-all-fell-apart-for-rupert-murdoch-in-nevada-20241210-p5kx5y.html",
+  "title": "Lachlan Murdoch Succession plan: How it all fell apart for Rupert Murdoch in Nevada in family trust case",
+  "domain": "watoday.com.au",
+  "publish_date": "2024-12-10",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s11",
+  "url": "https://ournevadajudges.com/media/coverage/98-the-murdoch-news-corp-trust-case",
+  "title": "The Murdoch News Corp Trust Case",
+  "domain": "ournevadajudges.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s12",
+  "url": "https://foalmanac.com/journal/murdoch-family-trust-settlement",
+  "title": "The Murdoch trust: $3.3 billion to settle what an irrevocable document was supposed to prevent \u00b7 The Family Office Almanac",
+  "domain": "foalmanac.com",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s13",
+  "url": "https://ournevadajudges.com/assets/docs/documents/1151-order-to-file.pdf",
+  "title": "Microsoft Word - PR23-00813 - MURDOCH - COMMISSIONER'S ORDER TO FILE",
+  "domain": "ournevadajudges.com",
+  "publish_date": "2026-03-13",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s14",
+  "url": "https://www.vickimonroelaw.com/post/rupert-murdoch-fails-in-bid-to-change-family-trust",
+  "title": "Rupert Murdoch Fails in Bid to Change Family Trust",
+  "domain": "vickimonroelaw.com",
+  "publish_date": "2024-12-12",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s15",
+  "url": "https://www.afr.com/companies/media-and-marketing/how-lachlan-murdoch-siobhan-mckenna-plotted-doomed-murdoch-trust-war-20260821-p60qcb",
+  "title": "Lachlan Murdoch and his lieutenant Siobhan McKenna orchestrated the family trust battle in newly unsealed court documents that show how it failed",
+  "domain": "afr.com",
+  "publish_date": "2026-08-21",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s16",
+  "url": "https://courtdocket.org/murdoch-lawsuit-the-1999-trust-ruling-and-3-3b-settlement",
+  "title": "Murdoch Lawsuit: The 1999 Trust Ruling and $3.3B Settlement - CourtDocket",
+  "domain": "courtdocket.org",
+  "publish_date": "2026-09-09",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "stats",
+  "searches": 2,
+  "sources": 16,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.4
+ },
+ {
+  "type": "source",
+  "id": "s17",
+  "url": "https://www.nytimes.com/2025/09/09/business/dealbook/lachlan-murdoch-family-deal.html",
+  "title": "The Stakes of the Murdoch Family\u2019s Peace Deal - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s18",
+  "url": "https://www.smh.com.au/business/companies/rupert-murdoch-and-children-reach-deal-in-succession-fight-20250909-p5mth4.html",
+  "title": "Rupert Murdoch, children reach deal in succession fight",
+  "domain": "smh.com.au",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s19",
+  "url": "https://www.abc.net.au/news/2025-09-09/lachlan-murdoch-rupert-succession-fox-news-corp/105752206",
+  "title": "Lachlan Murdoch has secured the legacy of his father's empire - ABC News",
+  "domain": "abc.net.au",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s20",
+  "url": "https://www.axios.com/2025/09/08/murdoch-family-trust-lachlan-news-corp",
+  "title": "Murdoch family in Fox, News Corp succession deal: Lachlan gains control",
+  "domain": "axios.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s21",
+  "url": "https://www.news24.com.au/business/media/lachlan-murdoch-secures-control-of-news-corp-and-fox-as-succession-battle-ends/news-story/91d97f9159b7c5587edd1fa189934362",
+  "title": "Lachlan Murdoch secures control of News Corp and Fox as succession battle ends | News24",
+  "domain": "news24.com.au",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s22",
+  "url": "https://www.hollywoodreporter.com/business/business-news/lachlan-murdoch-succession-major-buyouts-fox-news-corp-1236365350/",
+  "title": "Murdoch Family Settles Succession Dispute, Lachlan to Take ontrol",
+  "domain": "hollywoodreporter.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s23",
+  "url": "https://newsapp.abc.net.au/newsapp/2025-09-09/lachlan-murdoch-rupert-succession-fox-news-corp/105752206",
+  "title": "Lachlan Murdoch has secured the legacy of his father's empire - ABC News",
+  "domain": "newsapp.abc.net.au",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s24",
+  "url": "https://www.nytimes.com/2025/09/08/business/media/murdoch-family-trust-succession-deal.html",
+  "title": "Lachlan Murdoch Secures Control of Fox and News Corp, Ending Succession Fight - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s25",
+  "url": "https://www.reuters.com/sustainability/boards-policy-regulation/real-life-succession-ends-lachlan-murdoch-takes-control-siblings-take-cash-2025-09-08",
+  "title": "Real-life 'Succession' ends: Lachlan Murdoch takes control and siblings take cash | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s26",
+  "url": "https://www.foxcorporation.com/news/corp-press-releases/2025/fox-corporation-announces-resolution-of-murdoch-family-trust-matter",
+  "title": "Fox Corporation Announces Resolution of Murdoch Family Trust Matter - foxcorporation",
+  "domain": "foxcorporation.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s27",
+  "url": "https://www.sec.gov/Archives/edgar/data/1754301/000119312525200134/d91736d8k.htm",
+  "title": "8-K",
+  "domain": "sec.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s28",
+  "url": "https://www.sec.gov/Archives/edgar/data/1564708/000110465925088259/tm2521115d4_fwp.htm",
+  "title": "sec.gov",
+  "domain": "sec.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s29",
+  "url": "https://www.sec.gov/Archives/edgar/data/1564708/000110465925088268/tm2521115d2_ex99-1.htm",
+  "title": "sec.gov",
+  "domain": "sec.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s30",
+  "url": "https://investor.foxcorporation.com/news/corp-press-releases/2025/fox-corporation-announces-resolution-of-murdoch-family-trust-matter",
+  "title": "Fox Corporation Announces Resolution of Murdoch Family Trust Matter - Fox Corp Investor",
+  "domain": "investor.foxcorporation.com",
+  "publish_date": "2025-09-08",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s31",
+  "url": "https://www.sec.gov/Archives/edgar/data/1754301/000119312525198394/d90919dex991.htm",
+  "title": "sec.gov",
+  "domain": "sec.gov",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s32",
+  "url": "https://www.sec.gov/Archives/edgar/data/1564708/000110465925089069/tm2521115d3_8k.htm",
+  "title": "sec.gov",
+  "domain": "sec.gov",
+  "publish_date": "2025-09-10",
+  "primary": true,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s33",
+  "url": "https://newscorp.com/2025/09/08/news-corp-announces-resolution-of-murdoch-family-trust-matter",
+  "title": "News Corp Announces Resolution of Murdoch Family Trust Matter - News Corp",
+  "domain": "newscorp.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s34",
+  "url": "https://www.latimes.com/entertainment-arts/business/story/2025-09-08/lachlan-murdoch-prevails-in-family-succession-drama",
+  "title": "Fox Corp. CEO and favored son Lachlan Murdoch prevails in family succession drama - Los Angeles Times",
+  "domain": "latimes.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "stats",
+  "searches": 4,
+  "sources": 34,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 7.5
+ },
+ {
+  "type": "source",
+  "id": "s35",
+  "url": "https://www.forbes.com/sites/antoniopequenoiv/2025/09/08/murdochs-resolve-succession-dispute-with-multibillion-dollar-deal-favoring-lachlan",
+  "title": "Murdochs Settle Succession Dispute With Blockbuster Deal",
+  "domain": "forbes.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s36",
+  "url": "https://www.lemonde.fr/en/economy/article/2025/09/09/murdoch-heirs-strike-3-3-billion-deal-over-control-of-family-media-empire_6745179_19.html",
+  "title": "Murdoch heirs strike $3.3 billion deal over control of family media empire",
+  "domain": "lemonde.fr",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s37",
+  "url": "https://www.cnn.com/2025/09/08/media/murdoch-lachlan-rupert-succession-court",
+  "title": "Murdoch family resolves succession dispute with Lachlan remaining in control of media empire | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s38",
+  "url": "http://www.businessinsider.com/murdoch-settlement-family-trust-2025-9",
+  "title": "The 'Succession' Drama Over the Murdoch Family Trust Ends - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s39",
+  "url": "https://www.bbc.com/news/articles/cn825x71g4do",
+  "title": "Murdochs reach deal in succession battle",
+  "domain": "bbc.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s40",
+  "url": "https://www.livemint.com/industry/media/lachlan-murdoch-secures-control-of-fox-news-rupert-murdoch-family-reaches-3-3-billion-deal-to-end-succession-battle-11757374423811.html",
+  "title": "Lachlan Murdoch secures control as Murdoch family reaches $3.3 billion deal to end succession battle | Mint",
+  "domain": "livemint.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s41",
+  "url": "https://www.reuters.com/business/media-telecom/murdoch-children-hail-settlement-that-ended-dispute-over-family-trust-2025-09-10",
+  "title": "Murdoch children hail settlement that ended dispute over family trust | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2025-09-10",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s42",
+  "url": "https://www.theguardian.com/us-news/2025/sep/08/rupert-murdoch-lachlan-family-succession-deal",
+  "title": "Murdoch family reaches deal to resolve succession fight over media empire | Rupert Murdoch | The Guardian",
+  "domain": "theguardian.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s43",
+  "url": "https://business.inquirer.net/546043/murdoch-family-settles-dispute-on-control-of-media-assets",
+  "title": "Murdoch family settles dispute on control of media assets",
+  "domain": "business.inquirer.net",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s44",
+  "url": "https://www.reuters.com/business/media-telecom/lachlan-murdoch-says-trust-deal-is-great-investors-first-remarks-after-2025-09-10",
+  "title": "Lachlan Murdoch says trust deal is great for investors in first remarks after settlement | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2025-09-10",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "stats",
+  "searches": 6,
+  "sources": 44,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.1
+ },
+ {
+  "type": "source",
+  "id": "s45",
+  "url": "https://www.reuters.com/business/media-telecom/murdoch-family-trust-real-battle-over-succession-has-yet-begin-2023-09-22",
+  "title": "Murdoch Family Trust: The real battle over succession has yet to begin | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-09-22",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s46",
+  "url": "https://www.nytimes.com/2024/07/24/business/media/rupert-murdoch-succession-fox.html",
+  "title": "The Murdoch Family Is Battling Over the Future of the Fox Empire - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2024-07-24",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s47",
+  "url": "https://www.abc.net.au/news/2023-09-22/rupert-murdoch-children-the-real-life-succession/100780324",
+  "title": "Rupert Murdoch's unclear succession plan created a family built on love, competition and shifting alliances - ABC News",
+  "domain": "abc.net.au",
+  "publish_date": "2023-09-21",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s48",
+  "url": "https://foalmanac.com/blog/murdoch-family-trust-settlement",
+  "title": "The Murdoch trust: $3.3 billion to settle what an irrevocable document was supposed to prevent \u00b7 The Family Office Almanac",
+  "domain": "foalmanac.com",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s49",
+  "url": "https://www.foxcorporation.com/news/corp-press-releases/2025/fox-corporation-announces-resolution-of-murdoch-family-trust-matter/",
+  "title": "Fox Corporation Announces Resolution of Murdoch Family Trust Matter - foxcorporation",
+  "domain": "foxcorporation.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s50",
+  "url": "https://www.investopedia.com/lachlan-murdoch-to-control-rupert-murdochs-media-empire-after-settlement-11806160",
+  "title": "Lachlan Murdoch to Control Rupert Murdoch's Media Empire After Settlement",
+  "domain": "investopedia.com",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s51",
+  "url": "https://investors.newscorp.com/static-files/f4a68cfc-3b64-4a35-b677-107fe6b9b791",
+  "title": "Form 8-K for News Corp filed 09/08/2025",
+  "domain": "investors.newscorp.com",
+  "publish_date": "2025-09-08",
+  "primary": true,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s52",
+  "url": "https://kramelaw.com/rupert-murdochs-trust-issues/",
+  "title": "Rupert Murdoch\u2019s Trust Issues - kramelaw",
+  "domain": "kramelaw.com",
+  "publish_date": "2024-12-25",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "stats",
+  "searches": 8,
+  "sources": 52,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.7
+ },
+ {
+  "type": "source",
+  "id": "s53",
+  "url": "https://theconversation.com/rupert-murdochs-real-life-succession-drama-is-underway-in-a-nevada-courtroom-what-might-happen-next-239091",
+  "title": "Rupert Murdoch\u2019s real-life succession drama is underway in a Nevada courtroom. What might happen next?",
+  "domain": "theconversation.com",
+  "publish_date": "2024-09-17",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s54",
+  "url": "https://www.smh.com.au/business/companies/the-murdoch-family-arrives-for-their-day-in-court-20240917-p5kb39.html",
+  "title": "Rupert Murdoch case: Family arrives at Nevada court",
+  "domain": "smh.com.au",
+  "publish_date": "2024-09-16",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s55",
+  "url": "https://www.cnn.com/2024/09/12/business/murdoch-succession-family-trust-court-nevada-fox/index.html",
+  "title": "Why the Murdoch family is secretly battling over succession in an obscure Nevada court | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2024-09-12",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s56",
+  "url": "https://www.independent.co.uk/news/world/americas/ap-control-the-new-york-times-american-los-angeles-b2613762.html",
+  "title": "Control of the Murdoch media empire could be at stake in a closed-door hearing in Nevada | The Independent",
+  "domain": "independent.co.uk",
+  "publish_date": "2024-09-16",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s57",
+  "url": "https://ournevadajudges.com/media/coverage/98-the-murdoch-news-corp-trust-case%253Fevent%253D1598",
+  "title": "The Murdoch News Corp Trust Case",
+  "domain": "ournevadajudges.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s58",
+  "url": "https://www.irishexaminer.com/world/arid-41477326.html",
+  "title": "Hearing that could determine future of Murdoch media empire begins in US",
+  "domain": "irishexaminer.com",
+  "publish_date": "2024-09-16",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s59",
+  "url": "https://www.axios.com/2024/09/13/murdoch-media-empire-succession-nevada-case",
+  "title": "Murdoch succession case in Nevada to be closed to public, media, court rules",
+  "domain": "axios.com",
+  "publish_date": "2024-09-13",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s60",
+  "url": "https://www.pbs.org/newshour/nation/closed-door-hearing-in-nevada-could-decide-control-of-the-murdoch-media-empire",
+  "title": "Closed-door hearing in Nevada could decide control of the Murdoch media empire | PBS News",
+  "domain": "pbs.org",
+  "publish_date": "2024-09-16",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s61",
+  "url": "https://www.theguardian.com/media/2025/may/07/rupert-murdoch-nevada-hearing",
+  "title": "Nevada hearing could provide look into legal battle to control Murdoch empire | Rupert Murdoch | The Guardian",
+  "domain": "theguardian.com",
+  "publish_date": "2025-05-07",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s62",
+  "url": "https://www.nbcnews.com/news/us-news/nevada-hearing-may-give-first-public-view-legal-spat-control-murdoch-m-rcna205281",
+  "title": "Nevada hearing may give first public view into legal spat over control of Murdoch media empire",
+  "domain": "nbcnews.com",
+  "publish_date": "2025-03-20",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s63",
+  "url": "https://apnews.com/article/rupert-murdoch-news-corp-murdoch-family-trust-9a4b20037e43f46ad5934797579dcd8e",
+  "title": "Murdoch media empire control at stake in Nevada hearing | AP News",
+  "domain": "apnews.com",
+  "publish_date": "2024-09-16",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s64",
+  "url": "https://www.cnn.com/2024/09/12/business/murdoch-succession-family-trust-court-nevada-fox",
+  "title": "Why the Murdoch family is secretly battling over succession in an obscure Nevada court | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2024-09-12",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s65",
+  "url": "https://thisisreno.com/2026/06/murdoch-family-trust-battle",
+  "title": "Rupert Murdoch family trust files to be made public after Nevada Supreme Court ruling",
+  "domain": "thisisreno.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s66",
+  "url": "https://www.nytimes.com/2024/09/13/business/media/murdoch-family-trust-nevada.html",
+  "title": "Future of Murdoch Empire Comes Down to a Court in Nevada - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2024-09-13",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s67",
+  "url": "https://cdn.thisisreno.com/conradcomm/wp-content/uploads/2026/08/PR23-00813-8578461.pdf",
+  "title": "Microsoft Word - PR23-00813 - DOE I - FINDINGS OF FACT AND CONCLUSIONS OF LAW",
+  "domain": "cdn.thisisreno.com",
+  "publish_date": "2024-12-08",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s68",
+  "url": "https://www.lawfuel.com/the-murdoch-succession-battle",
+  "title": "The Murdoch Succession Battle",
+  "domain": "lawfuel.com",
+  "publish_date": "2024-09-17",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "stats",
+  "searches": 10,
+  "sources": 68,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 9.6
+ },
+ {
+  "type": "source",
+  "id": "s69",
+  "url": "https://www.businessinsider.com/murdoch-settlement-family-trust-2025-9",
+  "title": "The 'Succession' Drama Over the Murdoch Family Trust Ends - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s70",
+  "url": "https://www.cbc.ca/news/world/murdoch-trust-settled-fox-1.7628634",
+  "title": "Eldest Murdoch son wins real-life Succession battle | CBC News",
+  "domain": "cbc.ca",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s71",
+  "url": "https://www.scmp.com/news/world/united-states-canada/article/3324815/murdoch-family-reach-deal-succession-lachlan-gets-media-empire",
+  "title": "Murdoch family settles succession dispute as Lachlan gets media empire | South China Morning Post",
+  "domain": "scmp.com",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s72",
+  "url": "https://www.abc.net.au/news/2025-09-10/murdoch-money-trust/105753004",
+  "title": "Murdochs resolve succession saga but family's hold on empire is vulnerable - ABC News",
+  "domain": "abc.net.au",
+  "publish_date": "2025-09-09",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s73",
+  "url": "https://www.smh.com.au/business/companies/pleased-the-matter-is-behind-them-murdoch-children-break-silence-over-family-deal-20250911-p5mu4u.html",
+  "title": "Murdoch family succession: Children break silence, saying they are \u2018pleased\u2019 with family deal",
+  "domain": "smh.com.au",
+  "publish_date": "2025-09-10",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s74",
+  "url": "https://www.spokesman.com/stories/2025/sep/08/murdoch-family-resolves-dispute-over-ownership-in-",
+  "title": "Murdoch family resolves dispute over ownership in billion-dollar deal",
+  "domain": "spokesman.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s75",
+  "url": "https://www.afr.com/companies/media-and-marketing/murdoch-family-settles-succession-dispute-in-2-5b-deal-20250909-p5mth2",
+  "title": "Rupert Murdoch settles succession plan, Lachlan Murdoch to retain control of News Corp, Fox Corporation",
+  "domain": "afr.com",
+  "publish_date": "2025-09-08",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s76",
+  "url": "https://note.com/family_biz/n/n89d342a1985c?hl=en",
+  "title": "33\u5104\u30c9\u30eb\u3001\u300e\u5e73\u7b49\u4fe1\u8a17\u300f\u306f\u89e3\u3051\u305f\u3002\u30de\u30fc\u30c9\u30c3\u30af3\u4eba\u306e\u5b50\u304c\u964d\u308a\u305f\u65e5\uff5c\u65e5\u672c\u30d5\u30a1\u30df\u30ea\u30fc\u30d3\u30b8\u30cd\u30b9\u7dcf\u5408\u7814\u7a76\u6240",
+  "domain": "note.com",
+  "publish_date": "2026-09-11",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 10.0
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 12.5
+ },
+ {
+  "type": "claim",
+  "id": "c1",
+  "source_id": "s25",
+  "question_id": "q3",
+  "value": "about $1.1 billion each",
+  "normalized": "1100000000",
+  "quote": "Under the deal, Rupert's children James Murdoch, Elisabeth Murdoch and Prudence MacLeod are each expected to receive about $1.1 billion in proceeds"
+ },
+ {
+  "type": "claim",
+  "id": "c2",
+  "source_id": "s69",
+  "question_id": "q3",
+  "value": "about $1.1 billion each",
+  "normalized": "1100000000",
+  "quote": "The settlement sees three of Rupert Murdoch's children part with their stakes in the family business for cash compensation of about $1.1 billion each"
+ },
+ {
+  "type": "claim",
+  "id": "c3",
+  "source_id": "s71",
+  "question_id": "q3",
+  "value": "about US$1.1 billion each",
+  "normalized": "1100000000",
+  "quote": "are each expected to receive about US$1.1 billion in proceeds"
+ },
+ {
+  "type": "claim",
+  "id": "c4",
+  "source_id": "s24",
+  "question_id": "q3",
+  "value": "$1.1 billion each (in a deal worth $3.3 billion)",
+  "normalized": "1100000000",
+  "quote": "Lachlan's three oldest siblings will receive $1.1 billion each for all their shares in the empire"
+ },
+ {
+  "type": "claim",
+  "id": "c5",
+  "source_id": "s73",
+  "question_id": "q3",
+  "value": "$US1.1 billion ($1.7 billion) each",
+  "normalized": "1100000000",
+  "quote": "The trio will walk away with $US1.1 billion ($1.7 billion) each in the settlement"
+ },
+ {
+  "type": "claim",
+  "id": "c6",
+  "source_id": "s42",
+  "question_id": "q3",
+  "value": "an estimated $1.1bn each",
+  "normalized": "1100000000",
+  "quote": "with his three oldest siblings receiving an estimated $1.1bn each for their shares in the business"
+ },
+ {
+  "type": "claim",
+  "id": "c7",
+  "source_id": "s44",
+  "question_id": "q3",
+  "value": "$1.1 billion each",
+  "normalized": "1100000000",
+  "quote": "They will receive $1.1 billion each under the deal"
+ },
+ {
+  "type": "claim",
+  "id": "c8",
+  "source_id": "s76",
+  "question_id": "q3",
+  "value": "about $3.3 billion (33\u5104\u30c9\u30eb) in stock and cash",
+  "normalized": "3300000000",
+  "quote": "\u7dcf\u984d\u306f\u7d0433\u5104\u30c9\u30eb\u76f8\u5f53\u306e\u682a\u5f0f\u30fb\u73fe\u91d1\u3068\u3001Variety\u304a\u3088\u3073 Axios\u304c\u540c\u65e5\u5831\u3058\u3066\u3044\u307e\u3059"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 8,
+  "conflicts": 0,
+  "seconds": 14.5
+ },
+ {
+  "type": "claim",
+  "id": "c9",
+  "source_id": "s1",
+  "question_id": "q1",
+  "value": "a decision filed on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "concluded in a decision filed on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c10",
+  "source_id": "s2",
+  "question_id": "q1",
+  "value": "a decision filed on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "concluded in a decision filed on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c11",
+  "source_id": "s4",
+  "question_id": "q1",
+  "value": "released Saturday",
+  "normalized": "2024-12-07",
+  "quote": "It was authored by Probate Commissioner Edmund \"Joe\" Gorman, Jr., and released Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c12",
+  "source_id": "s7",
+  "question_id": "q1",
+  "value": "a decision filed on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "concluded in a decision filed on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c13",
+  "source_id": "s8",
+  "question_id": "q1",
+  "value": "Dec 9 2024 final report",
+  "normalized": "2024-12-09",
+  "quote": "Gorman Jr.'s 96-page December 9, 2024 ruling"
+ },
+ {
+  "type": "claim",
+  "id": "c14",
+  "source_id": "s9",
+  "question_id": "q1",
+  "value": "issued his decision on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "issued his decision on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c15",
+  "source_id": "s10",
+  "question_id": "q1",
+  "value": "a decision filed on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "concluded in a decision filed on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c16",
+  "source_id": "s12",
+  "question_id": "q1",
+  "value": "On 9 December 2024, Gorman issued his decision",
+  "normalized": "2024-12-09",
+  "quote": "On 9 December 2024, Gorman issued his decision."
+ },
+ {
+  "type": "claim",
+  "id": "c17",
+  "source_id": "s14",
+  "question_id": "q1",
+  "value": "a decision filed on Saturday",
+  "normalized": "2024-12-07",
+  "quote": "concluded in a decision filed on Saturday"
+ },
+ {
+  "type": "claim",
+  "id": "c18",
+  "source_id": "s6",
+  "question_id": "q1",
+  "value": "filed in December 2024",
+  "normalized": "2024-12",
+  "quote": "His 96-page recommendation was filed in December 2024"
+ },
+ {
+  "type": "claim",
+  "id": "c19",
+  "source_id": "s15",
+  "question_id": "q1",
+  "value": "a crucial decision in December 2024",
+  "normalized": "2024-12",
+  "quote": "A crucial decision by Nevada probate court commissioner Edmund Gorman in December 2024"
+ },
+ {
+  "type": "claim",
+  "id": "c20",
+  "source_id": "s16",
+  "question_id": "q1",
+  "value": "In December 2024, Nevada probate commissioner Edmund J. Gorman Jr. issued a 96-page ruling",
+  "normalized": "2024-12",
+  "quote": "In December 2024, Nevada probate commissioner Edmund J. Gorman Jr. issued a 96-page ruling rejecting the petition."
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 20,
+  "conflicts": 0,
+  "seconds": 15.1
+ },
+ {
+  "type": "claim",
+  "id": "c21",
+  "source_id": "s20",
+  "question_id": "q6",
+  "value": "Monday (News Corp and Fox Corp. announced the resolution)",
+  "normalized": "2025-09-08",
+  "quote": "[News Corp](https://www.axios.com/2025/06/22/news-corp-ceo-contract-renewed) and Fox Corp. on Monday announced that the Murdoch family resolved its dispute over the succession of both companies"
+ },
+ {
+  "type": "claim",
+  "id": "c22",
+  "source_id": "s22",
+  "question_id": "q6",
+  "value": "Monday afternoon",
+  "normalized": "2025-09-08",
+  "quote": "The family announced the settlement Monday afternoon"
+ },
+ {
+  "type": "claim",
+  "id": "c23",
+  "source_id": "s35",
+  "question_id": "q6",
+  "value": "Monday",
+  "normalized": "2025-09-08",
+  "quote": "The settlement was announced Monday."
+ },
+ {
+  "type": "claim",
+  "id": "c24",
+  "source_id": "s37",
+  "question_id": "q6",
+  "value": "Monday (resolved, according to statements from Fox Corp and News Corp)",
+  "normalized": "2025-09-08",
+  "quote": "A protracted legal battle over the future of the Murdoch family trust was resolved on Monday, according to statements from the two companies, Fox Corp and News Corp."
+ },
+ {
+  "type": "claim",
+  "id": "c25",
+  "source_id": "s38",
+  "question_id": "q6",
+  "value": "Monday",
+  "normalized": "2025-09-08",
+  "quote": "has been resolved, the family's holding companies, News Corp and Fox, announced Monday."
+ },
+ {
+  "type": "claim",
+  "id": "c26",
+  "source_id": "s39",
+  "question_id": "q6",
+  "value": "Monday (the family announced the deal)",
+  "normalized": "2025-09-08",
+  "quote": "The deal, which the family announced on Monday, will ensure the ongoing conservative leaning of Fox News"
+ },
+ {
+  "type": "claim",
+  "id": "c27",
+  "source_id": "s40",
+  "question_id": "q6",
+  "value": "September 8, 2025",
+  "normalized": "2025-09-08",
+  "quote": "News Corp and Fox Corp announced on September 8, 2025."
+ },
+ {
+  "type": "claim",
+  "id": "c28",
+  "source_id": "s42",
+  "question_id": "q6",
+  "value": "Monday",
+  "normalized": "2025-09-08",
+  "quote": "The family announced on Monday that Lachlan Murdoch, Murdoch\u2019s eldest son, will secure control"
+ },
+ {
+  "type": "claim",
+  "id": "c29",
+  "source_id": "s43",
+  "question_id": "q6",
+  "value": "Monday",
+  "normalized": "2025-09-08",
+  "quote": "News Corp and Fox Corp announced Monday."
+ },
+ {
+  "type": "claim",
+  "id": "c30",
+  "source_id": "s16",
+  "question_id": "q6",
+  "value": "September 8, 2025",
+  "normalized": "2025-09-08",
+  "quote": "On September 8, 2025, Fox Corporation and News Corp announced the resolution of the Murdoch Family Trust matter."
+ },
+ {
+  "type": "claim",
+  "id": "c31",
+  "source_id": "s25",
+  "question_id": "q6",
+  "value": "Monday",
+  "normalized": "2025-09-08",
+  "quote": "The agreement, announced on Monday, ends a family brawl over who will control one of the most high-profile global media groups"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 31,
+  "conflicts": 0,
+  "seconds": 15.2
+ },
+ {
+  "type": "claim",
+  "id": "c32",
+  "source_id": "s21",
+  "question_id": "q4",
+  "value": "The Murdoch Trust Fund will control 33 per cent of News Corp shares and 36 per cent of Fox Corp shares, with voting control resting solely with Lachlan Murdoch",
+  "normalized": "33",
+  "quote": "will control 33 per cent of News Corp shares and 36 per cent of Fox Corp Shares"
+ },
+ {
+  "type": "claim",
+  "id": "c33",
+  "source_id": "s25",
+  "question_id": "q4",
+  "value": "The new trust will hold 36% of Fox's Class B common stock and 33% of News Corp's Class B shares, with voting control resting solely with Lachlan Murdoch",
+  "normalized": "36",
+  "quote": "will hold 36% of Fox's Class B common stock and 33% of News Corp's Class B shares"
+ },
+ {
+  "type": "claim",
+  "id": "c34",
+  "source_id": "s30",
+  "question_id": "q4",
+  "value": "The trusts will own approximately 36.2% of FOX's Class B common stock, with voting control resting solely with Lachlan Murdoch",
+  "normalized": "36.2",
+  "quote": "expected to consist of approximately 36.2% of FOX's Class B common stock"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 34,
+  "conflicts": 0,
+  "seconds": 15.5
+ },
+ {
+  "type": "claim",
+  "id": "c35",
+  "source_id": "s53",
+  "question_id": "q2",
+  "value": "September 17 local time",
+  "normalized": "2024-09-17",
+  "quote": "The case, which begins on September 17 local time, is scheduled to run (in secret) for two weeks"
+ },
+ {
+  "type": "claim",
+  "id": "c36",
+  "source_id": "s55",
+  "question_id": "q2",
+  "value": "Monday (per the article published 2024-09-12, i.e. Monday, September 16, 2024)",
+  "normalized": "2024-09-16",
+  "quote": "Now, the Reno court is set to begin hearing evidence Monday in what is expected to be a two week trial"
+ },
+ {
+  "type": "claim",
+  "id": "c37",
+  "source_id": "s58",
+  "question_id": "q2",
+  "value": "Monday (per the article published 2024-09-16, i.e. Monday, September 16, 2024)",
+  "normalized": "2024-09-16",
+  "quote": "Mr Murdoch, 93, arrived at court on Monday for the hearing."
+ },
+ {
+  "type": "claim",
+  "id": "c38",
+  "source_id": "s60",
+  "question_id": "q2",
+  "value": "Monday (per the article published 2024-09-16, i.e. Monday, September 16, 2024)",
+  "normalized": "2024-09-16",
+  "quote": "Murdoch, 93, arrived at court Monday for the hearing."
+ },
+ {
+  "type": "claim",
+  "id": "c39",
+  "source_id": "s63",
+  "question_id": "q2",
+  "value": "Monday (per the article published 2024-09-16, i.e. Monday, September 16, 2024)",
+  "normalized": "2024-09-16",
+  "quote": "Rupert Murdoch and four of his children on Monday went before a Nevada probate commissioner behind closed doors to an evidentiary hearing"
+ },
+ {
+  "type": "claim",
+  "id": "c40",
+  "source_id": "s64",
+  "question_id": "q2",
+  "value": "Monday (per the article published 2024-09-12, i.e. Monday, September 16, 2024)",
+  "normalized": "2024-09-16",
+  "quote": "Now, the Reno court is set to begin hearing evidence Monday in what is expected to be a two week trial"
+ },
+ {
+  "type": "claim",
+  "id": "c41",
+  "source_id": "s68",
+  "question_id": "q2",
+  "value": "September 16, 2024",
+  "normalized": "2024-09-16",
+  "quote": "Probate Commissioner Edmund J. Gorman Jr. is presiding over the proceedings, which began on September 16, 2024."
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 41,
+  "conflicts": 0,
+  "seconds": 16.0
+ },
+ {
+  "type": "conflict",
+  "id": "k1",
+  "question_id": "q1",
+  "claim_ids": [
+   "c9",
+   "c10",
+   "c11",
+   "c12",
+   "c13",
+   "c14",
+   "c15",
+   "c16",
+   "c17",
+   "c18",
+   "c19",
+   "c20"
+  ],
+  "values": [
+   "2024-12-07",
+   "2024-12-09"
+  ],
+  "primary_value": null,
+  "summary": "Sources give 2 different answers to \u201cOn what date did the Nevada probate commissioner file the sealed ruling in the Murdoch family trust case (the 'Project Family' decision)?\u201d: 2024-12-07 (7 sources), 2024-12-09 (2 sources). No primary source found."
+ },
+ {
+  "type": "conflict",
+  "id": "k2",
+  "question_id": "q2",
+  "claim_ids": [
+   "c35",
+   "c36",
+   "c37",
+   "c38",
+   "c39",
+   "c40",
+   "c41"
+  ],
+  "values": [
+   "2024-09-16",
+   "2024-09-17"
+  ],
+  "primary_value": null,
+  "summary": "Sources give 2 different answers to \u201cOn what date did the Nevada probate court hearing in the Murdoch trust case begin in Reno?\u201d: 2024-09-16 (6 sources), 2024-09-17 (1 source). No primary source found."
+ },
+ {
+  "type": "conflict",
+  "id": "k3",
+  "question_id": "q3",
+  "claim_ids": [
+   "c1",
+   "c2",
+   "c3",
+   "c4",
+   "c5",
+   "c6",
+   "c7",
+   "c8"
+  ],
+  "values": [
+   "1100000000",
+   "3300000000"
+  ],
+  "primary_value": null,
+  "summary": "Sources give 2 different answers to \u201cHow much was the cash-and-stock settlement reported as being paid to Rupert Murdoch's three eldest children to resolve the succession dispute?\u201d: 1100000000 (7 sources), 3300000000 (1 source). No primary source found."
+ },
+ {
+  "type": "conflict",
+  "id": "k4",
+  "question_id": "q4",
+  "claim_ids": [
+   "c32",
+   "c33",
+   "c34"
+  ],
+  "values": [
+   "33",
+   "36",
+   "36.2"
+  ],
+  "primary_value": "36.2",
+  "summary": "Sources give 3 different answers to \u201cWhat percentage of voting control did Lachlan Murdoch hold in the newly created Murdoch Family Trust after the 2025 settlement?\u201d: 33 (1 source), 36 (1 source), 36.2 (1 source). A primary source says 36.2."
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 41,
+  "conflicts": 4,
+  "seconds": 16.0
+ },
+ {
+  "type": "verdict",
+  "text": "The sources agree that the settlement of the Murdoch succession dispute was announced in a statement from News Corp and Fox on September 8, 2025, with 11 sources giving that date, and they also broadly agree that roughly $1.1 billion was reported as paid to Rupert Murdoch's three eldest children, since 7 sources give that figure against 1 giving $3.3 billion. They disagree on the date the Nevada probate commissioner filed the sealed 'Project Family' ruling, with most sources (7) saying December 7, 2024, others saying December 9, 2024 or just December 2024, and on whether the Reno probate hearing began September 16, 2024 (6 sources) or September 17, 2024 (1 source); they also split on Lachlan Murdoch's voting stake in the new Murdoch Family Trust, with figures of 33 percent, 36 percent, and 36.2 percent. No primary source was found for any of these contested points, so the conflicting values remain unresolved in the record, and no source count was available for the total registered shares Rupert Murdoch moved to the new trust in September 2023."
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 76,
+  "claims": 41,
+  "conflicts": 4,
+  "seconds": 18.3
+ }
+]

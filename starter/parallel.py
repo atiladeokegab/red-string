@@ -49,9 +49,14 @@ def search(objective: str, queries: list[str], max_results: int = 5) -> list[dic
     return json.loads(text)["results"][:max_results]
 
 
-def respond(question: str, effort: str = "low") -> dict:
-    """Researched answer -> {text, sources: [{url, title}]}. low ~3-10s, medium ~20s, high ~60s."""
+def respond(question: str, effort: str = "low", schema: dict | None = None) -> dict:
+    """Researched answer -> {text, sources: [{url, title}]}. low ~3-10s, medium ~20s, high ~60s.
+
+    schema: a JSON Schema (object root) the text must satisfy (Structured Outputs)."""
     body = {"model": "parallel", "input": question, "reasoning": {"effort": effort}}
+    if schema:
+        fmt = {"type": "json_schema", "name": "answer", "strict": True, "schema": schema}
+        body["text"] = {"format": fmt}
     parts = [
         c
         for i in _post("responses", body)["output"]
