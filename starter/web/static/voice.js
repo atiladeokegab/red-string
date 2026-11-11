@@ -82,20 +82,48 @@ for (const id of ['go', 'replay']) $(id).addEventListener('click', () => { hush(
 paint();
 
 const mic = $('mic');
-if (!Rec) { mic.disabled = true; mic.title = 'This browser has no speech recognition. Try Chrome.'; }
-else {
-  const rec = new Rec(); rec.lang = 'en-US'; rec.interimResults = true;
-  const off = () => { listening = false; mic.classList.remove('on'); mic.textContent = 'Speak'; };
-  mic.onclick = () => {
-    if (listening) return rec.stop();
-    hush(); listening = true; mic.classList.add('on'); mic.textContent = '● Listening';  // quiet, or the mic hears the crew
-    try { rec.start(); } catch { off(); }
-  };
+const run = () => $(new URLSearchParams(location.search).has('replay') ? 'replay' : 'go').click();
+const off = () => { listening = false; mic.classList.remove('on'); mic.textContent = 'Speak'; };
+const start = label => { hush(); listening = true; mic.classList.add('on'); mic.textContent = label; };  // quiet, or the mic hears the crew
+let rec, recorder, sttOff = !window.MediaRecorder || !navigator.mediaDevices?.getUserMedia;
+if (Rec) {
+  rec = new Rec(); rec.lang = 'en-US'; rec.interimResults = true;
   rec.onresult = e => {
     const r = e.results[e.results.length - 1];
     $('premise').value = r[0].transcript.trim();
-    if (r.isFinal && $('premise').value) { off(); $(new URLSearchParams(location.search).has('replay') ? 'replay' : 'go').click(); }
+    if (r.isFinal && $('premise').value) { off(); run(); }
   };
   rec.onend = off;
   rec.onerror = e => { off(); mic.title = 'Microphone: ' + e.error; };
 }
+const browserMic = () => { if (!rec) return off(); start('● Listening'); try { rec.start(); } catch { off(); } };
+
+// OpenAI transcription first (Web Speech struggles in a noisy room); a 503 or any failure falls back to Web Speech.
+async function record() {
+  start('● Recording');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const chunks = [], mine = recorder = new MediaRecorder(stream);
+    mine.ondataavailable = e => chunks.push(e.data);
+    mine.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop()); recorder = null; mic.textContent = '… Transcribing';
+      const blob = new Blob(chunks, { type: mine.mimeType || 'audio/webm' });
+      try {
+        const r = await fetch('/api/stt', { method: 'POST', body: blob, headers: { 'Content-Type': blob.type }, signal: AbortSignal.timeout(15000) });
+        if (r.status === 503) sttOff = true;  // no key on this server: go straight to Web Speech from now on
+        const text = r.ok && (await r.json()).text?.trim();
+        if (!text) throw new Error('no transcript');
+        off(); $('premise').value = text; run();
+      } catch { off(); browserMic(); }  // say it again, to the browser's recogniser
+    };
+    mine.start(); setTimeout(() => recorder === mine && mine.stop(), 20000);  // 20 s of opus stays far under the 2 MB cap
+  } catch { sttOff = true; off(); browserMic(); }
+}
+
+mic.disabled = !rec && sttOff;
+if (mic.disabled) mic.title = 'This browser cannot record. Try Chrome.';
+mic.onclick = () => {  // click to start, click again to stop
+  if (recorder) return recorder.stop();
+  if (listening) return rec?.stop();
+  sttOff ? browserMic() : record();
+};
