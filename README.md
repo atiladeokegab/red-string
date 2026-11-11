@@ -66,8 +66,8 @@ uv run uvicorn starter.main:app --port 8000
 ```
 
 **Replay** plays back a saved real run with no network, for when the venue Wi-Fi does not cooperate.
-Add `?replay` to the URL to start the OpenAI run on load (156 sources, 36 claims, 4 contradictions), or
-`?replay=murdoch` for the Murdoch succession dispute (124 sources, 82 claims, 1 contradiction).
+Add `?replay` to the URL to start the OpenAI run on load (152 sources, 70 claims, 1 contradiction), or
+`?replay=murdoch` for the Murdoch succession dispute (126 sources, 93 claims, where the sources agree and no red string is drawn).
 
 The page is a 3D world: every answer is a tower whose height is the number of sources that state it,
 contradicting answers turn red and are joined by a red string, and five block investigators
