@@ -213,7 +213,7 @@ function on(e) {
     if (as[0]) { S.focus = as; send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
   } else if (e.type === 'stats') {
     for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = e[k];
-  } else if (e.type === 'verdict' || e.type === 'error') {
+  } else if (e.type === 'verdict' || fatal(e)) {  // a per-question error is not the end: the engine carries on
     $('verdict').textContent = e.type === 'error' ? 'Could not finish: ' + e.message : e.text;
     $('verdict').hidden = false;
     send('Editor', N.get('p'), e.type === 'error' ? 'stopped' : 'case written up');
@@ -234,11 +234,16 @@ function detail(qid) {
 $('x').onclick = () => { $('detail').hidden = true; $('key').hidden = false; };
 
 function stop() { es?.close(); es = null; $('go').disabled = $('replay').disabled = false; }
+const fatal = e => e.type === 'error' && e.question_id == null;
+let done;
 function run(url) {
-  stop(); reset($('premise').value); $('go').disabled = $('replay').disabled = true;
+  stop(); done = false; reset($('premise').value); $('go').disabled = $('replay').disabled = true;
   es = new EventSource(url);
-  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict' || e.type === 'error') stop(); };
-  es.onerror = stop;  // EventSource reconnects by default, which would restart the run
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
+  es.onerror = () => {  // EventSource reconnects by default, which would restart the run
+    if (!done) { $('verdict').textContent = 'The investigation stopped before a verdict. Press Investigate or Replay to run it again.'; $('verdict').hidden = false; }
+    stop();
+  };
 }
 const qs = new URLSearchParams(location.search);
 const saved = () => qs.get('replay') || (/openai|altman/i.test($('premise').value) ? 'openai' : 'murdoch');
