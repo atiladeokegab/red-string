@@ -68,9 +68,9 @@ export function start(premise, crew, pretty) {
   el.innerHTML = `<small>Case file RS-${t.getFullYear()}${p(t.getMonth() + 1)}${p(t.getDate())}-${p(t.getHours())}${p(t.getMinutes())}</small>
     <h2>${esc(premise)}</h2><small>On the case</small>
     <ul>${Object.values(crew).map(a => `<li><b style="--c:${a.color}">${esc(a.name)}</b>${esc(ROLE[a.name] || '')}</li>`).join('')}</ul>`;
-  setTimeout(() => el.classList.add('away'), 2500);
+  setTimeout(() => el.classList.add('away'), 5000);
   say('Editor', `New case. ${premise.trim().replace(/[.?!]+$/, '')}. Find me the sources.`, crew.Editor?.color);  // built from the premise only
-  setTimeout(() => el.remove(), 3100);
+  setTimeout(() => el.remove(), 5600);
 }
 
 export function on(e) {
