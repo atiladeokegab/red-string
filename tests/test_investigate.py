@@ -282,16 +282,25 @@ def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkey
     monkeypatch.setattr(parallel, "respond", respond)
     monkeypatch.setattr(parallel, "search", search)
     events = list(inv.investigate("p"))
-    assert [e["type"] for e in events if e["type"] != "stats"] == [
+    assert [e["type"] for e in events if e["type"] not in ("stats", "degraded")] == [
         "entity",
         "question",
         "error",
         "verdict",
     ]
+    # no key in tests: FindAll and Image Search say so, the Editor falls back to Responses
+    degraded = {e["endpoint"] for e in events if e["type"] == "degraded"}
+    assert degraded == {"findall", "image_search"}
+    assert next(e for e in events if e["type"] == "verdict")["endpoint"] == "responses"
+
+    def extract(urls, objective):  # the live a.com page has since been corrected
+        text = "on 7 Dec" if urls[0] == "https://sec.gov/2" else "corrected: on 7 Dec"
+        return [{"url": urls[0], "excerpts": [text]}]
 
     monkeypatch.setattr(parallel, "search", lambda o, q, m=5: search("", q))
+    monkeypatch.setattr(parallel, "extract", extract)
     events = list(inv.investigate("p"))
-    kinds = [e["type"] for e in events if e["type"] != "stats"]
+    kinds = [e["type"] for e in events if e["type"] not in ("stats", "degraded")]
     assert kinds == [
         "entity",
         "question",
@@ -300,8 +309,16 @@ def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkey
         "claim",
         "claim",
         "conflict",
+        "recheck",
+        "recheck",
         "verdict",
     ]
+    rechecks = {e["url"]: e for e in events if e["type"] == "recheck"}
+    assert rechecks["https://a.com/1"]["still_says"] is False
+    assert rechecks["https://a.com/1"]["live_excerpt"] == "corrected: on 7 Dec"
+    assert rechecks["https://sec.gov/2"]["still_says"] is True
+    assert {e["endpoint"] for e in rechecks.values()} == {"extract"}
+    assert rechecks["https://a.com/1"]["conflict_id"] == "k1"
     conflict = next(e for e in events if e["type"] == "conflict")
     assert conflict["primary_value"] == "2024-12-07" and conflict["id"] == "k1"
     assert events[-1] == {**events[-1], "type": "stats", "sources": 2, "claims": 2, "conflicts": 1}
@@ -317,3 +334,76 @@ def test_replay_streams_the_saved_run_without_login(client, tmp_path, monkeypatc
     assert [json.loads(b[6:]) for b in r.text.strip().split("\n\n")] == saved
     assert client.get("/api/investigate/replay?name=../demo").status_code == 404
     assert client.get("/api/investigate").status_code == 422
+
+
+def test_every_new_endpoint_feeds_the_run_and_402_degrades_it(monkeypatch):
+    def respond(prompt, effort="low", schema=None):
+        if "Investigative premise" in prompt:
+            data = {
+                "entities": [{"name": "NOAA", "kind": "org"}],
+                "questions": [{"text": "On what date did Maria make landfall?", "kind": "date"}],
+            }
+        elif "SAME fact" in prompt:
+            data = {"same": True}
+        elif "Question:" in prompt:
+            data = [
+                {
+                    "source_id": "s1",
+                    "value": "20 Sep",
+                    "normalized": "2017-09-20",
+                    "quote": "on 20 Sep",
+                },
+                {
+                    "source_id": "s2",
+                    "value": "22 Sep",
+                    "normalized": "2017-09-22",
+                    "quote": "on 22 Sep",
+                },
+            ]
+        else:
+            return {"text": "Responses verdict.", "sources": []}
+        return {"text": json.dumps(data), "sources": []}
+
+    hits = [
+        {"url": "https://a.com/1", "title": "a", "excerpts": ["landfall on 20 Sep 2017"]},
+        {"url": "https://noaa.gov/m", "title": "b", "excerpts": ["landfall on 22 Sep 2017"]},
+    ]
+    basis = [{"field": "verdict", "citations": [{"url": "https://noaa.gov/m", "title": "NHC"}]}]
+    monkeypatch.setattr(parallel, "respond", respond)
+    monkeypatch.setattr(parallel, "search", lambda o, q, m=5: hits)
+    monkeypatch.setattr(
+        parallel, "extract", lambda u, o: [{"url": u[0], "excerpts": ["landfall on 20 Sep 2017"]}]
+    )
+    monkeypatch.setattr(
+        parallel, "task", lambda i, s: {"content": {"verdict": "Task verdict."}, "basis": basis}
+    )
+    monkeypatch.setattr(parallel, "findall", lambda o, t: [{"name": "NHC", "url": "https://nhc"}])
+    monkeypatch.setattr(
+        parallel, "image_search", lambda o, q: [{"image_url": "https://img", "title": "Maria"}]
+    )
+    events = list(inv.investigate("Hurricane Maria"))
+    assert {e["type"] for e in events} >= {"recheck", "image"} and "degraded" not in str(events)
+    found = next(e for e in events if e.get("endpoint") == "findall")
+    assert found == {**found, "type": "entity", "name": "NHC", "url": "https://nhc"}
+    assert next(e for e in events if e["type"] == "image")["endpoint"] == "image_search"
+    noaa = next(e for e in events if e["type"] == "recheck" and e["url"] == "https://noaa.gov/m")
+    assert noaa["still_says"] is False  # the live page no longer says 22 Sep
+    verdict = next(e for e in events if e["type"] == "verdict")
+    assert verdict["endpoint"] == "task" and verdict["text"].startswith("Task verdict.")
+    assert verdict["citations"] == [{"url": "https://noaa.gov/m", "title": "NHC"}]
+
+    def refused(*a, **k):
+        raise parallel.Unavailable("HTTP 402")
+
+    for name in ("extract", "task", "findall", "image_search"):
+        monkeypatch.setattr(parallel, name, refused)
+    events = list(inv.investigate("Hurricane Maria"))
+    assert {e["endpoint"] for e in events if e["type"] == "degraded"} == {
+        "extract",
+        "findall",
+        "image_search",
+    }
+    assert not [e for e in events if e["type"] in ("recheck", "image", "error")]
+    verdict = next(e for e in events if e["type"] == "verdict")
+    assert verdict["endpoint"] == "responses" and verdict["text"].startswith("Responses verdict.")
+    assert events[-1]["type"] == "stats" and events[-1]["conflicts"] == 1
