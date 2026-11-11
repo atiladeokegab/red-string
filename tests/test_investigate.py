@@ -202,6 +202,49 @@ def test_values_from_different_points_in_time_are_not_a_conflict(monkeypatch):
     )
 
 
+def test_an_appointment_and_its_later_announcement_are_not_a_conflict(monkeypatch):
+    votes = iter([True, False])  # one of the two votes says different stage: dropped
+    quotes = [
+        "The board appointed Shear on Nov. 19, 2023.",
+        "Shear announced his role Nov. 20, 2023.",
+    ]
+
+    def respond(prompt, effort="low", schema=None):
+        if "Investigative premise" in prompt:
+            data = {
+                "entities": [],
+                "questions": [{"text": "When was Shear named?", "kind": "date"}],
+            }
+        elif "SAME fact" in prompt:
+            assert "DIFFERENT stages" in prompt and "time zone" in prompt and "unsure" in prompt
+            data = {"same": next(votes)}
+        elif "Question:" in prompt:
+            data = [
+                {
+                    "source_id": f"s{i}",
+                    "value": q[-13:-1],
+                    "normalized": f"2023-11-{18 + i}",
+                    "quote": q,
+                }
+                for i, q in enumerate(quotes, 1)
+            ]
+        else:
+            assert "Shear" not in prompt  # the verdict prompt never sees the dropped question
+            return {"text": "Nothing disputed.", "sources": []}
+        return {"text": json.dumps(data), "sources": []}
+
+    hits = [
+        {"url": f"https://{d}.com/1", "title": d, "excerpts": [q]}
+        for d, q in zip("ab", quotes, strict=True)
+    ]
+    monkeypatch.setattr(parallel, "respond", respond)
+    monkeypatch.setattr(parallel, "search", lambda o, q, m=5: hits)
+    events = list(inv.investigate("p"))
+    assert sum(e["type"] == "claim" for e in events) == 2
+    assert not [e for e in events if e["type"] == "conflict"]
+    assert next(votes, None) is None  # both votes were asked
+
+
 def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkeypatch):
     def respond(prompt, effort="low", schema=None):
         if "Investigative premise" in prompt:

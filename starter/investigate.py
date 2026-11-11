@@ -325,21 +325,29 @@ def _claims(q: dict, excerpts: dict[str, str], published: dict | None = None) ->
 
 def _same_fact(question: dict, claims: list[dict], values: list[str]) -> bool:
     """One model call: do the differing values answer the same fact at the same point in time?"""
-    quotes = "\n".join(
-        f"- {v}: “{next(c['quote'] for c in claims if c['normalized'] == v)}”" for v in values
+    quotes = "\n".join(  # up to three per value: one quote alone can hide that the act is the same
+        f"- {v}: “{c['quote']}”"
+        for v in values
+        for c in [c for c in claims if c["normalized"] == v][:3]
     )
     answer = parallel.respond(
-        f"Question: {question['text']}\n\nSources answer it with different values. One quote per "
+        f"Question: {question['text']}\n\nSources answer it with different values. Quotes per "
         f"value:\n{quotes}\n\n"
         "Using ONLY these quotes: do they state different values for the SAME fact at the SAME "
-        "point in time? same=true: the quotes are about the same event, or the same quantity as "
-        "of the same time, yet give different dates or numbers (also when one source is probably "
-        "mistaken, or dates a late-night event to the next calendar day). same=false: the quotes "
-        "themselves show different events or stages (signed vs cancelled, filed vs ruled, "
-        "announced vs finalised), a figure as of different times (a running count that grew, "
-        "before vs after a change, different years' reports), different things measured (a part "
-        "vs the total, one person's share vs everyone's), or one value is only a vaguer or "
-        "rounder form of another ('over 500' vs 555).",
+        "point in time, i.e. for the same STAGE of the same event? Decided, appointed, happened, "
+        "announced, reported, took effect, filed and published are DIFFERENT stages. "
+        "same=true only when both quotes clearly date or count the very same act (or the same "
+        "quantity as of the same time) and still give different dates or numbers, so that at "
+        "least one source must be wrong. same=false: the quotes show different events or stages "
+        "(signed vs cancelled, filed vs ruled, appointed vs the appointee announcing it, quit vs "
+        "the resignation being announced or reported); a quote dates the reporting, a statement "
+        "or an announcement rather than the event itself; a relative weekday or time of day ('on "
+        "Monday', 'late Sunday', 'overnight') could differ only by time zone or by when the "
+        "article was written; a figure as of different times (a running count that grew, before "
+        "vs after a change, different years' reports); different things measured (a part vs the "
+        "total, one person's share vs everyone's); or one value is only a vaguer or rounder form "
+        "of another ('over 500' vs 555). If both values could be true at once, or you are "
+        "unsure, answer same=false.",
         schema=_obj(same={"type": "boolean"}),
     )["text"]
     return parse_json(answer).get("same") is True
