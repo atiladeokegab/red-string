@@ -25,6 +25,7 @@ function env(node, t, peak, decay) {  // fast attack, exponential decay
 }
 function tone(type, f, peak, decay, delay = 0, f2) {
   const t = ctx.currentTime + delay, o = ctx.createOscillator();
+  if (window.speechSynthesis?.speaking) peak *= 0.4;  // duck under the crew's voice; the string twang itself stays full
   o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + decay);
   env(o, t, peak, decay); o.start(t); o.stop(t + decay + 0.05);
 }

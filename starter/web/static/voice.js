@@ -17,6 +17,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   #mute { white-space:nowrap; padding:1px 8px; font-size:11px; box-shadow:0 2px 0 #1b1b1b; background:#fff; color:#1b1b1b; }
   #mic { background:#ffd24a; color:#1b1b1b; } #mic.on { background:var(--red); color:#fff; }
   @media (max-height:560px), (max-width:900px) { #chan { display:none; } }
+  @media (max-width:900px) { header { flex-wrap:wrap; } }
 </style>`);
 $('replay').insertAdjacentHTML('afterend', '<button id="mic" title="Say what to investigate">Speak</button>');
 document.body.insertAdjacentHTML('beforeend',
@@ -37,7 +38,8 @@ function next() {
   u.pitch = PITCH[i % PITCH.length]; u.rate = 1.15;
   u.onend = u.onerror = () => speaking === job && next();
   speaking = job; job.u = u; job.row.classList.add('now');  // job.u: Chrome drops onend if the utterance is collected
-  timer = setTimeout(next, 15000);  // Chrome sometimes never fires onend; do not let one line jam the channel
+  // Chrome sometimes never fires onend: cancel the stuck line so it does not sit ahead of the next one in the native queue
+  timer = setTimeout(() => { if (speaking !== job) return; job.row.classList.remove('now'); speaking = null; synth.cancel(); next(); }, 15000);
   synth.speak(u);
 }
 
