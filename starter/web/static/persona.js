@@ -9,7 +9,7 @@ export const PERSONAS = {
   Editor: { attitude: 'calm chief, rules on disputes, wants it printable', emoji: ['🖋️', '📰', '✅'], speech: { pitch: 0.85, rate: 1.0 } },
 };
 
-const GAP_MS = 2500;
+const GAP_MS = 2500, STEP_MS = 2200;  // STEP_MS: spacing between lines returned together
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // ISO dates read better aloud as "20 Sep 2017"; anything else is shown as given
 const show = v => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v)); return m ? `${+m[3]} ${MONTHS[m[2] - 1]} ${m[1]}` : String(v); };
@@ -88,7 +88,8 @@ function scene(e, s) {  // the red-string moment: a fixed little scene, every va
   const out = [line('Sceptic', `Stop. ${a} versus ${b}. Can't both be true.`)];
   if (e.primary_value) out.push(line('Archivist', `The primary record says ${show(e.primary_value)}.`, 'Sceptic'));
   out.push(...pick(s, 'react', [[line('Timekeeper', 'Red string going up. Nobody touch it.')], [line('Identifier', `@Sceptic so which one's real?`, 'Sceptic')]]));
-  out.push(line('Editor', e.primary_value ? `We run ${show(e.primary_value)} and flag the dispute.` : 'We report both and flag the dispute.'));
+  // the Editor's ruling waits for the scene to finish: a verdict arriving meanwhile merges it with the sign-off
+  s.ruling = { run: e.primary_value ? `We run ${show(e.primary_value)}` : 'We report both', at: s.now0 + out.length * STEP_MS };
   return out;
 }
 
@@ -98,27 +99,30 @@ function closing(s) {  // the verdict payoff: counts are this run's own tally of
     line('Sceptic', `${plural(s.sources, 'source')}, ${plural(s.claims, 'claim')}, no contradictions. Annoying.`),
     line('Archivist', `${plural(answered, 'question')} answered. Every claim quoted.`, 'Sceptic'),
     line('Editor', `If the Sceptic's satisfied, I'm satisfied. Signed off.`)];
+  const ruling = s.ruling; s.ruling = null;
   return [
     line('Sceptic', `${plural(s.conflicts, 'red string')} on the wall. Told you.`),
-    line('Editor', `${plural(s.sources, 'source')} read, dispute flagged. Signed off.`)];
+    line('Editor', ruling ? `${ruling.run}, dispute flagged. Signed off.` : `${plural(s.sources, 'source')} read, dispute flagged. Signed off.`)];
 }
 
 export function banter(event, state) {
   state.rot ??= {}; state.answers ??= {}; state.dom ??= {}; state.said ??= new Set();
   state.sources ??= 0; state.claims ??= 0; state.questions ??= 0; state.conflicts ??= 0; state.last ??= -Infinity;
-  const now = state.now ?? Date.now();  // state.now lets a replay or a test drive the clock
-  let lines;
+  const now = state.now0 = state.now ?? Date.now();  // state.now lets a replay or a test drive the clock
+  let lines, base = 0;
   if (event.type === 'conflict' && event.values?.length >= 2) { state.conflicts++; lines = scene(event, state); }
-  else if (event.type === 'verdict') lines = closing(state);
-  else {
+  else if (event.type === 'verdict') { base = Math.max(0, (state.ruling?.at ?? 0) - now, state.last + STEP_MS - now); lines = closing(state); }
+  else if (state.ruling && now >= state.ruling.at) {  // a mid-run scene: the ruling goes out on the next event after it
+    lines = [line('Editor', `${state.ruling.run} and flag the dispute.`)]; state.ruling = null;
+  } else {
     lines = chatter(event, state);
     if (now - state.last < GAP_MS) return [];
     if (!lines.length) lines = filler(event, state);
     lines = lines.slice(0, 2);
   }
   lines = lines.filter(l => !state.said.has(l.text));  // never the same line twice in a run
-  if (lines.length) state.last = now;
-  for (const l of lines) state.said.add(l.text);
+  lines.forEach((l, i) => { l.wait = base + i * STEP_MS; state.said.add(l.text); });  // wait: ms the caller holds the line
+  if (lines.length) state.last = now + lines.at(-1).wait;
   return lines;
 }
 
@@ -135,12 +139,17 @@ export function selfTest() {
   const t = at(45000, { type: 'claim', question_id: 'q1', normalized: '2017-09-22' });
   ok(t.some(l => /22 Sep 2017/.test(l.text)), 'new tower names its value');
   const c = at(45100, { type: 'conflict', question_id: 'q1', values: ['2017-09-20', '2017-09-22'], primary_value: '2017-09-20' });
-  ok(c.length >= 3 && c.length <= 4, 'scene is 3-4 lines');
+  ok(c.length === 3 && c.every((l, i) => l.wait === i * 2200), 'scene is 3 spaced lines');
   ok(/20 Sep 2017/.test(c[0].text) && /22 Sep 2017/.test(c[0].text) && c[0].who === 'Sceptic', 'Sceptic quotes both values');
-  ok(c.some(l => l.who === 'Archivist') && c.at(-1).who === 'Editor', 'Archivist notes primary, Editor rules');
+  ok(c.some(l => l.who === 'Archivist'), 'Archivist notes primary');
+  const vd = banter({ type: 'verdict' }, { ...s, said: new Set(s.said), now: 45200 });
+  ok(vd.filter(l => l.who === 'Editor').length === 1 && /We run 20 Sep 2017, dispute flagged. Signed off./.test(vd.at(-1).text), 'Editor merges ruling and sign-off');
+  ok(vd[0].wait >= 2200 * 3 - 100, 'verdict payoff waits for the scene');
+  s.now = 52000; const rl = banter({ type: 'source', domain: 'w.com' }, s);
+  ok(rl.length === 1 && rl[0].who === 'Editor' && /We run 20 Sep 2017 and flag/.test(rl[0].text), 'mid-run ruling follows the scene');
   const c2 = banter({ type: 'conflict', question_id: 'q9', values: ['A', 'B'] }, s);
   ok(!c2.some(l => l.who === 'Archivist'), 'no primary claim when the event has none');
-  ok(at(46000, { type: 'source', domain: 'y.com' }).length === 0, 'scene resets the rate limit');
+  s.ruling = null; ok(at(52500, { type: 'source', domain: 'y.com' }).length === 0, 'scene resets the rate limit');
   for (const l of [...all, ...c2]) ok(words(l) <= 12, 'too long: ' + l.text), ok(PERSONAS[l.who], 'unknown speaker ' + l.who);
   let last = -Infinity;
   for (let i = 0; i < 200; i++) { s.now = 50000 + i * 300; if (banter({ type: 'source', domain: 'z.com' }, s).length) { ok(s.now - last >= GAP_MS, 'gap'); last = s.now; } }
