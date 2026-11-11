@@ -120,6 +120,7 @@
 <script type="module">
 import * as THREE from './three.module.min.js';
 import { addScenery } from './scenery.js';
+import { say } from './voice.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pretty = v => {
@@ -205,7 +206,7 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
-function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; }  // every new job makes the figure hop
+function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; say(name, text, a.el.style.getPropertyValue('--c')); }  // every new job makes the figure hop
 const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
 
 function node(id, kind, o = {}) {
