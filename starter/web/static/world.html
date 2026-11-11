@@ -120,6 +120,7 @@
 <script type="module">
 import * as THREE from './three.module.min.js';
 import { addScenery } from './scenery.js';
+import * as casefile from './casefile.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pretty = v => {
@@ -298,9 +299,9 @@ function stop() { es?.close(); es = null; $('go').disabled = $('replay').disable
 const fatal = e => e.type === 'error' && e.question_id == null;
 let done;
 function run(url) {
-  stop(); done = false; reset($('premise').value); $('go').disabled = $('replay').disabled = true;
+  stop(); done = false; reset($('premise').value); casefile.start($('premise').value, CREW, pretty); $('go').disabled = $('replay').disabled = true;
   es = new EventSource(url);
-  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };
   es.onerror = () => {  // EventSource reconnects by default, which would restart the run
     if (!done) { $('verdict').textContent = 'The investigation stopped before a verdict. Press Investigate or Replay to run it again.'; $('verdict').hidden = false; }
     stop();
