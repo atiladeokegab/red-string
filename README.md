@@ -25,8 +25,8 @@ Built in two hours at the Agentic Web build night (Parallel x No Agenda, London,
 5. **The verdict.** A short editor's note: what the sources agree on, where they differ, and what
    the primary record says.
 
-Every quote on the wall is checked to be a real substring of the text the source returned. A claim
-whose quote cannot be found is dropped, not shown. The tool reports what sources say; it makes no
+Every quote is checked to be a real substring of the text the source returned, and the date or
+number taken from it must be stated in that quote. A claim that fails either check is dropped, not shown. The tool reports what sources say; it makes no
 claims of its own.
 
 ## How it uses Parallel
@@ -36,7 +36,7 @@ claims of its own.
 | Identify the people and the checkable questions | Responses (`/v1/responses`) | One web-grounded answer, returned as JSON |
 | Read the reporting | Search (`/v1/search`) | Two searches per question (the reporting, then primary records), run concurrently, up to 15 sources each |
 | Quote what each source says | Responses | Batched calls per question over that question's excerpts, answers held to a JSON schema |
-| Find the contradictions | none | Plain code: more than one distinct date or number for the same question |
+| Find the contradictions | none, then Responses | Plain code finds more than one distinct date or number for the same question; each candidate is then checked twice to confirm the quotes describe the same fact at the same moment, or it is dropped |
 
 The counter at the top of the page shows the real number of Parallel searches and sources read in
 the run on screen.
@@ -62,12 +62,18 @@ uv sync
 echo "PARALLEL_API_KEY=your-key" > .env      # from platform.parallel.ai
 set -a; . ./.env; set +a
 uv run uvicorn starter.main:app --port 8000
-# open http://localhost:8000/static/wall.html
+# open http://localhost:8000/static/world.html
 ```
 
 **Replay** plays back a saved real run with no network, for when the venue Wi-Fi does not cooperate.
-Add `?replay` to the URL to start the Murdoch run on load (120 sources, 72 claims, 2 contradictions),
-or `?replay=openai` for the OpenAI board dispute (145 sources, 68 claims, 5 contradictions).
+Add `?replay` to the URL to start the OpenAI run on load (156 sources, 36 claims, 4 contradictions), or
+`?replay=murdoch` for the Murdoch succession dispute (124 sources, 82 claims, 1 contradiction).
+
+The page is a 3D world: every answer is a tower whose height is the number of sources that state it,
+contradicting answers turn red and are joined by a red string, and five block investigators
+(Identifier, Archivist, Timekeeper, Sceptic, Editor) run to whatever they are working on. Drag to look
+around, click a red tower to read the quotes side by side. The earlier flat evidence wall is still at
+`/static/wall.html`.
 
 `make check` runs the lint and the offline tests.
 

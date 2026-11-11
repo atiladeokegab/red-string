@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Red String</title>
+<style>
+  :root { --red:#ff2d2d; --gold:#ffd24a; --ink:#efe9df; --dim:#9a9185; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:#07060a; color:var(--ink); overflow:hidden;
+    font:14px/1.4 ui-sans-serif,system-ui,sans-serif; }
+  #g { position:fixed; inset:0; }
+  #labels { position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+  .lb { position:absolute; left:0; top:0; white-space:nowrap; text-shadow:0 0 6px #000,0 0 2px #000;
+    font-size:11px; color:var(--dim); will-change:transform; }
+  .lb.premise { font:600 17px Georgia,serif; color:#fff; }
+  .lb.entity { color:#8fc4ff; font-size:12px; }
+  .lb.question { color:#f2b84b; font-size:11px; }
+  .lb.answer { color:var(--ink); font:700 13px ui-monospace,Menlo,monospace; }
+  .lb.answer.primary { color:var(--gold); }
+  .lb.answer.red { color:#fff; background:var(--red); padding:1px 6px; border-radius:3px; text-shadow:none; }
+  header { position:fixed; left:0; right:0; top:0; display:flex; gap:10px; align-items:center;
+    padding:14px 18px; background:linear-gradient(#07060aee,#07060a00); }
+  h1 { margin:0 8px 0 0; font:600 24px Georgia,serif; }
+  h1 b { color:var(--red); font-weight:600; }
+  input { flex:1; max-width:460px; padding:9px 12px; background:#15131a; color:var(--ink);
+    border:1px solid #2c2833; border-radius:6px; font:inherit; }
+  button { padding:9px 16px; border-radius:6px; border:1px solid var(--red); background:var(--red);
+    color:#fff; font:600 14px inherit; cursor:pointer; }
+  button.ghost { background:none; border-color:#3a3540; color:var(--dim); }
+  button:disabled { opacity:.5; cursor:default; }
+  #stats { position:fixed; left:10px; top:66px; display:grid; gap:10px; padding:8px 12px; background:#07060ab3; border-radius:8px; z-index:2; }
+  header { z-index:2; } #verdict, #detail, #key { z-index:2; }
+  .st b { display:block; font:700 30px ui-monospace,Menlo,monospace; line-height:1; }
+  .st span { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+  .st.red b { color:var(--red); font-size:64px; text-shadow:0 0 24px #ff2d2d88; }
+  #via { position:fixed; left:18px; bottom:14px; color:var(--dim); font-size:11px; }
+  #key { position:fixed; right:18px; bottom:14px; color:var(--dim); font-size:11px; display:grid; gap:4px; }
+  #key i { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; }
+  #detail { position:fixed; right:14px; top:66px; bottom:14px; width:380px; overflow:auto; padding:16px;
+    background:#110f15f2; border:1px solid #2c2833; border-radius:8px; }
+  #detail h2 { margin:0 22px 12px 0; font:600 15px Georgia,serif; }
+  #detail h3 { margin:14px 0 6px; font:700 18px ui-monospace,Menlo,monospace; }
+  #detail h3.red { color:var(--red); } #detail h3.primary { color:var(--gold); }
+  #detail h3 small { font:11px ui-sans-serif,sans-serif; color:var(--dim); margin-left:6px; }
+  #detail blockquote { margin:0 0 8px; padding:8px 10px; background:#f3ecdf; color:#1d1a17; border-radius:3px;
+    font:13px/1.4 Georgia,serif; overflow-wrap:anywhere; }
+  #detail blockquote a { display:block; margin-top:4px; font:11px ui-monospace,monospace; color:#6b5f52; }
+  #x { position:absolute; right:10px; top:8px; background:none; border:0; color:var(--dim); font-size:18px; padding:4px; }
+  #verdict { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; width:min(680px,50vw);
+    max-height:17vh; overflow:auto; padding:12px 16px; background:#110f15e6; border:1px solid #2c2833;
+    border-left:3px solid var(--red); border-radius:6px; font:13px/1.45 Georgia,serif; }
+  [hidden] { display:none !important; }
+  .lb.agent { color:#fff; font-size:12px; background:#000a; padding:2px 7px; border-radius:10px; max-width:250px;
+    white-space:normal; border:1px solid #fff3; text-shadow:none; }
+  .lb.agent b { color:var(--c); }
+</style>
+</head>
+<body>
+<div id="g"></div>
+<div id="labels"></div>
+<header>
+  <h1>Red <b>String</b></h1>
+  <input id="premise" value="The OpenAI board's firing of Sam Altman" aria-label="What should we investigate?">
+  <button id="go">Investigate</button>
+  <button id="replay" class="ghost" title="Replay a saved real run, no network needed">Replay</button>
+</header>
+<div id="stats">
+  <div class="st red"><b id="n-conflicts">0</b><span>contradictions</span></div>
+  <div class="st"><b id="n-sources">0</b><span>sources read</span></div>
+  <div class="st"><b id="n-claims">0</b><span>claims quoted</span></div>
+  <div class="st"><b id="n-searches">0</b><span>Parallel searches</span></div>
+</div>
+<div id="key">
+  <span><i style="background:#f2b84b"></i>question</span>
+  <span><i style="background:#efe9df"></i>answer the sources give</span>
+  <span><i style="background:#ffd24a"></i>primary record</span>
+  <span><i style="background:#ff2d2d"></i>answers that contradict: click one</span>
+  <span><i style="background:#6b6470"></i>source</span>
+  <span>tower height = how many sources say it</span>
+  <span>drag to look around, scroll to zoom</span>
+</div>
+<div id="via">Reads the web with Parallel Search and Responses. Reports what sources say; makes no claims of its own.</div>
+<aside id="detail" hidden><button id="x" aria-label="Close">✕</button><div id="detail-body"></div></aside>
+<div id="verdict" hidden></div>
+
+<script src="3d-force-graph.min.js"></script>
+<script type="module">
+import * as THREE from './three.module.min.js';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pretty = v => {
+  const m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(v);
+  if (m && (m[2] || +m[1] > 1500 && +m[1] < 2100)) {
+    const mo = m[2] ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1] + ' ' : '';
+    return (m[3] ? +m[3] + ' ' : '') + mo + m[1];
+  }
+  const n = Number(v); if (!isFinite(n) || v === '') return v;
+  for (const [k, u] of [[1e12,'tn'],[1e9,'bn'],[1e6,'m']]) if (Math.abs(n) >= k) return +(n / k).toFixed(2) + u;
+  return n.toLocaleString('en-GB');
+};
+const COLOR = { premise:'#ffffff', entity:'#6fb1ff', question:'#f2b84b', answer:'#efe9df', source:'#6b6470' };
+const SIZE = n => n.kind === 'source' ? [7, 7, 7] : n.kind === 'entity' ? [16, 16, 30] : n.kind === 'question' ? [22, 22, 50]
+  : n.kind === 'premise' ? [44, 44, 80] : [24, 24, 10 + n.claims.length * 9];
+
+let N, L, S, dirty, es, orbit = true, ang = 0, T = 0, R = 400;
+const C = { x: 0, y: 0 };
+const BOX = new THREE.BoxGeometry(1, 1, 1).translate(0, 0, .5);  // unit block standing on the floor
+const G = new ForceGraph3D($('g')).numDimensions(2)
+  .backgroundColor('#07060a').showNavInfo(false)
+  .nodeThreeObject(n => {  // a block that drops from the sky; the frame loop grows and recolours it
+    const g = new THREE.Group();
+    n.mesh = new THREE.Mesh(BOX, new THREE.MeshLambertMaterial({ color: n.color }));
+    n.mesh.position.z = 260; n.mesh.scale.set(...SIZE(n)); g.add(n.mesh); return g;
+  })
+  .nodeLabel(n => esc(n.tip || ''))
+  .linkColor(l => l.red ? '#ff2020' : l.faint ? '#2e2a35' : '#7d776c')
+  .linkWidth(l => l.red ? 5 : 0).linkOpacity(.6).linkCurvature(l => l.red ? .6 : 0).linkCurveRotation(Math.PI / 2)
+  .linkDirectionalParticles(l => l.red ? 8 : 0).linkDirectionalParticleWidth(4)
+  .linkDirectionalParticleSpeed(.012).linkDirectionalParticleColor(() => '#ff5a4d')
+  .onNodeClick(n => n.kind === 'source' ? open(n.url, '_blank', 'noopener') : n.qid && detail(n.qid))
+  .onLinkClick(l => l.red && detail(l.qid));
+G.d3Force('link').distance(l => l.red ? 150 : l.far ? 150 : l.faint ? 30 : 80);
+G.d3Force('charge').strength(-60);
+const scene = G.scene(); scene.rotation.x = -Math.PI / 2;  // the graph's flat plane becomes the ground
+const grid = new THREE.GridHelper(3000, 100, 0x5a1515, 0x1d1a24); grid.rotation.x = Math.PI / 2; grid.position.z = -1; scene.add(grid);
+$('g').addEventListener('pointerdown', () => orbit = false);
+addEventListener('resize', () => G.width(innerWidth).height(innerHeight));
+const V = new THREE.Vector3();
+const place = (el, x, y, z) => {  // pin an HTML label to a point in the world
+  V.set(x, y, z); scene.localToWorld(V); V.project(G.camera());
+  el.style.transform = `translate(${(V.x + 1) / 2 * innerWidth + 8}px,${(1 - V.y) / 2 * innerHeight - 10}px)`;
+  el.style.display = V.z < 1 ? '' : 'none';
+};
+
+// the investigators: block people who run to whatever they are working on
+const CREW = {};
+for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff'],['Timekeeper','#f2b84b'],['Sceptic','#ff2d2d'],['Editor','#4bd28f']].entries()) {
+  const g = new THREE.Group(), up = new THREE.Group(); up.rotation.x = Math.PI / 2; g.add(up);
+  const box = (w, h, d, c, x, y) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshLambertMaterial({ color: c }));
+    b.position.set(x, y, 0); up.add(b); return b; };
+  const a = { g, name, color, home: [60 * Math.cos(i * 1.257), 60 * Math.sin(i * 1.257)],
+    legs: [box(4, 10, 4, '#22222a', -3, 5), box(4, 10, 4, '#22222a', 3, 5)], el: document.createElement('div') };
+  box(12, 13, 6, color, 0, 16.5); box(4, 12, 4, color, -8, 17); box(4, 12, 4, color, 8, 17); box(9, 9, 9, '#f1c27d', 0, 27.5);
+  g.scale.setScalar(2); scene.add(g);
+  a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
+  CREW[name] = a;
+}
+function send(name, n, text) { const a = CREW[name]; a.target = n; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; }
+const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+
+function node(id, kind, o = {}) {
+  let n = N.get(id);
+  if (!n) {
+    n = { id, kind, color: COLOR[kind], claims: [], ...o };
+    N.set(id, n);
+    if (kind !== 'source') {
+      n.el = document.createElement('div'); n.el.className = 'lb ' + kind;
+      n.el.textContent = n.label || ''; $('labels').append(n.el);
+    }
+  }
+  dirty = true; return n;
+}
+const link = (a, b, o = {}) => { L.push({ source: a, target: b, ...o }); dirty = true; };
+const end = v => v.id ?? v;
+
+function reset(premise) {
+  $('labels').textContent = ''; $('verdict').hidden = $('detail').hidden = true; $('key').hidden = false;
+  N = new Map(); L = []; S = { q: {}, src: {}, claims: {}, conflicts: [] }; orbit = true;
+  for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = 0;
+  const p = node('p', 'premise', { label: premise, fx: 0, fy: 0 });
+  for (const a of Object.values(CREW)) { a.g.position.set(a.home[0], a.home[1], 0); send(a.name, null, 'standing by'); }
+  send('Identifier', p, 'working out who is in the story');
+}
+
+function on(e) {
+  if (e.type === 'entity') { const n = node(e.id, 'entity', { label: e.name }); link('p', e.id, { far: 1 }); send('Identifier', n, 'found ' + e.name); }
+  else if (e.type === 'question') {
+    S.q[e.id] = { ...e, answers: {} };
+    const n = node(e.id, 'question', { label: clip(e.text, 46), qid: e.id });
+    link('p', e.id, { far: 1 }); send('Identifier', n, 'asks: ' + clip(e.text, 50));
+  } else if (e.type === 'source') {
+    S.src[e.id] = e;
+    const n = node(e.id, 'source', { url: e.url, tip: e.domain + (e.primary ? ' (primary record)' : ''),
+      color: e.primary ? '#c9a227' : COLOR.source });
+    if (S.q[e.question_id]) link(e.question_id, e.id, { faint: 1, loose: 1 });
+    send('Archivist', n, 'reading ' + e.domain);
+  } else if (e.type === 'claim') {
+    const q = S.q[e.question_id], src = S.src[e.source_id]; if (!q) return;
+    S.claims[e.id] = e;
+    const id = 'a|' + q.id + '|' + e.normalized;
+    const a = q.answers[e.normalized] ??= node(id, 'answer', { qid: q.id, norm: e.normalized });
+    if (!a.claims.length) link(q.id, id);
+    a.claims.push(e);
+    a.el.textContent = pretty(e.normalized) + ' · ' + a.claims.length;
+    send('Timekeeper', a, `${src ? src.domain : 'a source'} says “${clip(e.quote, 70)}”`);
+    if (src) {  // the source moves from the question to the answer it gives
+      L = L.filter(l => !(l.loose && end(l.target) === src.id));
+      link(id, src.id, { faint: 1 });
+      if (src.primary) { a.primary = true; if (!a.red) { a.color = '#ffd24a'; a.el.classList.add('primary'); } }
+    }
+  } else if (e.type === 'conflict') {
+    S.conflicts.push(e);
+    const q = S.q[e.question_id]; if (!q) return;
+    let as = e.values.map(v => q.answers[v]).filter(Boolean);
+    if (as.length < 2) as = [...new Set(e.claim_ids.map(c => S.claims[c] && q.answers[S.claims[c].normalized]).filter(Boolean))];
+    as.forEach((a, i) => {
+      a.red = true; a.color = '#ff2d2d'; a.el.classList.add('red');
+      if (i) link(as[i - 1].id, a.id, { red: 1, qid: q.id });
+    });
+    q.conflict = e;
+    if (as[0]) { S.focus = as; send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
+  } else if (e.type === 'stats') {
+    for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = e[k];
+  } else if (e.type === 'verdict' || e.type === 'error') {
+    $('verdict').textContent = e.type === 'error' ? 'Could not finish: ' + e.message : e.text;
+    $('verdict').hidden = false;
+    send('Editor', N.get('p'), e.type === 'error' ? 'stopped' : 'case written up');
+  }
+}
+
+function detail(qid) {
+  const q = S.q[qid]; if (!q) return;
+  const c = q.conflict;
+  $('detail-body').innerHTML = `<h2>${esc(q.text)}</h2>` + Object.values(q.answers)
+    .sort((a, b) => b.claims.length - a.claims.length).map(a =>
+      `<h3 class="${a.red ? 'red' : a.primary ? 'primary' : ''}">${esc(pretty(a.norm))}<small>${a.claims.length} source${a.claims.length > 1 ? 's' : ''}${c && c.primary_value === a.norm ? ' · primary record' : ''}</small></h3>` +
+      a.claims.slice(0, 4).map(cl => { const s = S.src[cl.source_id] || {};
+        return `<blockquote>“${esc(cl.quote)}”<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.domain)}${s.publish_date ? ' · ' + esc(s.publish_date) : ''}</a></blockquote>`; }).join('')
+    ).join('');
+  $('detail').hidden = false; $('key').hidden = true;
+}
+$('x').onclick = () => { $('detail').hidden = true; $('key').hidden = false; };
+
+function stop() { es?.close(); es = null; $('go').disabled = $('replay').disabled = false; }
+function run(url) {
+  stop(); reset($('premise').value); $('go').disabled = $('replay').disabled = true;
+  es = new EventSource(url);
+  es.onmessage = m => { const e = JSON.parse(m.data); on(e); if (e.type === 'verdict' || e.type === 'error') stop(); };
+  es.onerror = stop;  // EventSource reconnects by default, which would restart the run
+}
+const qs = new URLSearchParams(location.search);
+const saved = () => qs.get('replay') || (/openai|altman/i.test($('premise').value) ? 'openai' : 'murdoch');
+$('go').onclick = () => run('/api/investigate?premise=' + encodeURIComponent($('premise').value));
+$('replay').onclick = () => run('/api/investigate/replay?name=' + saved());
+$('premise').onkeydown = e => e.key === 'Enter' && $('go').click();
+
+setInterval(() => {
+  if (!dirty) return;
+  dirty = false; G.graphData({ nodes: [...N.values()], links: L.slice() });  // a copy: the simulation owns the array it is given
+}, 250);
+(function frame() {
+  T++;
+  let far = 200;
+  if (N) for (const n of N.values()) if (n.x !== undefined) far = Math.max(far, Math.hypot(n.x, n.y));
+  const fs = S && S.focus && S.focus.every(n => n.x !== undefined) ? S.focus : null;
+  const f = fs && { x: fs.reduce((t, n) => t + n.x, 0) / fs.length, y: fs.reduce((t, n) => t + n.y, 0) / fs.length };  // fly to the newest contradiction
+  R += ((f ? 480 : far * .95 + 130) - R) * .03;
+  C.x += ((f ? f.x : 0) - C.x) * .03; C.y += ((f ? f.y : 0) - C.y) * .03;
+  if (orbit) { ang += .003; G.cameraPosition({ x: C.x + R * Math.sin(ang), y: R * .55, z: -C.y + R * Math.cos(ang) }, { x: C.x, y: 0, z: -C.y }); }
+  if (N) for (const n of N.values()) if (n.mesh && n.x !== undefined) {
+    const [w, d, h] = SIZE(n), m = n.mesh;
+    m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15); m.material.color.set(n.color);
+    if (n.el) place(n.el, n.x, n.y, m.position.z + m.scale.z + 6);
+  }
+  for (const a of Object.values(CREW)) {
+    const p = a.g.position, t = a.target;
+    const tx = t && t.x !== undefined ? t.x + 26 : a.home[0], ty = t && t.x !== undefined ? t.y + 26 : a.home[1];
+    const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy), moving = dist > 3;
+    if (moving) { const s = Math.min(dist, 6) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
+    a.legs[0].rotation.x = moving ? Math.sin(T * .4) * .8 : 0; a.legs[1].rotation.x = -a.legs[0].rotation.x;
+    place(a.el, p.x, p.y, 72);
+  }
+  requestAnimationFrame(frame);
+})();
+
+window.RS = { detail, get S() { return S; } };  // for the screenshot check
+reset($('premise').value);
+if (qs.has('replay')) { if (qs.get('replay') === 'murdoch') $('premise').value = 'The Murdoch family succession dispute'; $('replay').click(); }
+</script>
+</body>
+</html>
