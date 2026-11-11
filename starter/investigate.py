@@ -29,6 +29,7 @@ EXCERPT_CHARS = 2000
 # per source per question, in the claim prompt and in the quote check
 # respond() refuses input over 20000 characters; the prompt itself takes the rest
 BATCH_CHARS = 17000
+RECHECKS = 8  # live re-fetches per run: one per side of each contradiction, capped
 
 _PRIMARY_HOST = re.compile(
     r"(\.gov|\.gov\.[a-z]{2}|\.mil|\.gouv\.fr)$|uscourts|courts\.|judiciary|courtlistener"
@@ -247,7 +248,13 @@ def _plan(premise: str) -> tuple[list[dict], list[dict]]:
     )
     kinds = {"person", "org", "place"}
     entities = [
-        {"type": "entity", "id": f"e{i}", "name": str(e["name"]), "kind": e.get("kind")}
+        {
+            "type": "entity",
+            "id": f"e{i}",
+            "name": str(e["name"]),
+            "kind": e.get("kind"),
+            "endpoint": "responses",
+        }
         for i, e in enumerate(data["entities"][:8], 1)
         if e.get("kind") in kinds
     ]
@@ -367,6 +374,21 @@ def _batches(excerpts: dict[str, str]) -> list[dict[str, str]]:
     return [b for b in out if b]
 
 
+def _recheck(question: dict, claim: dict, url: str) -> dict:
+    """Timekeeper: fetch the page live now and check the quoted sentence is still on it."""
+    pages = parallel.extract([url], question["text"])
+    page = next((p for p in pages if p.get("url") == url), pages[0] if pages else {})
+    excerpts = [e for e in page.get("excerpts") or [] if e]
+    live = " ".join([page.get("full_content") or "", *excerpts])
+    if not live.strip():
+        raise RuntimeError(f"no live text for {url}")  # empty is not proof the claim is gone
+    # show the passage that best matches the question, not the page header
+    words = set(re.findall(r"[a-z]{4,}", question["text"].lower()))
+    parts = [p for e in excerpts or [live] for p in re.split(r"\n\s*\n|\.\.\.", e) if p.strip()]
+    best = max(parts, key=lambda p: sum(w in p.lower() for w in words))
+    return {"still_says": quote_in(claim["quote"], live), "live_excerpt": best.strip()[:400]}
+
+
 def _verdict(
     premise: str,
     questions: list[dict],
@@ -401,23 +423,28 @@ def _verdict(
         f"Across {len(claims)} quoted claims on {len(questions)} questions, sources disagree "
         f"on {len(conflicts)}."
     )
-    try:
-        text = (
-            parallel.respond(
-                f"Premise: {premise}\nTally of what sources say (value: number of sources):\n"
-                + "\n".join(lines)
-                + "\n\nUsing ONLY this tally, write exactly 2 short plain sentences: first what "
-                "the sources agree on, then where they disagree. A line marked 'sources agree' is "
-                "agreement even when it lists several values: they are one answer at different "
-                "precision, never a disagreement. "
-                "Do not mention primary sources. Report what sources say; make no accusations "
-                "and add no facts of your own. Plain text, no markdown, no citations."
-            )["text"].strip()
-            or text
-        )
-    except Exception:  # the deterministic sentence above stands in
-        pass
-    return f"{text} {primary}"
+    prompt = (
+        f"Premise: {premise}\nTally of what sources say (value: number of sources):\n"
+        + "\n".join(lines)
+        + "\n\nUsing ONLY this tally, write exactly 2 short plain sentences: first what "
+        "the sources agree on, then where they disagree. A line marked 'sources agree' is "
+        "agreement even when it lists several values: they are one answer at different "
+        "precision, never a disagreement. "
+        "Do not mention primary sources. Report what sources say; make no accusations "
+        "and add no facts of your own. Plain text, no markdown, no citations."
+    )
+    endpoint, citations = None, []
+    try:  # Editor: the Task API, structured output plus its research basis
+        out = parallel.task(prompt, _obj(verdict=_STR))
+        text, endpoint = str(out["content"]["verdict"]).strip() or text, "task"
+        seen = {c["url"]: c.get("title") for b in out["basis"] for c in b.get("citations") or []}
+        citations = [{"url": u, "title": t} for u, t in seen.items()]
+    except Exception:  # 402/5xx/no key: the Responses API, then the deterministic sentence
+        try:
+            text, endpoint = parallel.respond(prompt)["text"].strip() or text, "responses"
+        except Exception:
+            pass
+    return {"text": f"{text} {primary}", "endpoint": endpoint, "citations": citations}
 
 
 def investigate(premise: str) -> Iterator[dict]:
@@ -439,6 +466,16 @@ def investigate(premise: str) -> Iterator[dict]:
     sources: dict[str, dict] = {}  # url -> source event
     excerpts: dict[str, dict[str, str]] = {q["id"]: {} for q in questions}  # qid -> sid -> text
     with ThreadPoolExecutor(max_workers=16) as pool:
+        # Identifier (FindAll) and the case-board photos run alongside the searches
+        names = [e["name"] for e in entities][:3] or [premise]
+        extras = {
+            pool.submit(
+                parallel.findall,
+                f"Find the people and organisations involved in: {premise}",
+                "people and organisations",
+            ): "findall",
+            pool.submit(parallel.image_search, premise, names): "image_search",
+        }
         jobs = {pool.submit(_search, premise, q): q for q in questions}
         for job in as_completed(jobs):
             q = jobs[job]
@@ -462,6 +499,7 @@ def investigate(premise: str) -> Iterator[dict]:
                         "publish_date": hit.get("publish_date") or None,
                         "primary": is_primary(url),
                         "question_id": q["id"],
+                        "endpoint": "search",
                     }
                     n["sources"] += 1
                     yield sources[url]
@@ -494,6 +532,34 @@ def investigate(premise: str) -> Iterator[dict]:
                 yield claim
             yield stats()
 
+        known = {e["name"].lower() for e in entities}
+        for job, endpoint in extras.items():
+            try:
+                found = job.result()
+            except Exception as exc:
+                yield {"type": "degraded", "endpoint": endpoint, "message": str(exc)}
+                continue
+            if endpoint == "findall":
+                for c in found:
+                    if c["name"].lower() not in known:
+                        known.add(c["name"].lower())
+                        yield {
+                            "type": "entity",
+                            "id": f"f{len(known)}",
+                            "name": c["name"],
+                            "kind": None,
+                            "url": c.get("url"),
+                            "endpoint": "findall",
+                        }
+            for i, r in enumerate(found[:6] if endpoint == "image_search" else [], 1):
+                keys = ("title", "image_url", "source_page_url", "width", "height")
+                yield {
+                    "type": "image",
+                    "id": f"i{i}",
+                    "endpoint": endpoint,
+                    **{k: r.get(k) for k in keys},
+                }
+
     def same_fact(q: dict, found: dict) -> bool:
         try:
             # the model's answer varies run to run: both of two votes must confirm
@@ -515,9 +581,42 @@ def investigate(premise: str) -> Iterator[dict]:
         yield conflicts[-1]
     yield stats()
 
+    # Timekeeper: one claim per side of each contradiction, re-fetched live through Extract
+    by_id = {c["id"]: c for cs in by_question.values() for c in cs}
+    url_of = {s["id"]: s["url"] for s in sources.values()}
+    q_of = {q["id"]: q for q in questions}
+    sides = []
+    for k in conflicts:
+        firsts = {}
+        for i in k["claim_ids"]:
+            firsts.setdefault(by_id[i]["normalized"], by_id[i])
+        sides += [(k, c) for c in firsts.values()]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        jobs = {
+            pool.submit(_recheck, q_of[k["question_id"]], c, url_of[c["source_id"]]): (k, c)
+            for k, c in sides[:RECHECKS]
+        }
+        for job in as_completed(jobs):
+            k, c = jobs[job]
+            try:
+                live = job.result()
+            except Exception as exc:
+                yield {"type": "degraded", "endpoint": "extract", "message": f"recheck: {exc}"}
+                continue
+            yield {
+                "type": "recheck",
+                "endpoint": "extract",
+                "conflict_id": k["id"],
+                "claim_id": c["id"],
+                "source_id": c["source_id"],
+                "url": url_of[c["source_id"]],
+                "value": c["value"],
+                **live,
+            }
+    yield stats()
+
     all_claims = [c for cs in by_question.values() for c in cs]
-    text = _verdict(premise, questions, all_claims, conflicts, dropped)
-    yield {"type": "verdict", "text": text}
+    yield {"type": "verdict", **_verdict(premise, questions, all_claims, conflicts, dropped)}
     yield stats()
 
 
