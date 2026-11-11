@@ -121,6 +121,7 @@
 import * as THREE from './three.module.min.js';
 import { addScenery } from './scenery.js';
 import { say } from './voice.js';
+import * as sfx from './sfx.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pretty = v => {
@@ -206,7 +207,7 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
-function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; say(name, text, a.el.style.getPropertyValue('--c')); }  // every new job makes the figure hop
+function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; if (n) sfx.hop(name); a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; say(name, text, a.el.style.getPropertyValue('--c')); }  // every new job makes the figure hop
 const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
 
 function node(id, kind, o = {}) {
@@ -254,7 +255,7 @@ function on(e) {
     const id = 'a|' + q.id + '|' + e.normalized;
     const a = q.answers[e.normalized] ??= node(id, 'answer', { qid: q.id, norm: e.normalized });
     if (!a.claims.length) link(q.id, id);
-    a.claims.push(e);
+    a.claims.push(e); sfx.pop();
     a.el.textContent = pretty(e.normalized) + ' · ' + a.claims.length;
     send('Timekeeper', a, `${src ? src.domain : 'a source'} says “${clip(e.quote, 70)}”`);
     if (src) {  // the source moves from the question to the answer it gives
@@ -272,12 +273,12 @@ function on(e) {
       if (i) link(as[i - 1].id, a.id, { red: 1, qid: q.id });
     });
     q.conflict = e;
-    if (as[0]) { S.focus = as; for (const c of Object.values(CREW)) c.hop = 90; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 1800); send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
+    if (as[0]) { S.focus = as; sfx.twang(); for (const c of Object.values(CREW)) c.hop = 90; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 1800); send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
   } else if (e.type === 'stats') {
     for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = e[k];
   } else if (e.type === 'verdict' || fatal(e)) {  // a per-question error is not the end: the engine carries on
     $('verdict').textContent = e.type === 'error' ? 'Could not finish: ' + e.message : e.text;
-    $('verdict').hidden = false;
+    $('verdict').hidden = false; sfx.end();
     send('Editor', N.get('p'), e.type === 'error' ? 'stopped' : 'case written up');
   }
 }
