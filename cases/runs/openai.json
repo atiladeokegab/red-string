@@ -8,8 +8,8 @@
  {
   "type": "entity",
   "id": "e2",
-  "name": "OpenAI",
-  "kind": "org"
+  "name": "Greg Brockman",
+  "kind": "person"
  },
  {
   "type": "entity",
@@ -20,80 +20,80 @@
  {
   "type": "entity",
   "id": "e4",
-  "name": "Greg Brockman",
-  "kind": "person"
- },
- {
-  "type": "entity",
-  "id": "e5",
-  "name": "Microsoft",
-  "kind": "org"
- },
- {
-  "type": "entity",
-  "id": "e6",
-  "name": "Emmett Shear",
-  "kind": "person"
- },
- {
-  "type": "entity",
-  "id": "e7",
   "name": "Mira Murati",
   "kind": "person"
  },
  {
   "type": "entity",
-  "id": "e8",
+  "id": "e5",
+  "name": "Emmett Shear",
+  "kind": "person"
+ },
+ {
+  "type": "entity",
+  "id": "e6",
   "name": "Satya Nadella",
   "kind": "person"
  },
  {
+  "type": "entity",
+  "id": "e7",
+  "name": "OpenAI",
+  "kind": "org"
+ },
+ {
+  "type": "entity",
+  "id": "e8",
+  "name": "Microsoft",
+  "kind": "org"
+ },
+ {
   "type": "question",
   "id": "q1",
-  "text": "On what date did OpenAI's board fire Sam Altman as CEO?",
+  "text": "On what date did the OpenAI board fire Sam Altman as CEO?",
   "kind": "date"
  },
  {
   "type": "question",
   "id": "q2",
-  "text": "On what date was Sam Altman reinstated as OpenAI CEO?",
+  "text": "On what date was Sam Altman reinstated as OpenAI's CEO?",
   "kind": "date"
  },
  {
   "type": "question",
   "id": "q3",
-  "text": "How many board members did OpenAI have at the time of Sam Altman's firing?",
-  "kind": "number"
+  "text": "On what date did OpenAI appoint Emmett Shear as interim CEO?",
+  "kind": "date"
  },
  {
   "type": "question",
   "id": "q4",
-  "text": "On what date was Emmett Shear named interim CEO of OpenAI?",
+  "text": "On what date was Mira Murati named interim CEO of OpenAI?",
   "kind": "date"
  },
  {
   "type": "question",
   "id": "q5",
-  "text": "On what date did Mira Murati become interim CEO of OpenAI?",
-  "kind": "date"
+  "text": "How many members were on the OpenAI board that fired Sam Altman?",
+  "kind": "number"
  },
  {
   "type": "question",
   "id": "q6",
-  "text": "On what date did nearly all of OpenAI's employees sign the letter calling for Sam Altman's return?",
+  "text": "On what date did OpenAI announce Greg Brockman had resigned as president?",
   "kind": "date"
  },
  {
   "type": "question",
   "id": "q7",
-  "text": "How many of OpenAI's roughly 770 employees signed the letter demanding Sam Altman's reinstatement?",
-  "kind": "number"
+  "text": "On what date did Sam Altman and Greg Brockman announce they were joining Microsoft?",
+  "kind": "date"
  },
  {
   "type": "question",
   "id": "q8",
-  "text": "On what date did Satya Nadella announce Sam Altman would join Microsoft to lead a new advanced AI research team?",
-  "kind": "date"
+  "text": "How many of OpenAI's roughly 770 employees signed the letter calling on the board to resign?",
+  "kind": "number"
  },
  {
   "type": "stats",
@@ -101,7 +101,7 @@
   "sources": 0,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 1.9
+  "seconds": 3.7
  },
  {
   "type": "source",
@@ -126,37 +126,17 @@
  {
   "type": "source",
   "id": "s3",
-  "url": "https://openai.com/index/openai-announces-leadership-transition",
-  "title": "OpenAI announces leadership transition | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
+  "url": "https://guidetoartificialintelligence.com/en/learn/why-did-openai-remove-sam-altman",
+  "title": "Why did OpenAI's board remove Sam Altman as CEO, and what do we\u2026",
+  "domain": "guidetoartificialintelligence.com",
+  "publish_date": "2026-10-26",
   "primary": false,
   "question_id": "q1"
  },
  {
   "type": "source",
   "id": "s4",
-  "url": "https://www.theguardian.com/technology/2023/nov/25/how-crisis-openai-sam-altman-unfolded",
-  "title": "Sacking, revolt, return: how crisis at OpenAI over Sam Altman unfolded | OpenAI | The Guardian",
-  "domain": "theguardian.com",
-  "publish_date": "2023-11-25",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s5",
-  "url": "https://www.britannica.com/money/Sam-Altman",
-  "title": "Sam Altman | Biography, OpenAI, ChatGPT, & Microsoft | Britannica Money",
-  "domain": "britannica.com",
-  "publish_date": "2023-11-28",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s6",
-  "url": "https://techcrunch.com/2023/11/17/sam-altman-is-out-as-openais-ceo",
+  "url": "https://techcrunch.com/2023/11/17/sam-altman-is-out-as-openais-ceo/",
   "title": "Sam Altman ousted as OpenAI's CEO | TechCrunch",
   "domain": "techcrunch.com",
   "publish_date": "2023-11-17",
@@ -165,127 +145,7 @@
  },
  {
   "type": "source",
-  "id": "s7",
-  "url": "https://www.npr.org/2023/11/17/1213892587/chatgpt-open-ai-ceo-sam-altman-ousted",
-  "title": "OpenAI founder Sam Altman is out as CEO of the ChatGPT maker : NPR",
-  "domain": "npr.org",
-  "publish_date": "2023-11-17",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s8",
-  "url": "https://www.nytimes.com/2023/11/19/business/media/openai-sam-altman-why.html",
-  "title": "What Just Happened at OpenAI? A Guide to the Chaos. - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-19",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s9",
-  "url": "https://www.nytimes.com/2023/11/22/technology/openai-sam-altman-returns.html",
-  "title": "Sam Altman Is Reinstated as OpenAI\u2019s Chief Executive - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s10",
-  "url": "https://www.npr.org/2023/11/22/1214621010/openai-reinstates-sam-altman-as-its-chief-executive",
-  "title": "OpenAI reinstates Sam Altman as its chief executive : NPR",
-  "domain": "npr.org",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s11",
-  "url": "https://www.cnbc.com/2023/11/22/openai-brings-sam-altman-back-as-ceo-days-after-ouster.html",
-  "title": "OpenAI brings Sam Altman back as CEO days after ouster",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s12",
-  "url": "https://openai.com/blog/openai-announces-leadership-transition",
-  "title": "OpenAI announces leadership transition | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s13",
-  "url": "https://www.washingtonpost.com/technology/2023/11/22/sam-altman-back-openai/",
-  "title": "Sam Altman is back as OpenAI\u2019s CEO - The Washington Post",
-  "domain": "washingtonpost.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s14",
-  "url": "https://www.cnn.com/2023/11/20/tech/openai-sam-altman-what-happened",
-  "title": "Catch up on the OpenAI\u00e2s wild 60 hours\u00e2\u00a6 in 60 seconds | CNN Business",
-  "domain": "cnn.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s15",
-  "url": "https://fortune.com/2023/11/29/sam-altman-officially-reinstated-openai-ceo-board-bret-taylor/",
-  "title": "Sam Altman is officially reinstated as OpenAI's CEO just two weeks after his ouster set off an 'unprecedented' firestorm | Fortune",
-  "domain": "fortune.com",
-  "publish_date": "2023-11-29",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s16",
-  "url": "https://openai.com/index/openai-announces-leadership-transition/",
-  "title": "OpenAI announces leadership transition | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s17",
-  "url": "https://www.nytimes.com/2024/02/29/technology/sec-openai-board-sam-altman.html",
-  "title": "SEC Is Investigating OpenAI Over Its Board\u2019s Actions - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2024-02-29",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s18",
-  "url": "https://www.reuters.com/technology/openai-investors-considering-suing-board-after-ceos-abrupt-firing-sources-2023-11-20/",
-  "title": "Exclusive: OpenAI investors considering suing the board after CEO's abrupt firing | Reuters",
-  "domain": "reuters.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s19",
+  "id": "s5",
   "url": "https://www.cnn.com/2023/11/17/tech/sam-altman-departs-open-ai",
   "title": "Sam Altman, CEO of ChatGPT parent company Open AI, is out after board found he was \u00e2not consistently candid\u00e2 | CNN Business",
   "domain": "cnn.com",
@@ -295,27 +155,27 @@
  },
  {
   "type": "source",
-  "id": "s20",
-  "url": "https://www.fortune.com/2023/11/20/openai-unusual-board-fires-sam-altman-microsoft-satya-nadella-no-fiduciary-responsibility",
-  "title": "OpenAI 'unusual' board structure led to CEO Sam Altman firing | Fortune",
-  "domain": "fortune.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q1"
- },
- {
-  "type": "source",
-  "id": "s21",
-  "url": "https://www.axios.com/2023/11/17/sam-altman-openai-chatgpt-departs?stream=top",
-  "title": "Sam Altman ousted as CEO of ChatGPT parent OpenAI in surprise move",
-  "domain": "axios.com",
+  "id": "s6",
+  "url": "https://gizmodo.com/openai-fires-ceo-sam-altman-1851032184",
+  "title": "OpenAI Fires CEO Sam Altman",
+  "domain": "gizmodo.com",
   "publish_date": "2023-11-17",
   "primary": false,
   "question_id": "q1"
  },
  {
   "type": "source",
-  "id": "s22",
+  "id": "s7",
+  "url": "https://techcrunch.com/2023/11/17/sam-altman-is-out-as-openais-ceo?cx_artPos=1&cx_testId=6&cx_testVariant=cx_undefined",
+  "title": "Sam Altman ousted as OpenAI's CEO | TechCrunch",
+  "domain": "techcrunch.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s8",
   "url": "https://history.itlibra.com/en/events/openai-altman-firing-2023",
   "title": "Sam Altman Fired Nov 17, 2023, Back in 5 Days",
   "domain": "history.itlibra.com",
@@ -325,10 +185,170 @@
  },
  {
   "type": "source",
+  "id": "s9",
+  "url": "https://openai.com/index/openai-announces-leadership-transition/",
+  "title": "OpenAI announces leadership transition | OpenAI",
+  "domain": "openai.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s10",
+  "url": "https://www.courthousenews.com/openai-ceo-sam-altman-fired-over-lack-of-candor-with-board-of-directors/",
+  "title": "OpenAI CEO Sam Altman fired over lack of candor with board of directors | Courthouse News Service",
+  "domain": "courthousenews.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s11",
+  "url": "https://penchan.co/en/market/ai/openai/sam-altman-board-coup",
+  "title": "Why Was Sam Altman Fired and Then Brought Back? Inside OpenAI's Five-Day Boardroom Storm | Penchan",
+  "domain": "penchan.co",
+  "publish_date": "2026-05-30",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s12",
+  "url": "http://www.shacknews.com/article/137837/sam-altman-open-ai-ceo-firing",
+  "title": "OpenAI board of directors ousts Sam Altman as CEO | Shacknews",
+  "domain": "shacknews.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s13",
+  "url": "https://www.reuters.com/technology/sam-altman-return-openai-ceo-2023-11-22",
+  "title": "Sam Altman to return as OpenAI CEO after his tumultuous ouster | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s14",
+  "url": "https://www.cnbc.com/2023/11/17/sam-altman-leaves-openai-mira-murati-appointed-interim-boss.html",
+  "title": "OpenAI says Sam Altman exits as CEO after board loses confidence",
+  "domain": "cnbc.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s15",
+  "url": "https://www.goodmorningamerica.com/news/story/sam-altman-reaches-deal-return-ceo-openai-105091534",
+  "title": "4 days from fired to re-hired: A timeline of Sam Altman's ouster from OpenAI - Good Morning America",
+  "domain": "goodmorningamerica.com",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s16",
+  "url": "https://www.reuters.com/technology/openai-ceo-sam-altman-step-down-2023-11-17",
+  "title": "ChatGPT maker OpenAI ousts CEO Sam Altman | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s17",
+  "url": "https://cdn.openai.com/pdf/0ada8797-a5ae-4577-857e-94598d5234d5/2025-04-09-openai-defendants-counterclaims-answer-and-defenses.pdf",
+  "title": "Case 4:24-cv-04722-YGR Document 147 Filed 04/09/25 Page 1 of 100 1 JORDAN ETH (CA SBN 121617) JEth@mofo.com 2 WILLIAM FRENTZEN",
+  "domain": "cdn.openai.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s18",
+  "url": "https://www.npr.org/2023/11/17/1213892587/chatgpt-open-ai-ceo-sam-altman-ousted",
+  "title": "OpenAI founder Sam Altman is out as CEO of the ChatGPT maker : NPR",
+  "domain": "npr.org",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s19",
+  "url": "https://www.bbc.com/news/business-67458603",
+  "title": "AI boss Sam Altman ousted after board loses confidence",
+  "domain": "bbc.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s20",
+  "url": "https://www.britannica.com/money/Sam-Altman",
+  "title": "Sam Altman | Biography, OpenAI, ChatGPT, & Microsoft | Britannica Money",
+  "domain": "britannica.com",
+  "publish_date": "2023-11-28",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s21",
+  "url": "https://techcrunch.com/2023/11/17/sam-altman-is-out-as-openais-ceo",
+  "title": "Sam Altman ousted as OpenAI's CEO | TechCrunch",
+  "domain": "techcrunch.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s22",
+  "url": "https://www.theguardian.com/technology/2023/nov/17/openai-ceo-sam-altman-fired",
+  "title": "OpenAI fires co-founder and CEO Sam Altman for allegedly lying to company board | OpenAI | The Guardian",
+  "domain": "theguardian.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
   "id": "s23",
-  "url": "https://www.straitstimes.com/world/sam-altman-to-return-as-openai-ceo",
-  "title": "Sam Altman reinstated as OpenAI CEO days after his ouster | The Straits Times",
-  "domain": "straitstimes.com",
+  "url": "https://storage.courtlistener.com/recap/gov.uscourts.cand.433688/gov.uscourts.cand.433688.403.0.pdf",
+  "title": "Plaintiff's Motion in Limine No. 2 to Exclude WilmerHale's Investigation and Findings Concerning Altman's Dismissal \u2014 Case No. 4:24-cv-04722-YGR",
+  "domain": "storage.courtlistener.com",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s24",
+  "url": "https://openai.com/blog/openai-announces-leadership-transition",
+  "title": "OpenAI announces leadership transition | OpenAI",
+  "domain": "openai.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q1"
+ },
+ {
+  "type": "source",
+  "id": "s25",
+  "url": "https://apnews.com/article/openai-sam-altman-firing-saga-explained-51ae332acc18a41b51df5a39efa146d3",
+  "title": "This week's turmoil with ChatGPT-maker OpenAI has heightened trust concerns in the AI world | AP News",
+  "domain": "apnews.com",
   "publish_date": "2023-11-22",
   "primary": false,
   "question_id": "q1"
@@ -336,15 +356,401 @@
  {
   "type": "stats",
   "searches": 2,
-  "sources": 23,
+  "sources": 25,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 5.6
+  "seconds": 6.9
  },
  {
   "type": "source",
-  "id": "s24",
-  "url": "https://www.nytimes.com/2023/11/22/technology/openai-sam-altman-returns.html?eafs_enabled=false",
+  "id": "s26",
+  "url": "https://www.bloomberg.com/news/articles/2023-11-20/openai-staff-threaten-to-go-to-microsoft-if-board-doesn-t-quit?leadSource=reddit_wall%2F",
+  "title": "90% of OpenAI Staff Threaten to Go to Microsoft If Board Doesn\u2019t Quit - Bloomberg",
+  "domain": "bloomberg.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s27",
+  "url": "https://www.bloomberg.com/news/articles/2023-11-20/openai-staff-threaten-to-go-to-microsoft-if-board-doesn-t-quit",
+  "title": "90% of OpenAI Staff Threaten to Go to Microsoft If Board Doesn\u2019t Quit - Bloomberg",
+  "domain": "bloomberg.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s28",
+  "url": "https://www.wired.com/story/openai-staff-walk-protest-sam-altman",
+  "title": "OpenAI Staff Threaten to Quit Unless Board Resigns | WIRED",
+  "domain": "wired.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s29",
+  "url": "https://www.latimes.com/business/story/2023-11-20/openai-staff-threaten-to-go-to-microsoft-if-board-doesnt-quit",
+  "title": "OpenAI staff threaten to go to Microsoft if board doesn\u2019t quit - Los Angeles Times",
+  "domain": "latimes.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s30",
+  "url": "https://news.bloomberglaw.com/esg/openai-staff-threaten-to-go-to-microsoft-if-board-doesnt-quit",
+  "title": "OpenAI Staff Near Total Mutiny With Threat to Join Microsoft (3)",
+  "domain": "news.bloomberglaw.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s31",
+  "url": "https://www.scmp.com/tech/tech-trends/article/3242258/nearly-all-openai-staff-threaten-go-microsoft-unless-board-quits-investors-try-bring-back-altman",
+  "title": "Nearly all OpenAI staff threaten to go to Microsoft unless board quits, as investors try to bring back Altman | South China Morning Post",
+  "domain": "scmp.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s32",
+  "url": "https://www.benzinga.com/news/23/11/35871393/openais-internal-strife-cto-coo-and-other-employees-unite-in-support-of-sam-altman",
+  "title": "747 Of 770 OpenAI Employees, Including The One Who Fired Him, Ask The Board To Resign And Bring Back Sam",
+  "domain": "benzinga.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s33",
+  "url": "https://www.nytimes.com/2023/11/20/business/openai-staff-exodus-turmoil.html",
+  "title": "OpenAI Staff Threatens Exodus, Jeopardizing Company\u2019s Future - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s34",
+  "url": "https://www.forbes.com/sites/tylerroush/2023/11/20/more-than-500-openai-employees-threaten-to-quit-over-sam-altmans-removal",
+  "title": "More Than 700 OpenAI Employees Threaten To Quit\u2014And Join Microsoft\u2014Unless Board Resigns",
+  "domain": "forbes.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s35",
+  "url": "https://siecledigital.fr/2023/11/21/les-employes-dopenai-souhaitent-la-dissolution-du-conseil-dadministration",
+  "title": "Les employ\u00e9s d&#039;OpenAI souhaitent la dissolution du conseil d&#039;administration",
+  "domain": "siecledigital.fr",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s36",
+  "url": "https://www.cnbc.com/2023/11/20/hundreds-of-openai-employees-threaten-to-follow-altman-to-microsoft-unless-board-resigns-reports-say.html",
+  "title": "Hundreds of OpenAI employees threaten to follow Altman to Microsoft unless board resigns",
+  "domain": "cnbc.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s37",
+  "url": "https://arstechnica.com/ai/2023/11/95-of-openai-employees-have-threatened-to-quit-in-standoff-with-board/",
+  "title": "95% of OpenAI employees have threatened to quit in standoff with board - Ars Technica",
+  "domain": "arstechnica.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s38",
+  "url": "https://sfstandard.com/2023/11/20/openai-staff-threaten-quit-join-microsoft-unless-board-resigns/",
+  "title": "OpenAI Mass Resignation Threat: Staff Say Board Must Go",
+  "domain": "sfstandard.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s39",
+  "url": "https://www.wired.com/story/95-percent-of-openai-employees-threaten-to-follow-sam-altman-out-the-door/",
+  "title": "95 Percent of OpenAI Employees Threaten to Follow Sam Altman Out the Door | WIRED",
+  "domain": "wired.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s40",
+  "url": "https://www.businessinsider.com/openai-workers-threaten-to-quit-over-sam-altman-firing-2023-11",
+  "title": "OpenAI Workers Say They'll Quit Unless Sam Altman Gets CEO Job Back - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s41",
+  "url": "https://news.bloomberglaw.com/us-law-week/openai-staff-threaten-to-go-to-microsoft-if-board-doesnt-quit",
+  "title": "OpenAI Staff Near Total Mutiny With Threat to Join Microsoft (3)",
+  "domain": "news.bloomberglaw.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s42",
+  "url": "https://www.bbc.co.uk/news/business-67470876",
+  "title": "OpenAI staff demand board resign over Sam Altman sacking - BBC News",
+  "domain": "bbc.co.uk",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s43",
+  "url": "https://arstechnica.com/ai/2023/11/95-of-openai-employees-have-threatened-to-quit-in-standoff-with-board",
+  "title": "95% of OpenAI employees have threatened to quit in standoff with board - Ars Technica",
+  "domain": "arstechnica.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s44",
+  "url": "https://theprideceo.com/openai-staff-demand-board-resign-over-sam-altman-sacking",
+  "title": "OpenAI staff demand board resign over Sam Altman sacking",
+  "domain": "theprideceo.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s45",
+  "url": "https://www.npr.org/2023/11/20/1214281184/hundreds-of-openai-workers-threaten-to-leave-over-ceo-sam-altmans-firing",
+  "title": "Hundreds of OpenAI workers threaten to leave over CEO Sam Altman's firing : NPR",
+  "domain": "npr.org",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s46",
+  "url": "https://www.engadget.com/most-of-openais-staff-threatens-to-quit-unless-the-board-resigns-and-reinstates-sam-altman-as-ceo-142138044.html",
+  "title": "Most of OpenAI's staff threatens to quit unless the board resigns and reinstates Sam Altman as CEO",
+  "domain": "engadget.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "source",
+  "id": "s47",
+  "url": "https://sfstandard.com/2023/11/20/openai-staff-threaten-quit-join-microsoft-unless-board-resigns",
+  "title": "OpenAI Mass Resignation Threat: Staff Say Board Must Go",
+  "domain": "sfstandard.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q8"
+ },
+ {
+  "type": "stats",
+  "searches": 4,
+  "sources": 47,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.0
+ },
+ {
+  "type": "source",
+  "id": "s48",
+  "url": "https://www.nytimes.com/2023/11/17/technology/mira-murati-openai.html",
+  "title": "Who Is Mira Murati, OpenAI\u2019s Interim CEO? - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s49",
+  "url": "https://venturebeat.com/ai/openai-board-fires-sam-altman-names-new-ceo",
+  "title": "OpenAI board fires Sam Altman as CEO, begins search for successor | VentureBeat",
+  "domain": "venturebeat.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s50",
+  "url": "https://www.bloomberg.com/news/articles/2023-11-17/sam-altman-to-depart-openai-mira-murati-will-be-interim-ceo",
+  "title": "Sam Altman to Depart OpenAI; Mira Murati Will Be Interim CEO - Bloomberg",
+  "domain": "bloomberg.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s51",
+  "url": "https://cointelegraph.com/news/sam-altman-ousted-from-open-ai-chatgpt-cto-mira-murati-named-interim-ceo",
+  "title": "Sam Altman ousted from OpenAI, CTO Mira Murati named interim CEO",
+  "domain": "cointelegraph.com",
+  "publish_date": "2023-11-19",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s52",
+  "url": "https://www.businessinsider.com/meet-mira-murati-openai-new-interim-ceo-2023-11",
+  "title": "Meet Mira Murati: OpenAI's New Interim CEO - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s53",
+  "url": "https://www.fastcompany.com/90855799/6-things-to-know-about-openais-mira-murati-the-most-interesting-person-in-tech-right-now",
+  "title": "6 things to know about Mira Murati, OpenAI's CTO",
+  "domain": "fastcompany.com",
+  "publish_date": "2023-12-01",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s54",
+  "url": "https://www.forbes.com.au/news/innovation/meet-mira-murati-openai-new-interim-ceo/",
+  "title": "Mira Murati named OpenAI's interim CEO after Sam Altman fired",
+  "domain": "forbes.com.au",
+  "publish_date": "2023-11-19",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s55",
+  "url": "https://abcnews.com/Business/sam-altman-reaches-deal-return-ceo-openai/story?id=105091534",
+  "title": "4 days from fired to re-hired: A timeline of Sam Altman's ouster from OpenAI - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s56",
+  "url": "https://www.fintechbiznews.com/fintech-technology/cto-mira-murati-appointed-interim-ceo-to-lead-openai-",
+  "title": "\n        CTO Mira Murati Appointed Interim CEO To Lead OpenAI \n    ",
+  "domain": "fintechbiznews.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s57",
+  "url": "https://indianexpress.com/article/explained/explained-sci-tech/sam-altman-openai-mira-murati-9032217",
+  "title": "What does Sam Altman\u2019s ouster mean for OpenAI \u2014 and who is Mira Murati, the company\u2019s new interim head | Explained News - The Indian Express",
+  "domain": "indianexpress.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s58",
+  "url": "https://www.nbcnews.com/tech/tech-news/openai-says-sam-altman-exiting-ceo-was-not-consistently-candid-board-rcna125776",
+  "title": "OpenAI says Sam Altman exiting as CEO, was 'not consistently candid' with board",
+  "domain": "nbcnews.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s59",
+  "url": "http://www.theverge.com/ai-artificial-intelligence/926383/mira-murati-sam-altman-musk-trial-ouster",
+  "title": "Mira Murati\u2019s deposition pulled back the curtain on Sam Altman\u2019s ouster | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2026-05-07",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s60",
+  "url": "https://ciosea.economictimes.indiatimes.com/news/corporate/openai-announces-leadership-transition-cto-mira-murati-appointed-interim-ceo/105325565",
+  "title": "OpenAI announces leadership transition, CTO Mira Murati appointed interim CEO, ETCIOSEA",
+  "domain": "ciosea.economictimes.indiatimes.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "source",
+  "id": "s61",
+  "url": "https://on.theverge.com/ai-artificial-intelligence/926383/mira-murati-sam-altman-musk-trial-ouster",
+  "title": "Mira Murati\u2019s deposition pulled back the curtain on Sam Altman\u2019s ouster | The Verge",
+  "domain": "on.theverge.com",
+  "publish_date": "2026-05-07",
+  "primary": false,
+  "question_id": "q4"
+ },
+ {
+  "type": "stats",
+  "searches": 6,
+  "sources": 61,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 8.6
+ },
+ {
+  "type": "source",
+  "id": "s62",
+  "url": "https://www.npr.org/2023/11/22/1214621010/openai-reinstates-sam-altman-as-its-chief-executive",
+  "title": "OpenAI reinstates Sam Altman as its chief executive : NPR",
+  "domain": "npr.org",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s63",
+  "url": "https://www.nytimes.com/2023/11/22/technology/openai-sam-altman-returns.html",
   "title": "Sam Altman Is Reinstated as OpenAI\u2019s Chief Executive - The New York Times",
   "domain": "nytimes.com",
   "publish_date": "2023-11-22",
@@ -353,17 +759,17 @@
  },
  {
   "type": "source",
-  "id": "s25",
-  "url": "https://openai.com/index/sam-altman-returns-as-ceo-openai-has-a-new-initial-board/",
-  "title": "Sam Altman returns as CEO, OpenAI has a new initial board | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
+  "id": "s64",
+  "url": "https://www.straitstimes.com/world/sam-altman-to-return-as-openai-ceo",
+  "title": "Sam Altman reinstated as OpenAI CEO days after his ouster | The Straits Times",
+  "domain": "straitstimes.com",
+  "publish_date": "2023-11-22",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s26",
+  "id": "s65",
   "url": "https://apnews.com/article/altman-openai-chatgpt-31187f7f6eca8ff9d0eef7585aac6ace",
   "title": "OpenAI brings back Sam Altman as CEO days after being fired | AP News",
   "domain": "apnews.com",
@@ -373,18 +779,28 @@
  },
  {
   "type": "source",
-  "id": "s27",
-  "url": "https://www.reuters.com/technology/sam-altman-return-openai-ceo-2023-11-22/",
-  "title": "Sam Altman to return as OpenAI CEO after his tumultuous ouster | Reuters",
-  "domain": "reuters.com",
+  "id": "s66",
+  "url": "https://www.cnbc.com/2023/11/22/openai-brings-sam-altman-back-as-ceo-days-after-ouster.html",
+  "title": "OpenAI brings Sam Altman back as CEO days after ouster",
+  "domain": "cnbc.com",
   "publish_date": "2023-11-22",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s28",
-  "url": "https://www.pbs.org/newshour/nation/sam-altman-reinstated-as-openai-ceo-with-new-board-replacing-the-one-which-fired-him",
+  "id": "s67",
+  "url": "https://www.cnn.com/2023/11/29/tech/openai-sam-altman-board-microsoft/index.html",
+  "title": "OpenAI officially announces Sam Altman has returned as CEO and Microsoft gains a non-voting board seat | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2023-11-29",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s68",
+  "url": "https://www.pbs.org/newshour/amp/nation/sam-altman-reinstated-as-openai-ceo-with-new-board-replacing-the-one-which-fired-him",
   "title": "Sam Altman reinstated as OpenAI CEO with new board replacing the one which fired him | PBS News",
   "domain": "pbs.org",
   "publish_date": "2023-11-22",
@@ -393,67 +809,67 @@
  },
  {
   "type": "source",
-  "id": "s29",
-  "url": "https://www.bbc.com/news/business-67494165",
-  "title": "Sam Altman: Ousted OpenAI boss to return days after being sacked",
-  "domain": "bbc.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s30",
-  "url": "https://openai.com/blog/sam-altman-returns-as-ceo-openai-has-a-new-initial-board",
-  "title": "Sam Altman returns as CEO, OpenAI has a new initial board | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s31",
-  "url": "https://abcnews.com/Business/sam-altman-reaches-deal-return-ceo-openai/story?id=105091534",
-  "title": "4 days from fired to re-hired: A timeline of Sam Altman's ouster from OpenAI - ABC News",
+  "id": "s69",
+  "url": "https://abcnews.com/amp/Business/sam-altman-remain-ceo-openai-review/story?id=107940318",
+  "title": "Sam Altman to remain as CEO of OpenAI, rejoin board following external review - ABC News",
   "domain": "abcnews.com",
-  "publish_date": "2023-11-22",
+  "publish_date": "2024-03-09",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s32",
-  "url": "https://www.cnn.com/2023/11/22/tech/openai-altman-returns-hnk-intl",
-  "title": "Sam Altman returns to OpenAI in a bizarre reversal of fortunes | CNN Business",
-  "domain": "cnn.com",
-  "publish_date": "2023-11-22",
+  "id": "s70",
+  "url": "https://www.ciodive.com/news/OpenAI-board-sam-altman-leadership-saga-generative-ai/709942",
+  "title": "OpenAI quells some enterprise fears as leadership saga concludes | CIO Dive",
+  "domain": "ciodive.com",
+  "publish_date": "2024-03-11",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s33",
-  "url": "https://www.economist.com/business/2023/11/22/the-many-contradictions-of-sam-altman",
-  "title": "The many contradictions of Sam Altman ",
-  "domain": "economist.com",
-  "publish_date": "2023-11-22",
+  "id": "s71",
+  "url": "https://www.latimes.com/business/story/2023-11-21/sam-altman-openai-reinstated-ceo",
+  "title": "Sam Altman reinstated as OpenAI CEO days after firing - Los Angeles Times",
+  "domain": "latimes.com",
+  "publish_date": "2023-11-21",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s34",
-  "url": "https://realgrowthmatters.com/learn/case-studies/openai-sam-altman-firing-rehiring-2023/",
-  "title": "OpenAI's five-day CEO crisis (November 2023): the firing, the ...",
-  "domain": "realgrowthmatters.com",
-  "publish_date": null,
+  "id": "s72",
+  "url": "https://refyc.com/research/openai-board-coup",
+  "title": "The OpenAI Board Coup: Mapping the 5-Day Crisis | Refyc",
+  "domain": "refyc.com",
+  "publish_date": "2026-06-08",
   "primary": false,
   "question_id": "q2"
  },
  {
   "type": "source",
-  "id": "s35",
+  "id": "s73",
+  "url": "https://www.courthousenews.com/openai-has-full-confidence-in-ceo-sam-altman-after-investigation-reinstates-him-to-board",
+  "title": "OpenAI has 'full confidence' in CEO Sam Altman after investigation, reinstates him to board | Courthouse News Service",
+  "domain": "courthousenews.com",
+  "publish_date": "2024-03-08",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s74",
+  "url": "https://www.reuters.com/technology/sam-altman-return-openais-board-information-reports-2024-03-08",
+  "title": "Sam Altman will return to OpenAI's board with three new directors | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2024-03-08",
+  "primary": false,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s75",
   "url": "https://www.courtlistener.com/docket/69013420/64/11/musk-v-altman",
   "title": "Elon Musk v. Samuel Altman, OpenAI, Inc. et al., Case No. 4:24-cv-04722-YGR \u2014 Complaint for Breach of Contract",
   "domain": "courtlistener.com",
@@ -463,47 +879,7 @@
  },
  {
   "type": "source",
-  "id": "s36",
-  "url": "https://www.reuters.com/breakingviews/openai-calls-time-alt-governance-experiment-2023-11-22",
-  "title": "OpenAI calls time on alt-governance experiment | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s37",
-  "url": "https://www.texasattorneygeneral.gov/sites/default/files/images/press/OpenAI%20Final.pdf?utm_content=&utm_medium=email&utm_name=&utm_source=govdelivery&utm_term=",
-  "title": "CAUSE NO. ______________ THE STATE OF TEXAS \u00a7 IN THE DISTRICT COURT \u00a7 \u00a7 , \u00a7 Plaintiff \u00a7 v. \u00a7",
-  "domain": "texasattorneygeneral.gov",
-  "publish_date": "2026-10-23",
-  "primary": true,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s38",
-  "url": "https://fortune.com/2023/11/29/sam-altman-officially-reinstated-openai-ceo-board-bret-taylor",
-  "title": "Sam Altman is officially reinstated as OpenAI's CEO just two weeks after his ouster set off an 'unprecedented' firestorm | Fortune",
-  "domain": "fortune.com",
-  "publish_date": "2023-11-29",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s39",
-  "url": "https://dramabyopenai.com/event/sam-altman-reinstated",
-  "title": "Sam Altman is reinstated \u2014 Drama by OpenAI",
-  "domain": "dramabyopenai.com",
-  "publish_date": "2023-11-29",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s40",
+  "id": "s76",
   "url": "https://siliconangle.com/2023/11/30/openai-reinstates-altman-ceo-changes-governing-board/",
   "title": "OpenAI reinstates Altman as CEO with changes to the governing board - SiliconANGLE",
   "domain": "siliconangle.com",
@@ -513,607 +889,231 @@
  },
  {
   "type": "source",
-  "id": "s41",
-  "url": "https://www.courthousenews.com/sam-altman-returns-to-openai-as-ceo-with-a-restructured-board-of-directors",
-  "title": "Sam Altman returns to OpenAI as CEO, with a restructured board of directors | Courthouse News Service",
-  "domain": "courthousenews.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s42",
-  "url": "https://www.reuters.com/technology/sam-altman-return-openai-ceo-2023-11-22",
-  "title": "Sam Altman to return as OpenAI CEO after his tumultuous ouster | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "source",
-  "id": "s43",
-  "url": "https://arstechnica.com/information-technology/2023/11/sam-altman-officially-back-as-openai-ceo-we-didnt-lose-a-single-employee/",
-  "title": "Sam Altman officially back as OpenAI CEO: \u201cWe didn\u2019t lose a single employee\u201d - Ars Technica",
-  "domain": "arstechnica.com",
-  "publish_date": "2023-11-30",
-  "primary": false,
-  "question_id": "q2"
- },
- {
-  "type": "stats",
-  "searches": 4,
-  "sources": 43,
-  "claims": 0,
-  "conflicts": 0,
-  "seconds": 5.7
- },
- {
-  "type": "source",
-  "id": "s44",
-  "url": "https://www.reuters.com/technology/who-is-openais-interim-ceo-emmett-shear-2023-11-20",
-  "title": "Who is Emmett Shear, OpenAI's interim CEO replacing Sam Altman? | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s45",
-  "url": "https://apnews.com/article/emmett-shear-openai-sam-altman-6be0505112cd9e375e5f5383b5abe6d9",
-  "title": "Who is Emmett Shear, OpenAI's new interim CEO? | AP News",
-  "domain": "apnews.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s46",
-  "url": "https://yaledailynews.com/articles/emmett-shear-05-briefly-appointed-openai-ceo-amid-chaotic-turnover",
-  "title": "Emmett Shear \u201905 briefly appointed OpenAI CEO amid chaotic turnover | Yale Daily News",
-  "domain": "yaledailynews.com",
-  "publish_date": "2023-11-28",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s47",
-  "url": "https://www.nytimes.com/2023/11/20/business/emmett-shear-openai-interim-chief-executive.html",
-  "title": "Who Is Emmett Shear, the OpenAI Interim C.E.O. Replacing Sam Altman? - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s48",
-  "url": "https://www.cnbc.com/2023/11/20/who-is-emmett-shear-the-new-openai-ceo-taking-over-from-sam-altman.html",
-  "title": "Who is Emmett Shear, the new OpenAI CEO taking over from Sam Altman?",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s49",
-  "url": "https://www.reuters.com/technology/openai-execs-invite-altman-brockman-headquarters-sunday-the-information-2023-11-19",
-  "title": "OpenAI appoints new boss as Sam Altman joins Microsoft | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-19",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s50",
-  "url": "https://www.cnn.com/2023/11/20/tech/openai-ceo-emmett-shear-twitch/index.html",
-  "title": "Who is Emmett Shear, the new CEO of OpenAI? | CNN Business",
-  "domain": "cnn.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s51",
-  "url": "https://www.theverge.com/2023/11/20/23968848/openai-new-ceo-emmett-shear-twitch-co-founder-hiring",
-  "title": "OpenAI\u2019s new CEO is Twitch co-founder Emmett Shear | The Verge",
-  "domain": "theverge.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s52",
-  "url": "https://www.axios.com/2023/11/20/sam-altman-openai-board-emmet-shear",
-  "title": "OpenAI board names Emmett Shear as interim CEO, not Sam Altman",
-  "domain": "axios.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s53",
-  "url": "https://www.newyorker.com/science/annals-of-artificial-intelligence/chaos-in-the-cradle-of-ai",
-  "title": "Chaos in the Cradle of A.I. | The New Yorker",
-  "domain": "newyorker.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s54",
-  "url": "https://www.theverge.com/2023/11/20/23967515/sam-altman-openai-board-fired-new-ceo",
-  "title": "Emmett Shear named new CEO of OpenAI by board | The Verge",
-  "domain": "theverge.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s55",
-  "url": "https://abc7news.com/post/emmett-shear-openai-ceo-sam-altman/14085557/",
-  "title": "Who is Emmett Shear, OpenAI's third CEO in three days? Sam Altman to return to company to head artificial intelligence innovation - ABC7 San Francisco",
-  "domain": "abc7news.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s56",
-  "url": "https://abcnews.com/Business/new-openai-interim-ceo-emmett-shear/story?id=105032532",
-  "title": "What to know about new OpenAI interim CEO Emmett Shear - ABC News",
-  "domain": "abcnews.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s57",
-  "url": "https://www.thehindu.com/sci-tech/technology/emmett-shear-named-interim-ceo-at-openai/article67553955.ece",
-  "title": "\n\tEmmett Shear named interim CEO at OpenAI - The Hindu\n",
-  "domain": "thehindu.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s58",
-  "url": "http://reuters.com/technology/sam-altman-return-openai-ceo-2023-11-22",
-  "title": "Sam Altman to return as OpenAI CEO after his tumultuous ouster | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s59",
-  "url": "https://x.com/eshear/status/1726526112019382275",
-  "title": "Emmett Shear on X: \"Today I got a call inviting me to consider a once-in-a-lifetime opportunity: to become the interim CEO of @OpenAI. After consulting with my family and reflecting on it for just a few hours, I accepted. I had recently resigned from my role as CEO of Twitch due to the birth of my\u2026 / X",
-  "domain": "x.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s60",
-  "url": "https://venturebeat.com/technology/openai-board-names-emmett-shear-interim-ceo-as-altman-reinstatement-attempt-fails",
-  "title": "OpenAI board names Emmett Shear interim CEO as Altman reinstatement attempt fails | VentureBeat",
-  "domain": "venturebeat.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s61",
-  "url": "https://aimagazine.com/machine-learning/emmett-shear-who-is-the-new-interim-ceo-of-openai",
-  "title": "Emmett Shear: Who is the new interim CEO of OpenAI? | AI Magazine",
-  "domain": "aimagazine.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s62",
-  "url": "https://en.wikipedia.org/wiki/Emmett_Shear",
-  "title": "Emmett Shear - Wikipedia",
-  "domain": "en.wikipedia.org",
-  "publish_date": "2011-11-03",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s63",
-  "url": "https://www.washingtonpost.com/technology/2023/11/20/emmett-shear-openai-ceo",
-  "title": "Who is Emmett Shear, the new interim OpenAI CEO? - The Washington Post",
-  "domain": "washingtonpost.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "source",
-  "id": "s64",
-  "url": "https://jolt.law.harvard.edu/assets/articlePDFs/v38.4/2-Fan-Nguyen.pdf",
-  "title": "Microsoft Word - 2-Fan-Nguyen",
-  "domain": "jolt.law.harvard.edu",
-  "publish_date": "2025-08-14",
-  "primary": false,
-  "question_id": "q4"
- },
- {
-  "type": "stats",
-  "searches": 6,
-  "sources": 64,
-  "claims": 0,
-  "conflicts": 0,
-  "seconds": 6.2
- },
- {
-  "type": "source",
-  "id": "s65",
-  "url": "https://apnews.com/article/openai-chatgpt-board-fired-sam-altman-dd6a15228fd11aa3b9bec2914c095271",
-  "title": "OpenAI\u2019s nonprofit structure led to CEO Sam Altman's ouster | AP News",
-  "domain": "apnews.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s66",
-  "url": "https://www.nytimes.com/2023/11/22/technology/open-ai-board-shakeup.html",
-  "title": "Explaining OpenAI\u2019s Board Shake-Up - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s67",
-  "url": "https://www.engadget.com/sam-altman-is-reinstated-as-openai-ceo-five-days-after-being-fired-070037749.html",
-  "title": "Sam Altman reinstated as OpenAI CEO five days after being fired",
-  "domain": "engadget.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s68",
-  "url": "https://www.reuters.com/technology/openai-ceo-sam-altman-step-down-2023-11-17",
-  "title": "ChatGPT maker OpenAI ousts CEO Sam Altman | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-17",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s69",
-  "url": "https://www.kodaps.dev/en/blog/openai-board-vs-sam-altman-safety-vs-agi",
-  "title": "The OpenAI Board vs Sam Altman Saga: Values vs Value",
-  "domain": "kodaps.dev",
-  "publish_date": "2023-11-28",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s70",
-  "url": "https://www.bloomberg.com/news/articles/2023-11-22/sam-altman-to-return-as-openai-ceo-with-a-new-board",
-  "title": "Sam Altman to Return as OpenAI CEO With a New Board - Bloomberg",
-  "domain": "bloomberg.com",
-  "publish_date": "2023-11-22",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s71",
-  "url": "https://www.cnbc.com/2023/11/18/heres-whos-on-openais-board-the-group-behind-sam-altmans-ouster.html",
-  "title": "Who's on the OpenAI board \u2014 the group behind Sam Altman's ouster",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-18",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s72",
-  "url": "https://edition.cnn.com/2023/11/29/tech/openai-sam-altman-board-microsoft/index.html",
-  "title": "OpenAI officially announces Sam Altman has returned as CEO and Microsoft gains a non-voting board seat | CNN Business",
-  "domain": "edition.cnn.com",
-  "publish_date": "2023-11-29",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s73",
-  "url": "https://www.thealgorithmicbridge.com/p/why-openai-fired-sam-altman-and-what",
-  "title": "Why OpenAI Fired Sam Altman \u2014 And What Happens Next in the AI World",
-  "domain": "thealgorithmicbridge.com",
-  "publish_date": "2023-11-18",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s74",
-  "url": "https://www.nytimes.com/2023/11/21/technology/openai-altman-board-fight.html",
-  "title": "Before Altman\u2019s Ouster, OpenAI\u2019s Board Was Divided and Feuding - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s75",
-  "url": "https://openai.com/index/review-completed-altman-brockman-to-continue-to-lead-openai",
-  "title": "Review completed & Altman, Brockman to continue to lead OpenAI | OpenAI",
-  "domain": "openai.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
-  "id": "s76",
-  "url": "https://www.nytimes.com/2023/11/29/technology/openai-sam-altman-plans.html",
-  "title": "Back at OpenAI, Sam Altman Outlines the Company\u2019s Priorities - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-29",
-  "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "source",
   "id": "s77",
-  "url": "https://www.reuters.com/technology/openais-new-look-board-altman-returns-2023-11-22",
-  "title": "Who are OpenAI's new board members as Sam Altman returns? | Reuters",
-  "domain": "reuters.com",
-  "publish_date": "2023-11-22",
+  "url": "https://dramabyopenai.com/event/sam-altman-reinstated",
+  "title": "Sam Altman is reinstated \u2014 Drama by OpenAI",
+  "domain": "dramabyopenai.com",
+  "publish_date": "2023-11-29",
   "primary": false,
-  "question_id": "q3"
+  "question_id": "q2"
  },
  {
   "type": "source",
   "id": "s78",
-  "url": "https://www.cnbc.com/2023/11/17/sam-altman-leaves-openai-mira-murati-appointed-interim-boss.html",
-  "title": "OpenAI says Sam Altman exits as CEO after board loses confidence",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-17",
+  "url": "https://apnews.com/article/openai-sam-altman-chatgpt-2f3303dff2280478947e9bfb04863537",
+  "title": "OpenAI reinstates CEO Sam Altman to board after investigation | AP News",
+  "domain": "apnews.com",
+  "publish_date": "2024-03-08",
   "primary": false,
-  "question_id": "q3"
+  "question_id": "q2"
  },
  {
   "type": "source",
   "id": "s79",
-  "url": "https://blogs.microsoft.com/blog/2023/11/21/a-statement-from-microsoft-chairman-and-ceo-satya-nadella",
-  "title": "A statement from Microsoft Chairman and CEO Satya Nadella - The Official Microsoft Blog",
-  "domain": "blogs.microsoft.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q3"
+  "url": "https://storage.courtlistener.com/recap/gov.uscourts.cand.433688/gov.uscourts.cand.433688.424.0.pdf",
+  "title": "OpenAI Defendants' Opposition to Plaintiff's Motion in Limine No. 2 \u2014 Case 4:24-cv-04722-YGR",
+  "domain": "storage.courtlistener.com",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q2"
  },
  {
   "type": "source",
   "id": "s80",
-  "url": "https://www.cnbc.com/2024/03/08/sam-altman-rejoins-openai-board-company-adds-three-new-members.html",
-  "title": "Sam Altman rejoins OpenAI board, company adds three new members",
-  "domain": "cnbc.com",
-  "publish_date": "2024-03-08",
+  "url": "https://www.reuters.com/technology/artificial-intelligence/openai-remove-non-profit-control-give-sam-altman-equity-sources-say-2024-09-25",
+  "title": "EXCLUSIVE: Exclusive: OpenAI to remove non-profit control and give Sam Altman equity | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2024-09-25",
   "primary": false,
-  "question_id": "q3"
- },
- {
-  "type": "stats",
-  "searches": 8,
-  "sources": 80,
-  "claims": 0,
-  "conflicts": 0,
-  "seconds": 6.3
+  "question_id": "q2"
  },
  {
   "type": "source",
   "id": "s81",
-  "url": "https://www.forbes.com/sites/siladityaray/2023/11/20/ousted-openai-ceo-sam-altman-joins-microsoft-to-lead-its-new-ai-research-team",
-  "title": "Ousted OpenAI CEO Sam Altman Joins Microsoft To Lead Its New AI Team",
-  "domain": "forbes.com",
-  "publish_date": "2023-11-20",
+  "url": "https://abcnews.com/Business/sam-altman-remain-ceo-openai-review/story?id=107940318",
+  "title": "Sam Altman to remain as CEO of OpenAI, rejoin board following external review - ABC News",
+  "domain": "abcnews.com",
+  "publish_date": "2024-03-09",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q2"
  },
  {
   "type": "source",
   "id": "s82",
+  "url": "https://storage.courtlistener.com/recap/gov.uscourts.cand.433688/gov.uscourts.cand.433688.403.0_1.pdf",
+  "title": "Plaintiff's Motion in Limine No. 2 \u2014 Elon Musk v. Samuel Altman, Case No. 4:24-CV-04722-YGR",
+  "domain": "storage.courtlistener.com",
+  "publish_date": "2026-02-24",
+  "primary": true,
+  "question_id": "q2"
+ },
+ {
+  "type": "source",
+  "id": "s83",
+  "url": "https://storage.courtlistener.com/recap/gov.uscourts.cand.433688/gov.uscourts.cand.433688.379.85.pdf",
+  "title": "Exhibit 58: Videotaped Deposition of Tasha McCauley \u2014 In Re Matter of Elon Musk vs. Samuel Altman, Case No. 4:24-CV-04722-YGR",
+  "domain": "storage.courtlistener.com",
+  "publish_date": "2025-11-07",
+  "primary": true,
+  "question_id": "q2"
+ },
+ {
+  "type": "stats",
+  "searches": 8,
+  "sources": 83,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 9.5
+ },
+ {
+  "type": "source",
+  "id": "s84",
+  "url": "https://www.upi.com/Top_News/US/2023/11/20/Microsoft-AI-Altman-Brockman/1121700486136",
+  "title": "Microsoft hires OpenAI co-founders Sam Altman, Greg Brockman after split - UPI.com",
+  "domain": "upi.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s85",
   "url": "https://www.npr.org/2023/11/20/1214110423/openai-sam-altman-joins-microsoft",
   "title": "Ousted OpenAI leader Sam Altman joins Microsoft : NPR",
   "domain": "npr.org",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s83",
-  "url": "https://techcrunch.com/2023/11/20/openai-co-founders-sam-altman-and-greg-brockman-to-join-microsoft",
-  "title": "Microsoft hires ex-OpenAI leaders Sam Altman and Greg Brockman to lead new AI team | TechCrunch",
-  "domain": "techcrunch.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s84",
-  "url": "https://www.cnbc.com/2023/11/20/ousted-openai-head-sam-altman-to-lead-microsofts-new-ai-team-ceo-nadella-says.html",
-  "title": "Ousted OpenAI head Sam Altman to lead Microsoft's new AI team",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s85",
-  "url": "https://www.axios.com/2023/11/20/microsoft-hires-sam-altman-and-greg-brockman-to-lead-new-ai-research-unit",
-  "title": "Microsoft hires Sam Altman and Greg Brockman to lead new AI research unit",
-  "domain": "axios.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s86",
-  "url": "https://www.aljazeera.com/news/2023/11/20/sam-altman-wont-return-to-openai-despite-companys-overtures-report-says",
-  "title": "OpenAI\u2019s fired CEO Sam Altman to join Microsoft | Technology News | Al Jazeera",
-  "domain": "aljazeera.com",
+  "url": "https://www.silicon.co.uk/e-innovation/artificial-intelligence/openai-microsoft-altman-brockman-540024",
+  "title": "Altman, Brockman Join Microsoft After Shock OpenAI Ouster",
+  "domain": "silicon.co.uk",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s87",
-  "url": "https://www.calcalistech.com/ctechnews/article/sktkn9004t",
-  "title": "Former OpenAI CEO Sam Altman hired by Microsoft to lead new AI research team | Ctech",
-  "domain": "calcalistech.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s88",
-  "url": "https://techcrunch.com/2023/11/20/openai-co-founders-sam-altman-and-greg-brockman-to-join-microsoft?tpcc=tcplustwitter",
-  "title": "Microsoft hires ex-OpenAI leaders Sam Altman and Greg Brockman to lead new AI team | TechCrunch",
-  "domain": "techcrunch.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s89",
-  "url": "https://www.theguardian.com/technology/2023/nov/20/sam-altman-openai-ceo-wont-return-chatgpt-talks-fail-emmett-shear-twitch",
-  "title": "Microsoft hires former OpenAI CEO Sam Altman | OpenAI | The Guardian",
-  "domain": "theguardian.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s90",
   "url": "https://text.npr.org/1214110423",
   "title": "Ousted OpenAI leader Sam Altman joins Microsoft",
   "domain": "text.npr.org",
   "publish_date": null,
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s88",
+  "url": "https://cointelegraph.com/news/microsoft-hires-sam-altman-greg-brockman-after-departure-from-openai",
+  "title": "Microsoft hires Sam Altman, Greg Brockman after departure from OpenAI",
+  "domain": "cointelegraph.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s89",
+  "url": "https://www.axios.com/2023/11/20/microsoft-hires-sam-altman-and-greg-brockman-to-lead-new-ai-research-unit",
+  "title": "Microsoft hires Sam Altman and Greg Brockman to lead new AI research unit",
+  "domain": "axios.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s90",
+  "url": "https://www.calcalistech.com/ctechnews/article/sktkn9004t",
+  "title": "Former OpenAI CEO Sam Altman hired by Microsoft to lead new AI research team | Ctech",
+  "domain": "calcalistech.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s91",
-  "url": "https://www.wsj.com/tech/ai/openai-leadership-hangs-in-balance-as-sam-altmans-counte-rebellion-gains-steam-47276fa8?mod=article_inline",
-  "title": "Sam Altman to Join Microsoft Following OpenAI Ouster - WSJ",
-  "domain": "wsj.com",
-  "publish_date": "2023-11-19",
+  "url": "https://www.theverge.com/2023/11/20/23968829/microsoft-hires-sam-altman-greg-brockman-emmett-shear",
+  "title": "Microsoft hires former OpenAI CEO Sam Altman | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s92",
-  "url": "https://www.businessinsider.com/microsoft-has-hired-former-openai-ceo-sam-altman-2023-11",
-  "title": "Microsoft Has Hired Former OpenAI CEO Sam Altman  - Business Insider",
-  "domain": "businessinsider.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "source",
-  "id": "s93",
   "url": "https://blogs.microsoft.com/blog/2023/11/21/a-statement-from-microsoft-chairman-and-ceo-satya-nadella/",
   "title": "A statement from Microsoft Chairman and CEO Satya Nadella - The Official Microsoft Blog",
   "domain": "blogs.microsoft.com",
   "publish_date": "2023-11-21",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
+ },
+ {
+  "type": "source",
+  "id": "s93",
+  "url": "https://timelinedaily.com/technology/sam-altman-and-greg-brockman-joins-microsoft",
+  "title": "Sam Altman And Greg Brockman Join Microsoft | TimelineDaily",
+  "domain": "timelinedaily.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s94",
-  "url": "https://www.nytimes.com/2023/11/20/technology/openai-altman-ceo-not-returning.html",
-  "title": "Microsoft Hires Sam Altman Hours After OpenAI Rejects His Return - The New York Times",
-  "domain": "nytimes.com",
+  "url": "https://techcrunch.com/2023/11/20/openai-co-founders-sam-altman-and-greg-brockman-to-join-microsoft",
+  "title": "Microsoft hires ex-OpenAI leaders Sam Altman and Greg Brockman to lead new AI team | TechCrunch",
+  "domain": "techcrunch.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s95",
-  "url": "https://www.geekwire.com/2023/microsoft-emerges-victorious-from-openai-meltdown-with-sam-altman-leading-its-new-ai-research-lab/",
-  "title": "Microsoft emerges victorious from OpenAI meltdown with Sam Altman leading its new AI research team",
-  "domain": "geekwire.com",
-  "publish_date": null,
+  "url": "https://www.crn.com/news/cloud/openai-former-ceo-joins-microsoft-to-continue-ai-mission-satya-nadella-weighs-in",
+  "title": "OpenAI\u2019s Former CEO Joins Microsoft To Continue AI \u2018Mission;\u2019 Satya Nadella Weighs In | CRN",
+  "domain": "crn.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s96",
-  "url": "https://x.com/satyanadella/status/1726509045803336122",
-  "title": "x.com",
-  "domain": "x.com",
+  "url": "https://www.aljazeera.com/news/2023/11/20/sam-altman-wont-return-to-openai-despite-companys-overtures-report-says",
+  "title": "OpenAI\u2019s fired CEO Sam Altman to join Microsoft | Technology News | Al Jazeera",
+  "domain": "aljazeera.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s97",
-  "url": "https://www.ndtv.com/world-news/satya-nadellas-big-announcement-on-sam-altman-after-openai-sacking-4588860",
-  "title": "Satya Nadella's Big Announcement On Sam Altman After OpenAI Sacking",
-  "domain": "ndtv.com",
+  "url": "https://www.cnbc.com/2023/11/20/ousted-openai-head-sam-altman-to-lead-microsofts-new-ai-team-ceo-nadella-says.html",
+  "title": "Ousted OpenAI head Sam Altman to lead Microsoft's new AI team",
+  "domain": "cnbc.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s98",
-  "url": "https://blogs.microsoft.com/blog/2023/11/19/a-statement-from-microsoft-chairman-and-ceo-satya-nadella",
-  "title": "A statement from Microsoft Chairman and CEO Satya Nadella - The Official Microsoft Blog",
-  "domain": "blogs.microsoft.com",
-  "publish_date": "2023-11-19",
+  "url": "https://www.businessinsider.com/microsoft-has-hired-former-openai-ceo-sam-altman-2023-11",
+  "title": "Microsoft Has Hired Former OpenAI CEO Sam Altman  - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
@@ -1123,52 +1123,44 @@
   "domain": "cnn.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s100",
-  "url": "https://www.theverge.com/2023/11/20/23968829/microsoft-hires-sam-altman-greg-brockman-employees-openai",
-  "title": "Microsoft hires former OpenAI CEO Sam Altman | The Verge",
-  "domain": "theverge.com",
+  "url": "https://edition.cnn.com/2023/11/20/tech/sam-altman-joins-microsoft/index.html",
+  "title": "Sam Altman joins Microsoft as OpenAI taps Emmett Shear for interim CEO | CNN Business",
+  "domain": "edition.cnn.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s101",
-  "url": "https://fortune.com/2023/11/20/microsoft-hires-sam-altman-openai-ceo-satya-nadella",
-  "title": "Microsoft Hires Sam Altman Openai Ceo Satya Nadella",
-  "domain": "fortune.com",
+  "url": "https://the-decoder.com/sam-altman-joins-microsoft-ex-twitch-boss-becomes-openai-ceo/",
+  "title": "Sam Altman and Greg Brockman join Microsoft, Emmett Shear appointed CEO of OpenAI",
+  "domain": "the-decoder.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s102",
-  "url": "https://arstechnica.com/information-technology/2023/11/openai-employees-revolt-after-board-names-new-ceo-and-altman-heads-to-microsoft/",
-  "title": "OpenAI employees revolt after board names new CEO; Altman may head to Microsoft - Ars Technica",
-  "domain": "arstechnica.com",
+  "url": "https://interestingengineering.com/culture/sam-altman-greg-brockman-microsoft-nadella",
+  "title": "Sam Altman and Greg Brockman join Microsoft, announces Nadella",
+  "domain": "interestingengineering.com",
   "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q8"
- },
- {
-  "type": "stats",
-  "searches": 10,
-  "sources": 102,
-  "claims": 0,
-  "conflicts": 0,
-  "seconds": 6.6
+  "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s103",
-  "url": "https://www.bbc.co.uk/news/business-67470876",
-  "title": "OpenAI staff demand board resign over Sam Altman sacking - BBC News",
-  "domain": "bbc.co.uk",
+  "url": "https://www.fastcompany.com/90986156/sam-altman-hired-microsoft-lead-ai-research-ouster-openai",
+  "title": "Microsoft hires Sam Altman to lead AI research after OpenAI fired him",
+  "domain": "fastcompany.com",
   "publish_date": "2023-11-20",
   "primary": false,
   "question_id": "q7"
@@ -1176,1027 +1168,629 @@
  {
   "type": "source",
   "id": "s104",
-  "url": "https://www.wired.com/story/95-percent-of-openai-employees-threaten-to-follow-sam-altman-out-the-door",
-  "title": "95 Percent of OpenAI Employees Threaten to Follow Sam Altman Out the Door | WIRED",
-  "domain": "wired.com",
-  "publish_date": "2023-11-20",
+  "url": "https://www.wsj.com/tech/ai/openai-leadership-hangs-in-balance-as-sam-altmans-counte-rebellion-gains-steam-47276fa8",
+  "title": "Sam Altman to Join Microsoft Following OpenAI Ouster - WSJ",
+  "domain": "wsj.com",
+  "publish_date": "2023-11-19",
   "primary": false,
   "question_id": "q7"
  },
  {
   "type": "source",
   "id": "s105",
-  "url": "https://www.wired.com/story/openai-staff-walk-protest-sam-altman",
-  "title": "OpenAI Staff Threaten to Quit Unless Board Resigns | WIRED",
-  "domain": "wired.com",
+  "url": "https://fortune.com/2023/11/20/microsoft-hires-sam-altman-openai-ceo-satya-nadella",
+  "title": "Microsoft Hires Sam Altman Openai Ceo Satya Nadella",
+  "domain": "fortune.com",
   "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s106",
-  "url": "https://www.nytimes.com/2023/11/20/business/openai-staff-exodus-turmoil.html",
-  "title": "OpenAI Staff Threatens Exodus, Jeopardizing Company\u2019s Future - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s107",
-  "url": "https://www.scmp.com/tech/tech-trends/article/3242258/nearly-all-openai-staff-threaten-go-microsoft-unless-board-quits-investors-try-bring-back-altman",
-  "title": "Nearly all OpenAI staff threaten to go to Microsoft unless board quits, as investors try to bring back Altman | South China Morning Post",
-  "domain": "scmp.com",
-  "publish_date": null,
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s108",
-  "url": "https://www.businessinsider.com/openai-workers-threaten-to-quit-over-sam-altman-firing-2023-11",
-  "title": "OpenAI Workers Say They'll Quit Unless Sam Altman Gets CEO Job Back - Business Insider",
-  "domain": "businessinsider.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s109",
-  "url": "https://www.foxbusiness.com/technology/openais-employees-revolt-threaten-quit-unless-board-reinstates-altman-resigns",
-  "title": "OpenAI\u2019s workers revolt, threaten to quit unless board reinstates Altman and resigns: Report | Fox Business",
-  "domain": "foxbusiness.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s110",
-  "url": "https://www.latimes.com/business/story/2023-11-20/openai-staff-threaten-to-go-to-microsoft-if-board-doesnt-quit",
-  "title": "OpenAI staff threaten to go to Microsoft if board doesn\u2019t quit - Los Angeles Times",
-  "domain": "latimes.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s111",
-  "url": "https://www.npr.org/2023/11/20/1214281184/hundreds-of-openai-workers-threaten-to-leave-over-ceo-sam-altmans-firing",
-  "title": "Hundreds of OpenAI workers threaten to leave over CEO Sam Altman's firing : NPR",
-  "domain": "npr.org",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s112",
-  "url": "https://www.engadget.com/most-of-openais-staff-threatens-to-quit-unless-the-board-resigns-and-reinstates-sam-altman-as-ceo-142138044.html",
-  "title": "Most of OpenAI's staff threatens to quit unless the board resigns and reinstates Sam Altman as CEO",
-  "domain": "engadget.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s113",
-  "url": "https://www.businessinsider.com/openai-staff-risk-visas-if-they-quit-over-sam-altman-2023-11",
-  "title": "OpenAI Staff Put Their Visas at Risk to Get Sam Altman Back As CEO - Business Insider",
-  "domain": "businessinsider.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s114",
-  "url": "https://arstechnica.com/ai/2023/11/95-of-openai-employees-have-threatened-to-quit-in-standoff-with-board",
-  "title": "95% of OpenAI employees have threatened to quit in standoff with board - Ars Technica",
-  "domain": "arstechnica.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s115",
-  "url": "https://www.constangy.com/employment-labor-insider/what-employers-can-learn-from-the-openai-drama",
-  "title": "What employers can learn from the OpenAI drama",
-  "domain": "constangy.com",
-  "publish_date": "2023-11-28",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s116",
-  "url": "https://qz.com/openai-safety-staffers-quit-sam-altman-1851482644/slides/9",
-  "title": "OpenAI's safety staffers are jumping ship fast",
-  "domain": "qz.com",
-  "publish_date": "2024-05-16",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s117",
-  "url": "https://www.cnbc.com/2023/11/20/hundreds-of-openai-employees-threaten-to-follow-altman-to-microsoft-unless-board-resigns-reports-say.html",
-  "title": "Hundreds of OpenAI employees threaten to follow Altman to Microsoft unless board resigns",
-  "domain": "cnbc.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s118",
-  "url": "https://www.nbcnews.com/business/business-news/sam-altman-joins-microsoft-openai-ouster-rcna125940",
-  "title": "OpenAI employees threaten to quit en masse after former CEO Sam Altman joins Microsoft",
-  "domain": "nbcnews.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s119",
-  "url": "https://www.maginative.com/article/openai-employees-revolt-demanding-board-resignation-and-altman-reinstatement/",
-  "title": "OpenAI Employees Revolt, Demanding Board Resignation and Altman Reinstatement",
-  "domain": "maginative.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s120",
-  "url": "https://impaakt.co/738-out-of-770-employees-threaten-to-quit-openai-in-a-letter",
-  "title": "738 Out of 770 Employees Threaten to Quit OpenAI in a Letter",
-  "domain": "impaakt.co",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s121",
-  "url": "https://en.wikipedia.org/wiki/Removal_of_Sam_Altman_from_OpenAI",
-  "title": "Removal of Sam Altman from OpenAI - Wikipedia",
-  "domain": "en.wikipedia.org",
-  "publish_date": "2023-11-19",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s122",
-  "url": "https://www.oann.com/newsroom/over-700-openai-employees-threaten-to-quit-after-ceo-sam-altmans-termination",
-  "title": "Over 700 OpenAI Employees Threaten To Quit After CEO Sam Altman\u2019s Termination \u2013 One America News Network",
-  "domain": "oann.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s123",
-  "url": "https://www.wsj.com/tech/openai-employees-threaten-to-quit-unless-board-resigns-bbd5cc86",
-  "title": "OpenAI Investors Keep Pushing for Sam Altman\u2019s Return - WSJ",
-  "domain": "wsj.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s124",
-  "url": "https://www.theguardian.com/technology/2023/nov/20/openai-staff-walkout-sam-altman-board",
-  "title": "OpenAI staff threaten to quit en masse unless Sam Altman is reinstated | OpenAI | The Guardian",
-  "domain": "theguardian.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s125",
-  "url": "https://www.axios.com/2023/11/20/openai-staff-letter-board-resign-sam-altman",
-  "title": "Hundreds of OpenAI staff tell board to resign or they\u2019ll join Altman at Microsoft",
-  "domain": "axios.com",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q7"
- },
- {
-  "type": "source",
-  "id": "s126",
-  "url": "https://www.siliconvalley.com/2026/06/05/openai-implosion-altman-didnt-return",
-  "title": "OpenAI would\u2019ve \u2018imploded\u2019 if Altman didn\u2019t return, ex-CTO says \u2013 Silicon Valley",
-  "domain": "siliconvalley.com",
-  "publish_date": "2026-06-05",
   "primary": false,
   "question_id": "q7"
  },
  {
   "type": "stats",
-  "searches": 12,
-  "sources": 126,
+  "searches": 10,
+  "sources": 105,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 6.8
+  "seconds": 9.8
+ },
+ {
+  "type": "source",
+  "id": "s106",
+  "url": "https://www.newyorker.com/magazine/2026/04/13/sam-altman-may-control-our-future-can-he-be-trusted",
+  "title": "Sam Altman May Control Our Future\u2014Can He Be Trusted? | The New Yorker",
+  "domain": "newyorker.com",
+  "publish_date": "2026-04-06",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s107",
+  "url": "https://www.cnbc.com/2023/11/18/heres-whos-on-openais-board-the-group-behind-sam-altmans-ouster.html",
+  "title": "Who's on the OpenAI board \u2014 the group behind Sam Altman's ouster",
+  "domain": "cnbc.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s108",
+  "url": "https://www.fastcompany.com/90986032/openai-board-sam-altman",
+  "title": "OpenAI board: What happens if Sam Altman returns?",
+  "domain": "fastcompany.com",
+  "publish_date": "2023-11-19",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s109",
+  "url": "https://www.nytimes.com/2023/11/22/technology/open-ai-board-shakeup.html",
+  "title": "Explaining OpenAI\u2019s Board Shake-Up - The New York Times",
+  "domain": "nytimes.com",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s110",
+  "url": "https://www.kodaps.dev/en/blog/openai-board-vs-sam-altman-safety-vs-agi",
+  "title": "The OpenAI Board vs Sam Altman Saga: Values vs Value",
+  "domain": "kodaps.dev",
+  "publish_date": "2023-11-28",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s111",
+  "url": "https://www.wsj.com/tech/ai/openai-board-members-directors-dea51459",
+  "title": "OpenAI's Board: 6 Questions About the Group Who Fired Sam Altman, Answered - WSJ",
+  "domain": "wsj.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s112",
+  "url": "https://simonwillison.net/2023/Nov/22/deciphering-clues/",
+  "title": "Deciphering clues in a news article to understand how it was reported",
+  "domain": "simonwillison.net",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s113",
+  "url": "https://www.wsj.com/tech/ai/openai-board-sam-altman-d5f3cd49",
+  "title": "Meet the Board of OpenAI Who Pushed Out Sam Altman - WSJ",
+  "domain": "wsj.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s114",
+  "url": "https://www.businessinsider.com/openai-sam-altman-supermajority-majority-vote-fire-the-ceo-2026-5",
+  "title": "OpenAI Made It Harder to Fire Sam Altman - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2026-05-11",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s115",
+  "url": "https://www.afr.com/world/north-america/firing-squad-the-openai-board-members-who-sacked-sam-altman-20231123-p5emcd",
+  "title": "Sam Altman: OpenAI board members Adam D\u2019Angelo, Helen Toner, Tasha McCauley and Ilya Sutskever sacked the CEO",
+  "domain": "afr.com",
+  "publish_date": "2023-11-23",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s116",
+  "url": "https://www.wsj.com/tech/ai/openai-board-members-directors-dea51459?mod=article_inline",
+  "title": "OpenAI's Board: 6 Questions About the Group Who Fired Sam Altman, Answered - WSJ",
+  "domain": "wsj.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s117",
+  "url": "https://www.theverge.com/ai-artificial-intelligence/814876/ilya-sutskever-deposition-openai-sam-altman-elon-musk-lawsuit",
+  "title": "Chaos and lies: Why Sam Altman was booted from OpenAI, according to new testimony | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2025-11-06",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s118",
+  "url": "http://wsj.com/tech/ai/openai-board-sam-altman-d5f3cd49",
+  "title": "Meet the Board of OpenAI Who Pushed Out Sam Altman - WSJ",
+  "domain": "wsj.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q5"
+ },
+ {
+  "type": "source",
+  "id": "s119",
+  "url": "https://storage.courtlistener.com/recap/gov.uscourts.cand.433688/gov.uscourts.cand.433688.403.2.pdf",
+  "title": "OpenAI Board Review Findings \u2014 Case 4:24-cv-04722-YGR Document 403-2",
+  "domain": "storage.courtlistener.com",
+  "publish_date": null,
+  "primary": true,
+  "question_id": "q5"
+ },
+ {
+  "type": "stats",
+  "searches": 12,
+  "sources": 119,
+  "claims": 0,
+  "conflicts": 0,
+  "seconds": 10.0
+ },
+ {
+  "type": "source",
+  "id": "s120",
+  "url": "https://www.businessinsider.com/openai-president-greg-brockman-quits-sam-altman-ceo-ousted-2023-11",
+  "title": "OpenAI President Greg Brockman Says He Quits After Sam Altman's Ousting - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s121",
+  "url": "https://www.forbes.com/sites/richardnieva/2023/11/17/openai-president-and-co-founder-quits-over-sam-altman-firing",
+  "title": "OpenAI President And Cofounder Quits Over Sam Altman Firing",
+  "domain": "forbes.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s122",
+  "url": "https://arstechnica.com/information-technology/2023/11/openai-president-greg-brockman-quits-as-nervous-employees-hold-all-hands-meeting",
+  "title": "OpenAI President Greg Brockman quits as shocked employees hold all-hands meeting - Ars Technica",
+  "domain": "arstechnica.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s123",
+  "url": "https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired",
+  "title": "Sam Altman fired as CEO of OpenAI | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2023-11-17",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s124",
+  "url": "https://www.neowin.net/news/openai-president-greg-brockman-resigns-microsoft-remains-committed-to-openai-partnership",
+  "title": "OpenAI President Greg Brockman resigns; Microsoft remains committed to OpenAI partnership - Neowin",
+  "domain": "neowin.net",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s125",
+  "url": "https://news.sky.com/story/greg-brockman-quits-as-president-of-open-ai-after-departure-of-ceo-sam-altman-13010768",
+  "title": "Greg Brockman quits as president of OpenAI after departure of CEO Sam Altman | Science, Climate & Tech News | Sky News",
+  "domain": "news.sky.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q6"
+ },
+ {
+  "type": "source",
+  "id": "s126",
+  "url": "https://www.hindustantimes.com/technology/openai-president-greg-brockman-resigns-after-chatgpt-maker-ceo-sam-altman-ousted-101700268785388-amp.html",
+  "title": "OpenAI president Greg Brockman resigns after ChatGPT-maker CEO Sam Altman ousted | Technology News\n(HT Tech)",
+  "domain": "hindustantimes.com",
+  "publish_date": "2023-11-18",
+  "primary": false,
+  "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s127",
-  "url": "https://www.benefitnews.com/news/openai-sam-altman-and-the-power-of-employees",
-  "title": "OpenAI, Sam Altman, and the power of employees | Employee Benefit News",
-  "domain": "benefitnews.com",
-  "publish_date": "2023-11-30",
+  "url": "https://techcrunch.com/2023/11/17/greg-brockman-quits-openai-after-abrupt-firing-of-sam-altman",
+  "title": "Greg Brockman quits OpenAI after abrupt firing of Sam Altman | TechCrunch",
+  "domain": "techcrunch.com",
+  "publish_date": "2023-11-17",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s128",
-  "url": "https://www.economist.com/business/2023/11/23/sam-altmans-return-marks-a-new-phase-for-openai",
-  "title": "With Sam Altman\u2019s return, a shift in AI from idealism to pragmatism",
-  "domain": "economist.com",
-  "publish_date": "2023-11-23",
+  "url": "https://www.livemint.com/technology/tech-news/i-quit-openai-president-greg-brockman-resigns-after-sam-altman-ouster-11700270504451.html",
+  "title": "OpenAI President Greg Brockman resigns after Sam Altman ouster | Mint",
+  "domain": "livemint.com",
+  "publish_date": "2023-11-18",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s129",
-  "url": "https://abcnews.com/Business/sam-altman-reaches-deal-returnceo-openai/story?id=105091534",
-  "title": "4 days from fired to re-hired: A timeline of Sam Altman's ouster from OpenAI - ABC News",
-  "domain": "abcnews.com",
-  "publish_date": "2023-11-22",
+  "url": "https://www.hindustantimes.com/technology/openai-president-greg-brockman-resigns-after-chatgpt-maker-ceo-sam-altman-ousted-101700268785388.html",
+  "title": "OpenAI president Greg Brockman resigns after ChatGPT-maker CEO Sam Altman ousted | Technology News\n(HT Tech)",
+  "domain": "hindustantimes.com",
+  "publish_date": "2023-11-18",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s130",
-  "url": "https://www.bbc.com/news/business-67470876",
-  "title": "OpenAI staff demand board resign over Sam Altman sacking",
-  "domain": "bbc.com",
-  "publish_date": "2023-11-20",
+  "url": "https://fortune.com/2023/11/18/how-did-openai-fire-sam-altman-greg-brockman-rogue-board",
+  "title": "OpenAI president Greg Brockman quits after board fires Sam Altman, strips his chairmanship | Fortune",
+  "domain": "fortune.com",
+  "publish_date": "2023-11-18",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s131",
-  "url": "https://abcnews.com/Business/sam-altman-hired-microsoft-600-openai-employees-threaten/story?id=105032352",
-  "title": "Sam Altman hired by Microsoft, 600 OpenAI employees threaten to quit in protest of his ouster - ABC News",
-  "domain": "abcnews.com",
-  "publish_date": "2023-11-20",
+  "url": "https://www.rollingstone.com/culture/culture-features/sam-altman-mystery-firing-openai-1234886100",
+  "title": "Sam Altman's Mystery Firing from OpenAI Sparks Wild Rumors",
+  "domain": "rollingstone.com",
+  "publish_date": "2023-11-17",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s132",
-  "url": "https://www.nytimes.com/interactive/2023/11/20/technology/letter-to-the-open-ai-board.html",
-  "title": "The Employee Letter to OpenAI\u2019s Board - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-20",
+  "url": "https://www.businessinsider.com/openai-president-talks-altman-firing-2026-2",
+  "title": "OpenAI's President on the 5 Chaotic Days After Sam Altman's Firing - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2026-02-27",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "source",
   "id": "s133",
-  "url": "https://news.outsourceaccelerator.com/openai-mass-resignation",
-  "title": "OpenAI employees threaten mass resignation over Altman's dismissal | Outsource Accelerator",
-  "domain": "news.outsourceaccelerator.com",
-  "publish_date": "2023-11-21",
-  "primary": false,
-  "question_id": "q6"
- },
- {
-  "type": "source",
-  "id": "s134",
-  "url": "https://s.wsj.net/public/resources/documents/openai-letter-board-2023.pdf",
-  "title": "To the Board of Directors at OpenAI, OpenAI is the world\u2019s leading AI company. We, the employees of OpenAI, have",
-  "domain": "s.wsj.net",
-  "publish_date": "2023-11-20",
-  "primary": false,
-  "question_id": "q6"
- },
- {
-  "type": "source",
-  "id": "s135",
-  "url": "https://www.businessinsider.com/openai-staffers-signed-a-letter-sam-altman-microsoft-dont-actually-have-job-offers-2023-11",
-  "title": "OpenAI Staffers Who Signed a Letter to Join Sam Altman at Microsoft Don't Actually Have Job Offers  - Business Insider",
-  "domain": "businessinsider.com",
-  "publish_date": "2023-11-21",
+  "url": "https://techcrunch.com/2024/01/05/a-timeline-of-sam-altmans-firing-from-openai-and-the-fallout/",
+  "title": "A timeline of Sam Altman's firing from OpenAI -- and the fallout | TechCrunch",
+  "domain": "techcrunch.com",
+  "publish_date": "2024-01-05",
   "primary": false,
   "question_id": "q6"
  },
  {
   "type": "stats",
   "searches": 14,
-  "sources": 135,
+  "sources": 133,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 7.3
+  "seconds": 10.4
+ },
+ {
+  "type": "source",
+  "id": "s134",
+  "url": "https://www.reuters.com/technology/openai-execs-invite-altman-brockman-headquarters-sunday-the-information-2023-11-19",
+  "title": "OpenAI appoints new boss as Sam Altman joins Microsoft | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-11-19",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s135",
+  "url": "https://www.axios.com/2023/11/20/emmett-shear-openai-interim-ceo-altman-ouster",
+  "title": "Who is Emmett Shear, OpenAI's new interim CEO after Altman's ouster",
+  "domain": "axios.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s136",
-  "url": "https://www.nytimes.com/2023/11/17/technology/mira-murati-openai.html",
-  "title": "Who Is Mira Murati, OpenAI\u2019s Interim CEO? - The New York Times",
-  "domain": "nytimes.com",
-  "publish_date": "2023-11-17",
+  "url": "https://apnews.com/article/emmett-shear-openai-sam-altman-6be0505112cd9e375e5f5383b5abe6d9",
+  "title": "Who is Emmett Shear, OpenAI's new interim CEO? | AP News",
+  "domain": "apnews.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s137",
-  "url": "https://www.bloomberg.com/news/articles/2023-11-17/sam-altman-to-depart-openai-mira-murati-will-be-interim-ceo",
-  "title": "Sam Altman to Depart OpenAI; Mira Murati Will Be Interim CEO - Bloomberg",
-  "domain": "bloomberg.com",
-  "publish_date": "2023-11-17",
+  "url": "https://www.reuters.com/technology/who-is-openais-interim-ceo-emmett-shear-2023-11-20",
+  "title": "Who is Emmett Shear, OpenAI's interim CEO replacing Sam Altman? | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s138",
-  "url": "https://www.businessinsider.com/meet-mira-murati-openai-new-interim-ceo-2023-11",
-  "title": "Meet Mira Murati: OpenAI's New Interim CEO - Business Insider",
-  "domain": "businessinsider.com",
-  "publish_date": "2023-11-17",
+  "url": "https://www.cnbc.com/2023/11/19/openai-is-hiring-former-twitch-chief-emmett-shear-as-ceo-.html",
+  "title": "OpenAI is hiring former Twitch chief Emmett Shear as CEO ",
+  "domain": "cnbc.com",
+  "publish_date": "2023-11-19",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s139",
-  "url": "https://www.fastcompany.com/90855799/6-things-to-know-about-openais-mira-murati-the-most-interesting-person-in-tech-right-now",
-  "title": "6 things to know about Mira Murati, OpenAI's CTO",
-  "domain": "fastcompany.com",
-  "publish_date": "2023-12-01",
+  "url": "https://www.theverge.com/2023/11/20/23968848/openai-new-ceo-emmett-shear-twitch-co-founder-hiring",
+  "title": "OpenAI\u2019s new CEO is Twitch co-founder Emmett Shear | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s140",
-  "url": "https://www.forbes.com.au/news/innovation/meet-mira-murati-openai-new-interim-ceo",
-  "title": "Mira Murati named OpenAI's interim CEO after Sam Altman fired",
-  "domain": "forbes.com.au",
-  "publish_date": "2023-11-19",
+  "url": "https://www.cnn.com/2023/11/20/tech/openai-ceo-emmett-shear-twitch/index.html",
+  "title": "Who is Emmett Shear, the new CEO of OpenAI? | CNN Business",
+  "domain": "cnn.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s141",
-  "url": "https://cointelegraph.com/news/sam-altman-ousted-from-open-ai-chatgpt-cto-mira-murati-named-interim-ceo",
-  "title": "Sam Altman ousted from OpenAI, CTO Mira Murati named interim CEO",
-  "domain": "cointelegraph.com",
-  "publish_date": "2023-11-19",
+  "url": "https://yaledailynews.com/articles/emmett-shear-05-briefly-appointed-openai-ceo-amid-chaotic-turnover",
+  "title": "Emmett Shear \u201905 briefly appointed OpenAI CEO amid chaotic turnover | Yale Daily News",
+  "domain": "yaledailynews.com",
+  "publish_date": "2023-11-28",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s142",
-  "url": "https://www.axios.com/2023/11/22/openai-microsoft-sam-altman-ceo-chaos-timeline",
-  "title": "OpenAI chaos: A timeline of Sam Altman's firing and return",
+  "url": "https://www.axios.com/2023/11/20/sam-altman-openai-board-emmet-shear",
+  "title": "OpenAI board names Emmett Shear as interim CEO, not Sam Altman",
   "domain": "axios.com",
-  "publish_date": "2023-11-22",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s143",
-  "url": "https://www.courthousenews.com/openai-ceo-sam-altman-fired-over-lack-of-candor-with-board-of-directors",
-  "title": "OpenAI CEO Sam Altman fired over lack of candor with board of directors | Courthouse News Service",
-  "domain": "courthousenews.com",
-  "publish_date": "2023-11-17",
+  "url": "https://indianexpress.com/article/explained/everyday-explainers/emmett-shear-new-interim-ceo-openai-9034710/",
+  "title": "Who is Emmett Shear, the new interim CEO of OpenAI? | Explained News - The Indian Express",
+  "domain": "indianexpress.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s144",
-  "url": "https://www.fintechbiznews.com/fintech-technology/cto-mira-murati-appointed-interim-ceo-to-lead-openai-",
-  "title": "\n        CTO Mira Murati Appointed Interim CEO To Lead OpenAI \n    ",
-  "domain": "fintechbiznews.com",
-  "publish_date": null,
+  "url": "https://www.cnbc.com/2023/11/20/who-is-emmett-shear-the-new-openai-ceo-taking-over-from-sam-altman.html",
+  "title": "Who is Emmett Shear, the new OpenAI CEO taking over from Sam Altman?",
+  "domain": "cnbc.com",
+  "publish_date": "2023-11-20",
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
  },
  {
   "type": "source",
   "id": "s145",
-  "url": "https://inaitoday.com/openai-announces-leadership-transition-with-ceo-sam-altman-fired",
-  "title": "OpenAI announces leadership transition with CEO Sam Altman fired - In AI Today",
-  "domain": "inaitoday.com",
-  "publish_date": "2023-11-17",
+  "url": "https://www.geekwire.com/2023/openai-reportedly-taps-twitch-co-founder-emmett-shear-as-interim-ceo",
+  "title": "OpenAI taps Twitch co-founder Emmett Shear as interim CEO",
+  "domain": "geekwire.com",
+  "publish_date": null,
   "primary": false,
-  "question_id": "q5"
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s146",
+  "url": "https://time.com/6337608/emmett-shear-openai-ceo",
+  "title": "Who Is Emmett Shear, OpenAI's New CEO?",
+  "domain": "time.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s147",
+  "url": "https://www.businessinsider.com/emmett-shear-openai-sam-altman-ceo-return-2023-11",
+  "title": "Emmett Shear Led OpenAI for 3 Days Before Altman's Return Was Confirmed - Business Insider",
+  "domain": "businessinsider.com",
+  "publish_date": "2023-11-22",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s148",
+  "url": "https://www.reuters.com/technology/openai-execs-invite-altman-brockman-headquarters-sunday-the-information-2023-11-19/",
+  "title": "OpenAI appoints new boss as Sam Altman joins Microsoft | Reuters",
+  "domain": "reuters.com",
+  "publish_date": "2023-11-19",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s149",
+  "url": "https://www.reuters.com/technology/openais-interim-ceo-pledges-probe-into-altmans-exit-reform-management-2023-11-20",
+  "title": "OpenAI's interim CEO pledges probe into Altman's exit | Reuters",
+  "domain": "reuters.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s150",
+  "url": "https://www.axios.com/2023/11/20/sam-altman-openai-board-emmet-shear?lctg=65575cb344fc24c7960b577e&stream=top",
+  "title": "OpenAI board names Emmett Shear as interim CEO, not Sam Altman",
+  "domain": "axios.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s151",
+  "url": "http://www.theverge.com/2023/11/20/23968848/openai-new-ceo-emmett-shear-twitch-co-founder-hiring",
+  "title": "OpenAI\u2019s new CEO is Twitch co-founder Emmett Shear | The Verge",
+  "domain": "theverge.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s152",
+  "url": "https://abc13.com/post/emmett-shear-openai-ceo-sam-altman/14085557/",
+  "title": "Who is Emmett Shear, OpenAI's third CEO in three days? Sam Altman to return to company to head artificial intelligence innovation - ABC13 Houston",
+  "domain": "abc13.com",
+  "publish_date": null,
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s153",
+  "url": "https://news.bloomberglaw.com/artificial-intelligence/openais-interim-ceo-to-probe-badly-handled-altman-exit",
+  "title": "OpenAI\u2019s Interim CEO to Probe \u2018Badly Handled\u2019 Altman Exit",
+  "domain": "news.bloomberglaw.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s154",
+  "url": "https://government.cornell.edu/news/openai-board-may-have-won-battle-lost-war",
+  "title": "\n      OpenAI board may have won the battle \u2013 but lost the war | Department of Government\n    ",
+  "domain": "government.cornell.edu",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s155",
+  "url": "https://www.thehindu.com/sci-tech/technology/emmett-shear-named-interim-ceo-at-openai/article67553955.ece",
+  "title": "\n\tEmmett Shear named interim CEO at OpenAI - The Hindu\n",
+  "domain": "thehindu.com",
+  "publish_date": "2023-11-20",
+  "primary": false,
+  "question_id": "q3"
+ },
+ {
+  "type": "source",
+  "id": "s156",
+  "url": "https://www.euronews.com/2023/11/21/emmett-shear-has-stepped-in-as-openais-new-interim-ceo-this-is-what-we-know-about-him",
+  "title": "Emmett Shear has stepped in as OpenAI's new interim CEO. This is what we know about him | Euronews",
+  "domain": "euronews.com",
+  "publish_date": "2023-11-21",
+  "primary": false,
+  "question_id": "q3"
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
+  "sources": 156,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 7.7
+  "seconds": 10.8
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
+  "sources": 156,
   "claims": 0,
   "conflicts": 0,
-  "seconds": 9.1
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 0,
-  "conflicts": 0,
-  "seconds": 10.1
+  "seconds": 18.2
  },
  {
   "type": "claim",
   "id": "c1",
-  "source_id": "s42",
-  "question_id": "q6",
-  "value": "Monday",
+  "source_id": "s156",
+  "question_id": "q3",
+  "value": "Monday morning",
   "normalized": "2023-11-20",
-  "quote": "By Monday, nearly all of OpenAI's over 700-strong staff had threatened to leave and join Microsoft's effort unless the board stepped down and reinstated Altman, according to a letter reviewed by Reuters."
+  "quote": "Emmett Shear announced his new role on Monday morning in a post on X, formerly known as Twitter"
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
+  "sources": 156,
   "claims": 1,
   "conflicts": 0,
-  "seconds": 10.2
+  "seconds": 18.4
  },
  {
   "type": "claim",
   "id": "c2",
-  "source_id": "s65",
-  "question_id": "q3",
-  "value": "six board members",
+  "source_id": "s106",
+  "question_id": "q5",
+  "value": "six members",
   "normalized": "6",
-  "quote": "Until Friday, OpenAI had six board members."
+  "quote": "If OpenAI\u2019s C.E.O. turned out not to be reliable, the board, which had six members, was empowered to fire him."
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 2,
+  "conflicts": 0,
+  "seconds": 19.7
  },
  {
   "type": "claim",
   "id": "c3",
-  "source_id": "s73",
-  "question_id": "q3",
-  "value": "six people",
-  "normalized": "6",
-  "quote": "The board was composed of six people before the firing: Sam Altman, Greg Brockman, Ilya Sutskever, Adam D\u2019angelo, Helen Toner, and Tasha McCauley."
+  "source_id": "s62",
+  "question_id": "q2",
+  "value": "late Tuesday",
+  "normalized": "2023-11-21",
+  "quote": "OpenAI said late Tuesday it had reinstated Sam Altman as its chief executive in a stunning reversal"
  },
  {
   "type": "claim",
   "id": "c4",
-  "source_id": "s69",
-  "question_id": "q3",
-  "value": "six board members",
-  "normalized": "6",
-  "quote": "Of the six board members, three were OpenAI employees"
+  "source_id": "s63",
+  "question_id": "q2",
+  "value": "late Tuesday",
+  "normalized": "2023-11-21",
+  "quote": "Sam Altman was reinstated late Tuesday as OpenAI\u2019s chief executive, the company said"
  },
  {
   "type": "claim",
   "id": "c5",
-  "source_id": "s68",
-  "question_id": "q3",
-  "value": "four-person board",
-  "normalized": "4",
-  "quote": "The now four-person board consists of three independent directors holding no equity in OpenAI and its Chief Scientist Ilya Sutskever."
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 5,
-  "conflicts": 0,
-  "seconds": 11.3
- },
- {
-  "type": "claim",
-  "id": "c6",
-  "source_id": "s106",
-  "question_id": "q6",
-  "value": "on Monday",
-  "normalized": "2023-11-20",
-  "quote": "more than 700 of its 770 employees signed a letter on Monday saying they may leave the company for Microsoft"
- },
- {
-  "type": "claim",
-  "id": "c7",
-  "source_id": "s128",
-  "question_id": "q6",
-  "value": "November 20th",
-  "normalized": "2023-11-20",
-  "quote": "By November 20th Mr Altman had been offered refuge at Microsoft, the startup's biggest backer. The same day nearly all of OpenAI's 770 employees signed a letter threatening to quit"
- },
- {
-  "type": "claim",
-  "id": "c8",
-  "source_id": "s122",
-  "question_id": "q6",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "On Monday, around 738 out of 770 OpenAI staffers, or about 95%, reportedly threatened to quit in a letter"
- },
- {
-  "type": "claim",
-  "id": "c9",
-  "source_id": "s120",
-  "question_id": "q6",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "On Monday, OpenAI faced internal upheaval as over 730 employees signed an open letter threatening to resign"
- },
- {
-  "type": "claim",
-  "id": "c10",
-  "source_id": "s10",
-  "question_id": "q6",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "Later Monday, an estimated 97% of OpenAI's employees had signed a letter"
- },
- {
-  "type": "claim",
-  "id": "c11",
-  "source_id": "s49",
-  "question_id": "q6",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "By Monday, close to all of OpenAI's more than 700 employees threatened to quit in a letter"
- },
- {
-  "type": "claim",
-  "id": "c12",
-  "source_id": "s4",
-  "question_id": "q6",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "By Monday simmering staff discontent at Altman's ousting broke into open revolt."
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 12,
-  "conflicts": 0,
-  "seconds": 12.3
- },
- {
-  "type": "claim",
-  "id": "c13",
-  "source_id": "s1",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "The board of the company behind ChatGPT on Friday fired OpenAI CEO Sam Altman"
- },
- {
-  "type": "claim",
-  "id": "c14",
-  "source_id": "s3",
-  "question_id": "q1",
-  "value": "November 17, 2023",
-  "normalized": "2023-11-17",
-  "quote": "The board of directors of OpenAI, Inc., the 501(c)(3) that acts as the overall governing body for all OpenAI activities, today announced that Sam Altman will depart as CEO"
- },
- {
-  "type": "claim",
-  "id": "c15",
-  "source_id": "s4",
-  "question_id": "q1",
-  "value": "Friday 17 November",
-  "normalized": "2023-11-17",
-  "quote": "OpenAI\u2019s board announced on Friday 17 November that it had sacked the 38-year-old"
- },
- {
-  "type": "claim",
-  "id": "c16",
-  "source_id": "s7",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "ChatGPT-maker Open AI said Friday it has pushed out its co-founder and CEO Sam Altman"
- },
- {
-  "type": "claim",
-  "id": "c17",
-  "source_id": "s11",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "Sam Altman is back as CEO of OpenAI after he was fired suddenly Friday."
- },
- {
-  "type": "claim",
-  "id": "c18",
-  "source_id": "s13",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "Sam Altman, who was fired on Friday from his role at ChatGPT-maker OpenAI"
- },
- {
-  "type": "claim",
-  "id": "c19",
-  "source_id": "s16",
-  "question_id": "q1",
-  "value": "November 17, 2023",
-  "normalized": "2023-11-17",
-  "quote": "today announced that Sam Altman will depart as CEO and leave the board of directors"
- },
- {
-  "type": "claim",
-  "id": "c20",
-  "source_id": "s17",
-  "question_id": "q1",
-  "value": "Nov. 17",
-  "normalized": "2023-11-17",
-  "quote": "The OpenAI board dismissed him on Nov. 17, then reinstated him five days later."
- },
- {
-  "type": "claim",
-  "id": "c21",
-  "source_id": "s19",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "fired its CEO and founder, Sam Altman, on Friday"
- },
- {
-  "type": "claim",
-  "id": "c22",
-  "source_id": "s20",
-  "question_id": "q1",
-  "value": "Friday",
-  "normalized": "2023-11-17",
-  "quote": "to fire its CEO Sam Altman on Friday"
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 22,
-  "conflicts": 0,
-  "seconds": 13.2
- },
- {
-  "type": "claim",
-  "id": "c23",
-  "source_id": "s45",
-  "question_id": "q4",
-  "value": "Monday, Nov. 20, 2023",
-  "normalized": "2023-11-20",
-  "quote": "Emmett Shear announced his new role Monday, Nov. 20, 2023, in a post on X."
- },
- {
-  "type": "claim",
-  "id": "c24",
-  "source_id": "s46",
-  "question_id": "q4",
-  "value": "Nov. 19",
-  "normalized": "2023-11-19",
-  "quote": "was named interim CEO of OpenAI on Nov. 19, following the removal of Sam Altman by the OpenAI board of directors on Nov. 17"
- },
- {
-  "type": "claim",
-  "id": "c25",
-  "source_id": "s47",
-  "question_id": "q4",
-  "value": "Sunday night",
-  "normalized": "2023-11-19",
-  "quote": "was named the interim chief executive of OpenAI on Sunday night"
- },
- {
-  "type": "claim",
-  "id": "c26",
-  "source_id": "s48",
-  "question_id": "q4",
-  "value": "early Monday",
-  "normalized": "2023-11-20",
-  "quote": "was named as interim CEO early Monday"
- },
- {
-  "type": "claim",
-  "id": "c27",
-  "source_id": "s60",
-  "question_id": "q4",
-  "value": "Sunday night",
-  "normalized": "2023-11-19",
-  "quote": "as of Sunday night, the board had voted in former Twitch CEO Emmett Shear as interim CEO of OpenAI"
- },
- {
-  "type": "claim",
-  "id": "c28",
-  "source_id": "s61",
-  "question_id": "q4",
-  "value": "19th November 2023",
-  "normalized": "2023-11-19",
-  "quote": "Shear was named by the board on 19th November 2023 as CEO two days after Altman's dismissal"
- },
- {
-  "type": "claim",
-  "id": "c29",
-  "source_id": "s62",
-  "question_id": "q4",
-  "value": "November 19, 2023",
-  "normalized": "2023-11-19",
-  "quote": "On November 19, 2023, Shear was named as the interim CEO of OpenAI"
- },
- {
-  "type": "claim",
-  "id": "c30",
-  "source_id": "s64",
-  "question_id": "q4",
-  "value": "November 19, 2023",
-  "normalized": "2023-11-19",
-  "quote": "On November 19, 2023, Emmett Shear, the former CEO of Amazon's streaming service Twitch, was named as interim CEO"
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 30,
-  "conflicts": 0,
-  "seconds": 13.2
- },
- {
-  "type": "claim",
-  "id": "c31",
-  "source_id": "s83",
-  "question_id": "q8",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "the software conglomerate\u2019s chief Satya Nadella said Monday"
- },
- {
-  "type": "claim",
-  "id": "c32",
-  "source_id": "s85",
-  "question_id": "q8",
-  "value": "late Sunday night",
-  "normalized": "2023-11-19",
-  "quote": "Microsoft has hired ousted OpenAI CEO Sam Altman and former OpenAI president Greg Brockman to lead a new research unit, CEO Satya Nadella announced late Sunday night."
- },
- {
-  "type": "claim",
-  "id": "c33",
-  "source_id": "s86",
-  "question_id": "q8",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "Microsoft CEO and Chairman Satya Nadella said on Monday that Altman, fellow OpenAI co-founder Greg Brockman and other former OpenAI employees will oversee a \u201cnew advanced AI research team\u201d"
- },
- {
-  "type": "claim",
-  "id": "c34",
-  "source_id": "s87",
-  "question_id": "q8",
-  "value": "Monday",
-  "normalized": "2023-11-20",
-  "quote": "Microsoft CEO Satya Nadella on Monday said that ousted OpenAI CEO Sam Altman and Greg Brockman will be joining Microsoft to lead a new advanced AI research team."
- },
- {
-  "type": "claim",
-  "id": "c35",
-  "source_id": "s95",
-  "question_id": "q8",
-  "value": "November 20, 2023",
-  "normalized": "2023-11-20",
-  "quote": "\u2014 Satya Nadella (@satyanadella) [November 20, 2023]"
- },
- {
-  "type": "claim",
-  "id": "c36",
-  "source_id": "s96",
-  "question_id": "q8",
-  "value": "Nov 20, 2023",
-  "normalized": "2023-11-20",
-  "quote": "[7:53 AM \u00b7 Nov 20, 2023]"
- },
- {
-  "type": "claim",
-  "id": "c37",
-  "source_id": "s97",
-  "question_id": "q8",
-  "value": "November 20, 2023",
-  "normalized": "2023-11-20",
-  "quote": "\u2014 Satya Nadella (@satyanadella) [November 20, 2023]"
- },
- {
-  "type": "claim",
-  "id": "c38",
-  "source_id": "s101",
-  "question_id": "q8",
-  "value": "early Monday",
-  "normalized": "2023-11-20",
-  "quote": "CEO Satya Nadella announced early Monday that the tech giant is hiring ousted OpenAI CEO Sam Altman and OpenAI president Greg Brockman \"to lead a new advanced AI research team\""
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 38,
-  "conflicts": 0,
-  "seconds": 13.6
- },
- {
-  "type": "claim",
-  "id": "c39",
-  "source_id": "s103",
-  "question_id": "q7",
-  "value": "743 of the company's 770 workers",
-  "normalized": "743",
-  "quote": "743 of the company's 770 workers had put their names to the letter"
- },
- {
-  "type": "claim",
-  "id": "c40",
-  "source_id": "s106",
-  "question_id": "q7",
-  "value": "more than 700 of its 770 employees",
-  "normalized": "700",
-  "quote": "more than 700 of its 770 employees signed a letter on Monday saying they may leave the company for Microsoft"
- },
- {
-  "type": "claim",
-  "id": "c41",
-  "source_id": "s107",
-  "question_id": "q7",
-  "value": "700",
-  "normalized": "700",
-  "quote": "More than 700 of OpenAI's roughly 770 employees signed a letter on Monday addressed to the company's board"
- },
- {
-  "type": "claim",
-  "id": "c42",
-  "source_id": "s110",
-  "question_id": "q7",
-  "value": "700",
-  "normalized": "700",
-  "quote": "More than 700 of the AI firm's 770 employees signed a letter Monday addressed to OpenAI's board"
- },
- {
-  "type": "claim",
-  "id": "c43",
-  "source_id": "s111",
-  "question_id": "q7",
-  "value": "500 of them",
-  "normalized": "500",
-  "quote": "So OpenAI has around 770 employees, and last night 500 of them signed this letter to the board."
- },
- {
-  "type": "claim",
-  "id": "c44",
-  "source_id": "s114",
-  "question_id": "q7",
-  "value": "747 out of 770 OpenAI employees",
-  "normalized": "747",
-  "quote": "by the end of Monday, 747 out of 770 OpenAI employees had signed a letter threatening to quit"
- },
- {
-  "type": "claim",
-  "id": "c45",
-  "source_id": "s115",
-  "question_id": "q7",
-  "value": "More than 700 of OpenAI's 770 employees",
-  "normalized": "700",
-  "quote": "More than 700 of OpenAI's 770 employees signed the letter."
- },
- {
-  "type": "claim",
-  "id": "c46",
-  "source_id": "s116",
-  "question_id": "q7",
-  "value": "738 OpenAI employees (out of 770 total)",
-  "normalized": "738",
-  "quote": "signed a letter alongside 738 OpenAI employees (out of 770 total) asking to reinstate Altman"
- },
- {
-  "type": "claim",
-  "id": "c47",
-  "source_id": "s117",
-  "question_id": "q7",
-  "value": "About 667 people",
-  "normalized": "667",
-  "quote": "About 667 people have signed the letter."
- },
- {
-  "type": "claim",
-  "id": "c48",
-  "source_id": "s118",
-  "question_id": "q7",
-  "value": "more than 740 names",
-  "normalized": "740",
-  "quote": "As of late Monday morning, more than 740 names appeared on the letter"
- },
- {
-  "type": "claim",
-  "id": "c49",
-  "source_id": "s119",
-  "question_id": "q7",
-  "value": "over 737 out of its 770 employees",
-  "normalized": "737",
-  "quote": "over 737 out of its 770 employees have signed a letter demanding the board resign"
- },
- {
-  "type": "claim",
-  "id": "c50",
-  "source_id": "s120",
-  "question_id": "q7",
-  "value": "more than 730 staff members",
-  "normalized": "730",
-  "quote": "over 730 employees signed an open letter threatening to resign unless the board resigns and reinstates Sam Altman as CEO"
- },
- {
-  "type": "claim",
-  "id": "c51",
-  "source_id": "s122",
-  "question_id": "q7",
-  "value": "738 out of 770 OpenAI staffers",
-  "normalized": "738",
-  "quote": "around 738 out of 770 OpenAI staffers, or about 95%, reportedly threatened to quit in a letter"
- },
- {
-  "type": "claim",
-  "id": "c52",
-  "source_id": "s10",
-  "question_id": "q7",
-  "value": "an estimated 97% of OpenAI's employees",
-  "normalized": "97",
-  "quote": "Later Monday, an estimated 97% of OpenAI's employees had signed a letter stating that the board had jeopardized the mission of OpenAI."
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 52,
-  "conflicts": 0,
-  "seconds": 13.8
- },
- {
-  "type": "claim",
-  "id": "c53",
-  "source_id": "s10",
-  "question_id": "q2",
-  "value": "late Tuesday",
-  "normalized": "2023-11-21",
-  "quote": "OpenAI said late Tuesday it had reinstated Sam Altman as its chief executive"
- },
- {
-  "type": "claim",
-  "id": "c54",
-  "source_id": "s9",
-  "question_id": "q2",
-  "value": "late Tuesday",
-  "normalized": "2023-11-21",
-  "quote": "Sam Altman was reinstated late Tuesday as OpenAI\u2019s chief executive, the company said"
- },
- {
-  "type": "claim",
-  "id": "c55",
-  "source_id": "s24",
-  "question_id": "q2",
-  "value": "late Tuesday",
-  "normalized": "2023-11-21",
-  "quote": "Sam Altman was reinstated late Tuesday as OpenAI\u2019s chief executive, the company said"
- },
- {
-  "type": "claim",
-  "id": "c56",
-  "source_id": "s25",
-  "question_id": "q2",
-  "value": "November 29, 2023",
-  "normalized": "2023-11-29",
-  "quote": "Sam Altman returns as CEO, OpenAI has a new initial board | OpenAI November 29, 2023"
- },
- {
-  "type": "claim",
-  "id": "c57",
-  "source_id": "s26",
+  "source_id": "s65",
   "question_id": "q2",
   "value": "late Tuesday, Nov. 21",
   "normalized": "2023-11-21",
@@ -2204,8 +1798,8 @@
  },
  {
   "type": "claim",
-  "id": "c58",
-  "source_id": "s28",
+  "id": "c6",
+  "source_id": "s68",
   "question_id": "q2",
   "value": "late Tuesday",
   "normalized": "2023-11-21",
@@ -2213,255 +1807,426 @@
  },
  {
   "type": "claim",
-  "id": "c59",
-  "source_id": "s33",
+  "id": "c7",
+  "source_id": "s69",
   "question_id": "q2",
-  "value": "November 21st",
+  "value": "late Tuesday",
   "normalized": "2023-11-21",
-  "quote": "But on November 21st, after four days in which he, his employees and Open AI\u2019s investors, such as Microsoft, wrangled feverishly for his reinstatement, he was back in control of the firm."
+  "quote": "the artificial intelligence company announced late Tuesday it had reached an \u201cagreement in principle for Sam Altman to return\u201d as CEO"
  },
  {
   "type": "claim",
-  "id": "c60",
-  "source_id": "s34",
+  "id": "c8",
+  "source_id": "s72",
   "question_id": "q2",
-  "value": "Tuesday November 21, 2023",
+  "value": "Nov 21, 2023",
   "normalized": "2023-11-21",
-  "quote": "Altman was fired Friday afternoon November 17, 2023 and reinstated Tuesday November 21, 2023."
+  "quote": "Fired Nov 17, 2023; reinstated Nov 21, 2023."
  },
  {
   "type": "claim",
-  "id": "c61",
-  "source_id": "s35",
-  "question_id": "q2",
-  "value": "November 21",
-  "normalized": "2023-11-21",
-  "quote": "Mr. Altman was reinstated as CEO of OpenAI, Inc. on November 21."
- },
- {
-  "type": "claim",
-  "id": "c62",
-  "source_id": "s36",
-  "question_id": "q2",
-  "value": "Nov. 21",
-  "normalized": "2023-11-21",
-  "quote": "Sam Altman has been reinstated as the chief executive of ChatGPT developer OpenAI, the company said on Nov. 21."
- },
- {
-  "type": "claim",
-  "id": "c63",
-  "source_id": "s37",
+  "id": "c9",
+  "source_id": "s17",
   "question_id": "q2",
   "value": "November 21, 2023",
   "normalized": "2023-11-21",
-  "quote": "On November 21, 2023, Altman was reinstated to OpenAI as CEO"
+  "quote": "November 21, 2023, when Altman was reinstated as CEO after his dismissal"
  },
  {
   "type": "claim",
-  "id": "c64",
-  "source_id": "s39",
+  "id": "c10",
+  "source_id": "s75",
+  "question_id": "q2",
+  "value": "November 21",
+  "normalized": "2023-11-21",
+  "quote": "Mr. Altman was reinstated as CEO of OpenAI, Inc. on November 21"
+ },
+ {
+  "type": "claim",
+  "id": "c11",
+  "source_id": "s20",
+  "question_id": "q2",
+  "value": "November 21",
+  "normalized": "2023-11-21",
+  "quote": "On November 21, all but one board member agreed to resign, a new board was named, and Altman and Brockman returned to OpenAI."
+ },
+ {
+  "type": "claim",
+  "id": "c12",
+  "source_id": "s77",
   "question_id": "q2",
   "value": "November 29, 2023",
   "normalized": "2023-11-29",
   "quote": "OpenAI formally announced Altman\u2019s return as CEO on November 29, following the earlier agreement in principle."
  },
  {
-  "type": "claim",
-  "id": "c65",
-  "source_id": "s8",
-  "question_id": "q2",
-  "value": "reinstated on Tuesday",
-  "normalized": "2023-11-21",
-  "quote": "Sam Altman was ousted as chief executive of OpenAI on Friday and reinstated on Tuesday."
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 12,
+  "conflicts": 0,
+  "seconds": 20.3
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
-  "claims": 65,
+  "sources": 156,
+  "claims": 12,
   "conflicts": 0,
-  "seconds": 14.0
+  "seconds": 20.5
  },
  {
   "type": "claim",
-  "id": "c66",
-  "source_id": "s138",
-  "question_id": "q5",
-  "value": "Friday afternoon",
-  "normalized": "2023-11-17",
-  "quote": "until the board appointed her interim CEO on Friday afternoon after it sent shockwaves through the tech world"
- },
- {
-  "type": "claim",
-  "id": "c67",
+  "id": "c13",
   "source_id": "s141",
-  "question_id": "q5",
-  "value": "Nov. 17",
-  "normalized": "2023-11-17",
-  "quote": "according to a Nov. 17 blog post. Chief technology officer Mira Murati will be promoted to interim CEO."
- },
- {
-  "type": "stats",
-  "searches": 16,
-  "sources": 145,
-  "claims": 67,
-  "conflicts": 0,
-  "seconds": 14.9
+  "question_id": "q3",
+  "value": "Nov. 19",
+  "normalized": "2023-11-19",
+  "quote": "was named interim CEO of OpenAI on Nov. 19, following the removal of Sam Altman by the OpenAI board of directors on Nov. 17"
  },
  {
   "type": "claim",
-  "id": "c68",
-  "source_id": "s126",
-  "question_id": "q7",
-  "value": "More than 700",
-  "normalized": "700",
-  "quote": "More than 700 of OpenAI\u2019s roughly 770 employees then signed a letter threatening to quit and follow Altman to Microsoft Corp. \u2013 and barely five days after he was fired, Altman was reinstated with a reconstituted board."
+  "id": "c14",
+  "source_id": "s55",
+  "question_id": "q3",
+  "value": "Sunday, November 19",
+  "normalized": "2023-11-19",
+  "quote": "**Sunday, November 19** \u2013 OpenAI hired former Twitch CEO Emmett Shear as its interim CEO"
+ },
+ {
+  "type": "claim",
+  "id": "c15",
+  "source_id": "s146",
+  "question_id": "q3",
+  "value": "Nov. 19",
+  "normalized": "2023-11-19",
+  "quote": "Former Twitch CEO Emmett Shear was appointed as OpenAI's interim CEO on Nov. 19"
+ },
+ {
+  "type": "claim",
+  "id": "c16",
+  "source_id": "s136",
+  "question_id": "q3",
+  "value": "Monday, Nov. 20, 2023",
+  "normalized": "2023-11-20",
+  "quote": "Emmett Shear announced his new role Monday, Nov. 20, 2023, in a post on X."
+ },
+ {
+  "type": "claim",
+  "id": "c17",
+  "source_id": "s144",
+  "question_id": "q3",
+  "value": "early Monday",
+  "normalized": "2023-11-20",
+  "quote": "Emmett Shear, the former co-founder and CEO of livestreaming site Twitch, was named as interim CEO early Monday."
+ },
+ {
+  "type": "claim",
+  "id": "c18",
+  "source_id": "s140",
+  "question_id": "q3",
+  "value": "Monday",
+  "normalized": "2023-11-20",
+  "quote": "with tech entrepreneur Emmett Shear becoming the latest to take the helm on Monday"
+ },
+ {
+  "type": "claim",
+  "id": "c19",
+  "source_id": "s147",
+  "question_id": "q3",
+  "value": "Sunday",
+  "normalized": "2023-11-19",
+  "quote": "Emmett Shear, who became OpenAI's interim CEO on Sunday, will stand aside when Sam Altman returns"
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
-  "claims": 68,
+  "sources": 156,
+  "claims": 19,
   "conflicts": 0,
-  "seconds": 19.0
+  "seconds": 20.5
+ },
+ {
+  "type": "claim",
+  "id": "c20",
+  "source_id": "s84",
+  "question_id": "q7",
+  "value": "Nov. 20",
+  "normalized": "2023-11-20",
+  "quote": "Nov. 20 (UPI) -- Microsoft on Monday announced that OpenAI co-founders Sam Altman and Greg Brockman will join the company."
+ },
+ {
+  "type": "claim",
+  "id": "c21",
+  "source_id": "s93",
+  "question_id": "q7",
+  "value": "November 20",
+  "normalized": "2023-11-20",
+  "quote": "Microsoft CEO Satya Nadella made an important announcement today, November 20, that Open AI\"s former CEO Sam Altman and former president Greg Brockman will join Microsoft."
+ },
+ {
+  "type": "claim",
+  "id": "c22",
+  "source_id": "s104",
+  "question_id": "q7",
+  "value": "late Sunday",
+  "normalized": "2023-11-19",
+  "quote": "late Sunday that Altman and Greg Brockman, OpenAI's president and co-founder who resigned Friday in protest over Altman's ouster, will lead its team alongside unspecified colleagues."
+ },
+ {
+  "type": "claim",
+  "id": "c23",
+  "source_id": "s105",
+  "question_id": "q7",
+  "value": "early Monday",
+  "normalized": "2023-11-20",
+  "quote": "CEO Satya Nadella announced early Monday that the tech giant is hiring ousted OpenAI CEO Sam Altman and OpenAI president Greg Brockman"
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 23,
+  "conflicts": 0,
+  "seconds": 20.6
+ },
+ {
+  "type": "claim",
+  "id": "c24",
+  "source_id": "s109",
+  "question_id": "q6",
+  "value": "Friday",
+  "normalized": "2023-11-17",
+  "quote": "Mr. Brockman quit his role as president on Friday in solidarity with Mr. Altman."
+ },
+ {
+  "type": "claim",
+  "id": "c25",
+  "source_id": "s126",
+  "question_id": "q6",
+  "value": "Saturday",
+  "normalized": "2023-11-18",
+  "quote": "Greg Brockman announced his resignation as president and co-founder of OpenAI on Saturday, hours after the company behind ChatGPT said it had dismissed CEO Sam Altman"
+ },
+ {
+  "type": "claim",
+  "id": "c26",
+  "source_id": "s129",
+  "question_id": "q6",
+  "value": "Saturday",
+  "normalized": "2023-11-18",
+  "quote": "Greg Brockman announced his resignation as president and co-founder of OpenAI on Saturday, hours after the company behind ChatGPT said it had dismissed CEO Sam Altman"
+ },
+ {
+  "type": "claim",
+  "id": "c27",
+  "source_id": "s133",
+  "question_id": "q6",
+  "value": "November 18, 2023",
+  "normalized": "2023-11-18",
+  "quote": "\u2014 Greg Brockman (@gdb) [November 18, 2023]"
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 27,
+  "conflicts": 0,
+  "seconds": 20.7
+ },
+ {
+  "type": "claim",
+  "id": "c28",
+  "source_id": "s56",
+  "question_id": "q4",
+  "value": "November 18, 2023",
+  "normalized": "2023-11-18",
+  "quote": "announced on November 18, 2023 that Sam Altman will depart as CEO and leave the board of directors. Mira Murati, the company's chief technology officer, will serve as interim CEO"
+ },
+ {
+  "type": "claim",
+  "id": "c29",
+  "source_id": "s48",
+  "question_id": "q4",
+  "value": "on Friday",
+  "normalized": "2023-11-17",
+  "quote": "Ms. Murati, 34, was elevated to the top position at the high-profile company on Friday when OpenAI's board of directors ousted Sam Altman"
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 29,
+  "conflicts": 0,
+  "seconds": 22.0
+ },
+ {
+  "type": "claim",
+  "id": "c30",
+  "source_id": "s1",
+  "question_id": "q1",
+  "value": "Nov 17",
+  "normalized": "2023-11-17",
+  "quote": "Nov 17 (Reuters) - The board of the company behind ChatGPT on Friday fired OpenAI CEO Sam Altman"
+ },
+ {
+  "type": "claim",
+  "id": "c31",
+  "source_id": "s3",
+  "question_id": "q1",
+  "value": "November 17, 2023",
+  "normalized": "2023-11-17",
+  "quote": "On Friday, November 17, 2023, the board of OpenAI's nonprofit parent removed Sam Altman as CEO and from the board"
+ },
+ {
+  "type": "claim",
+  "id": "c32",
+  "source_id": "s16",
+  "question_id": "q1",
+  "value": "Nov 17",
+  "normalized": "2023-11-17",
+  "quote": "Nov 17 (Reuters) - The board of the company behind ChatGPT on Friday fired OpenAI CEO Sam Altman"
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 32,
+  "conflicts": 0,
+  "seconds": 24.1
+ },
+ {
+  "type": "claim",
+  "id": "c33",
+  "source_id": "s29",
+  "question_id": "q8",
+  "value": "about 500",
+  "normalized": "500",
+  "quote": "in the wake of OpenAI\u2019s board firing Chief Executive Sam Altman on Friday, about 500 of the artificial intelligence startup\u2019s 770 employees have signed a letter threatening to resign and follow Altman to Microsoft."
+ },
+ {
+  "type": "claim",
+  "id": "c34",
+  "source_id": "s36",
+  "question_id": "q8",
+  "value": "About 667",
+  "normalized": "667",
+  "quote": "About 667 people have signed the letter."
+ },
+ {
+  "type": "claim",
+  "id": "c35",
+  "source_id": "s37",
+  "question_id": "q8",
+  "value": "747",
+  "normalized": "747",
+  "quote": "People with direct knowledge of the matter said that by the end of Monday, 747 out of 770 OpenAI employees had signed a letter threatening to quit and join Microsoft if the board refused to resign"
+ },
+ {
+  "type": "claim",
+  "id": "c36",
+  "source_id": "s38",
+  "question_id": "q8",
+  "value": "505",
+  "normalized": "505",
+  "quote": "In an open letter Monday morning, 505 of 770 OpenAI employees of the embattled company served notice to its board, threatening to resign en masse and join Microsoft."
+ },
+ {
+  "type": "stats",
+  "searches": 16,
+  "sources": 156,
+  "claims": 36,
+  "conflicts": 0,
+  "seconds": 24.9
  },
  {
   "type": "conflict",
   "id": "k1",
-  "question_id": "q2",
-  "claim_ids": [
-   "c53",
-   "c54",
-   "c55",
-   "c56",
-   "c57",
-   "c58",
-   "c59",
-   "c60",
-   "c61",
-   "c62",
-   "c63",
-   "c64",
-   "c65"
-  ],
-  "values": [
-   "2023-11-21",
-   "2023-11-29"
-  ],
-  "primary_value": "2023-11-21",
-  "summary": "Sources give 2 different answers to \u201cOn what date was Sam Altman reinstated as OpenAI CEO?\u201d: 2023-11-21 (11 sources), 2023-11-29 (2 sources). A primary source says 2023-11-21."
- },
- {
-  "type": "conflict",
-  "id": "k2",
   "question_id": "q3",
   "claim_ids": [
-   "c2",
-   "c3",
-   "c4",
-   "c5"
-  ],
-  "values": [
-   "4",
-   "6"
-  ],
-  "primary_value": null,
-  "summary": "Sources give 2 different answers to \u201cHow many board members did OpenAI have at the time of Sam Altman's firing?\u201d: 4 (1 source), 6 (3 sources). No primary source found."
- },
- {
-  "type": "conflict",
-  "id": "k3",
-  "question_id": "q4",
-  "claim_ids": [
-   "c23",
-   "c24",
-   "c25",
-   "c26",
-   "c27",
-   "c28",
-   "c29",
-   "c30"
+   "c1",
+   "c13",
+   "c14",
+   "c15",
+   "c16",
+   "c17",
+   "c18",
+   "c19"
   ],
   "values": [
    "2023-11-19",
    "2023-11-20"
   ],
   "primary_value": null,
-  "summary": "Sources give 2 different answers to \u201cOn what date was Emmett Shear named interim CEO of OpenAI?\u201d: 2023-11-19 (6 sources), 2023-11-20 (2 sources). No primary source found."
+  "summary": "Sources give 2 different answers to \u201cOn what date did OpenAI appoint Emmett Shear as interim CEO?\u201d: 2023-11-19 (4 sources), 2023-11-20 (4 sources). No primary source found."
+ },
+ {
+  "type": "conflict",
+  "id": "k2",
+  "question_id": "q4",
+  "claim_ids": [
+   "c28",
+   "c29"
+  ],
+  "values": [
+   "2023-11-17",
+   "2023-11-18"
+  ],
+  "primary_value": null,
+  "summary": "Sources give 2 different answers to \u201cOn what date was Mira Murati named interim CEO of OpenAI?\u201d: 2023-11-17 (1 source), 2023-11-18 (1 source). No primary source found."
+ },
+ {
+  "type": "conflict",
+  "id": "k3",
+  "question_id": "q6",
+  "claim_ids": [
+   "c24",
+   "c25",
+   "c26",
+   "c27"
+  ],
+  "values": [
+   "2023-11-17",
+   "2023-11-18"
+  ],
+  "primary_value": null,
+  "summary": "Sources give 2 different answers to \u201cOn what date did OpenAI announce Greg Brockman had resigned as president?\u201d: 2023-11-17 (1 source), 2023-11-18 (3 sources). No primary source found."
  },
  {
   "type": "conflict",
   "id": "k4",
   "question_id": "q7",
   "claim_ids": [
-   "c39",
-   "c40",
-   "c41",
-   "c42",
-   "c43",
-   "c44",
-   "c45",
-   "c46",
-   "c47",
-   "c48",
-   "c49",
-   "c50",
-   "c51",
-   "c52",
-   "c68"
-  ],
-  "values": [
-   "500",
-   "667",
-   "730",
-   "737",
-   "738",
-   "743",
-   "747",
-   "97"
-  ],
-  "primary_value": null,
-  "summary": "Sources give 8 different answers to \u201cHow many of OpenAI's roughly 770 employees signed the letter demanding Sam Altman's reinstatement?\u201d: 500 (1 source), 667 (1 source), 730 (1 source), 737 (1 source), 738 (2 sources), 743 (1 source), 747 (1 source), 97 (1 source). No primary source found."
- },
- {
-  "type": "conflict",
-  "id": "k5",
-  "question_id": "q8",
-  "claim_ids": [
-   "c31",
-   "c32",
-   "c33",
-   "c34",
-   "c35",
-   "c36",
-   "c37",
-   "c38"
+   "c20",
+   "c21",
+   "c22",
+   "c23"
   ],
   "values": [
    "2023-11-19",
    "2023-11-20"
   ],
   "primary_value": null,
-  "summary": "Sources give 2 different answers to \u201cOn what date did Satya Nadella announce Sam Altman would join Microsoft to lead a new advanced AI research team?\u201d: 2023-11-19 (1 source), 2023-11-20 (7 sources). No primary source found."
+  "summary": "Sources give 2 different answers to \u201cOn what date did Sam Altman and Greg Brockman announce they were joining Microsoft?\u201d: 2023-11-19 (1 source), 2023-11-20 (3 sources). No primary source found."
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
-  "claims": 68,
-  "conflicts": 5,
-  "seconds": 19.0
+  "sources": 156,
+  "claims": 36,
+  "conflicts": 4,
+  "seconds": 31.2
  },
  {
   "type": "verdict",
-  "text": "Sources agree that OpenAI's board fired Sam Altman as CEO on 2023-11-17, that Mira Murati became interim CEO on 2023-11-17, and that nearly all OpenAI employees signed the letter calling for his return on 2023-11-20. Sources disagree on when Altman was reinstated (2023-11-21 vs 2023-11-29), how many board members there were at the time of the firing (6 vs 4), when Emmett Shear was named interim CEO (2023-11-19 vs 2023-11-20), how many of the roughly 770 employees signed the letter (figures ranging from 500 to 747, plus 97), and when Satya Nadella announced Altman would join Microsoft (2023-11-19 vs 2023-11-20). A primary source gives 2023-11-21 where others say 2023-11-29; the other disputes have none."
+  "text": "Sources agree that the OpenAI board fired Sam Altman as CEO on 2023-11-17 and that the board had 6 members. Sources disagree on when Emmett Shear was appointed interim CEO (2023-11-19 vs 2023-11-20), when Mira Murati was named interim CEO (2023-11-17 vs 2023-11-18), when Greg Brockman's resignation as president was announced (2023-11-17 vs 2023-11-18), and when Altman and Brockman announced they were joining Microsoft (2023-11-19 vs 2023-11-20). No primary source in this run settles the disputed points."
  },
  {
   "type": "stats",
   "searches": 16,
-  "sources": 145,
-  "claims": 68,
-  "conflicts": 5,
-  "seconds": 21.0
+  "sources": 156,
+  "claims": 36,
+  "conflicts": 4,
+  "seconds": 32.9
  }
 ]

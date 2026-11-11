@@ -72,6 +72,136 @@ def test_a_claim_whose_quote_is_not_in_the_excerpt_is_dropped(monkeypatch):
     assert [c["source_id"] for c in inv._claims(Q, excerpts)] == ["s1"]
 
 
+def _answer(monkeypatch, rows):
+    text = json.dumps({"claims": rows})
+    monkeypatch.setattr(parallel, "respond", lambda *a, **k: {"text": text, "sources": []})
+
+
+def test_a_percentage_does_not_answer_a_head_count_and_the_reverse(monkeypatch):
+    rows = [
+        {"source_id": "s1", "value": "97%", "normalized": "97", "quote": "97% of staff signed"},
+        {"source_id": "s2", "value": "747", "normalized": "747", "quote": "747 employees signed"},
+    ]
+    _answer(monkeypatch, rows)
+    excerpts = {"s1": "97% of staff signed", "s2": "747 employees signed"}
+    many = {"id": "q1", "text": "How many employees signed?", "kind": "number"}
+    share = {"id": "q1", "text": "What percentage of employees signed?", "kind": "number"}
+    assert [c["source_id"] for c in inv._claims(many, excerpts)] == ["s2"]
+    assert [c["source_id"] for c in inv._claims(share, excerpts)] == ["s1"]
+
+
+def test_a_normalized_value_the_quote_does_not_state_is_dropped(monkeypatch):
+    number = {"id": "q1", "text": "How many people signed?", "kind": "number"}
+    rows = [
+        {
+            "source_id": "s1",
+            "value": "999",
+            "normalized": "999",
+            "quote": "Exactly 6 people signed.",
+        },
+        {"source_id": "s2", "value": "six", "normalized": "6", "quote": "six people signed"},
+        {
+            "source_id": "s3",
+            "value": "$3.3bn",
+            "normalized": "3300000000",
+            "quote": "paid $3.3 billion",
+        },
+    ]
+    _answer(monkeypatch, rows)
+    excerpts = {
+        "s1": "Exactly 6 people signed.",
+        "s2": "six people signed",
+        "s3": "paid $3.3 billion",
+    }
+    assert [c["source_id"] for c in inv._claims(number, excerpts)] == ["s2", "s3"]
+
+    rows = [
+        {
+            "source_id": "s1",
+            "value": "Dec 9",
+            "normalized": "2024-12-07",
+            "quote": "ruled on Dec 9",
+        },
+        {
+            "source_id": "s2",
+            "value": "Dec 9",
+            "normalized": "2024-12-09",
+            "quote": "ruled on Dec 9",
+        },
+        {
+            "source_id": "s3",
+            "value": "Sat",
+            "normalized": "2024-12-07",
+            "quote": "filed on Saturday",
+        },
+        {
+            "source_id": "s4",
+            "value": "Sat",
+            "normalized": "2024-12-08",
+            "quote": "filed on Saturday",
+        },
+    ]
+    _answer(monkeypatch, rows)
+    excerpts = {"s1": "ruled on Dec 9", "s2": "ruled on Dec 9"}
+    excerpts |= {"s3": "filed on Saturday", "s4": "filed on Saturday"}
+    assert [c["source_id"] for c in inv._claims(Q, excerpts)] == ["s2", "s3"]
+
+    # the magnitude and every date part the quote states must match, not only digits or the day
+    assert not inv.grounded("Exactly 6 people signed.", "600", number)
+    assert inv.grounded("a £57.75m settlement", "57750000", number)
+    assert inv.grounded("sold 16,835,016 shares", "16835016", number)
+    assert not inv.grounded("Ruled on Dec 9, 2024.", "2099-11-09", Q)
+    assert not inv.grounded("Ruled on Dec 9, 2024.", "2024-11-09", Q)
+    assert inv.grounded("Ruled on Dec 9, 2024.", "2024-12-09", Q)
+    assert inv.grounded("In December 2023, he applied", "2023-12", Q)
+    assert not inv.grounded("In December 2023, he applied", "2022-12", Q)
+
+
+def test_values_from_different_points_in_time_are_not_a_conflict(monkeypatch):
+    def respond(prompt, effort="low", schema=None):
+        if "Investigative premise" in prompt:
+            data = {
+                "entities": [],
+                "questions": [{"text": "How many directors?", "kind": "number"}],
+            }
+        elif "SAME fact" in prompt:
+            data = {"same": False}
+        elif "Question:" in prompt:
+            data = [
+                {
+                    "source_id": "s1",
+                    "value": "six",
+                    "normalized": "6",
+                    "quote": "six directors before",
+                },
+                {
+                    "source_id": "s2",
+                    "value": "four",
+                    "normalized": "4",
+                    "quote": "now four directors",
+                },
+            ]
+        else:
+            assert "directors" not in prompt  # the verdict prompt never sees the dropped question
+            return {"text": "Nothing disputed.", "sources": []}
+        return {"text": json.dumps(data), "sources": []}
+
+    hits = [
+        {"url": "https://a.com/1", "title": "a", "excerpts": ["six directors before"]},
+        {"url": "https://b.com/2", "title": "b", "excerpts": ["now four directors"]},
+    ]
+    monkeypatch.setattr(parallel, "respond", respond)
+    monkeypatch.setattr(parallel, "search", lambda o, q, m=5: hits)
+    events = list(inv.investigate("p"))
+    assert [e["type"] for e in events if e["type"] != "stats"].count("claim") == 2
+    assert not [e for e in events if e["type"] == "conflict"]
+    assert events[-1]["conflicts"] == 0
+    verdict = next(e["text"] for e in events if e["type"] == "verdict")
+    assert (
+        verdict == "Nothing disputed. No contradiction on a date or number was found in this run."
+    )
+
+
 def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkeypatch):
     def respond(prompt, effort="low", schema=None):
         if "Investigative premise" in prompt:
@@ -82,6 +212,8 @@ def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkey
                     {"text": "Why?", "kind": "date"},
                 ],
             }
+        elif "SAME fact" in prompt:
+            data = {"same": True}
         elif "Question:" in prompt:
             data = [
                 {"source_id": "s1", "value": "v", "normalized": "2024-12-09", "quote": "on 9 Dec"},

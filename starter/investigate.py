@@ -5,13 +5,16 @@ front end renders; the two routes stream them as Server-Sent Events, live or fro
 Save a run: `uv run python -m starter.investigate "<premise>" <name>` -> cases/runs/<name>.json
 """
 
+import calendar
 import json
+import math
 import re
 import sys
 import time
 from collections import Counter
 from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -80,6 +83,52 @@ _NUMERIC = re.compile(
 def quote_states(quote: str, kind: str) -> bool:
     """The quote itself carries a date or number expression, so the value is not inferred."""
     return bool((_TEMPORAL if kind == "date" else _NUMERIC).search(quote))
+
+
+_WORDS = "one two three four five six seven eight nine ten eleven twelve".split()
+_SCALE = {"thousand": 1e3, "k": 1e3, "million": 1e6, "mn": 1e6, "m": 1e6}
+_SCALE |= {"billion": 1e9, "bn": 1e9, "trillion": 1e12, "tn": 1e12}
+_NUM_TOKEN = re.compile(
+    r"(\d[\d,]*(?:\.\d+)?|\b(?:" + "|".join(_WORDS) + r")\b)"
+    r"(?:[\s-]*(" + "|".join(_SCALE) + r")\b)?(\s*(?:%|per ?cent))?",
+    re.I,
+)
+_MONTHS = re.compile(r"\b(" + "|".join(calendar.month_abbr[1:]) + r")[a-z]*\b")  # capitalised only
+_YEARS = re.compile(r"(?<!\d)(?:19|20)\d\d(?!\d)")
+
+
+def _date_grounded(quote: str, norm: str) -> bool:
+    """Every date part the quote states (year, month name, day) matches the normalized date."""
+    year, month, day = (norm.split("-") + ["", ""])[:3]
+    years = set(_YEARS.findall(quote))
+    months = {m[:3] for m in _MONTHS.findall(quote)}
+    name = calendar.month_abbr[int(month)] if month and 1 <= int(month) <= 12 else None
+    if (years and year not in years) or (months and name and name not in months):
+        return False
+    if not day:
+        return name in months if month else year in years
+    if re.search(rf"(?<!\d)0?{int(day)}(?!\d)", quote):
+        return True
+    try:  # sources say "filed on Saturday"
+        return date.fromisoformat(norm).strftime("%A").lower() in quote.lower()
+    except ValueError:
+        return False
+
+
+def grounded(quote: str, norm: str, question: dict) -> bool:
+    """The normalized value is the one the quote states, in the unit the question asks for."""
+    if question["kind"] == "date":
+        return _date_grounded(quote, norm)
+    percent = question["text"].lower().startswith("what percentage")
+    for m in _NUM_TOKEN.finditer(quote):
+        tok = m[1].lower().replace(",", "")
+        got = (_WORDS.index(tok) + 1 if tok in _WORDS else float(tok)) * _SCALE.get(
+            (m[2] or "").lower(), 1
+        )
+        # same magnitude, and a percentage never answers a count or an amount, or the reverse
+        if math.isclose(got, float(norm), rel_tol=1e-6) and bool(m[3]) == percent:
+            return True
+    return False
 
 
 def normalize(value: str, kind: str) -> str | None:
@@ -264,13 +313,36 @@ def _claims(q: dict, excerpts: dict[str, str], published: dict | None = None) ->
         sid, quote = str(r.get("source_id", "")).strip("[]"), str(r.get("quote", ""))
         norm = normalize(r.get("normalized", ""), q["kind"])
         shown = quote_in(quote, excerpts.get(sid, "")) and quote_states(quote, q["kind"])
-        if sid in seen or norm is None or not shown:
-            continue  # never show an invented quote, a foreign source id or a free-text value
+        if sid in seen or norm is None or not shown or not grounded(quote, norm, q):
+            continue  # never show an invented quote, a foreign source id, a free-text value,
+            # or a value the quote does not itself state in the question's unit
         seen.add(sid)
         value = re.sub(r"\s*\[s\d+\]", "", str(r.get("value") or norm)).strip()
         value = value if len(value) <= 40 else norm  # a sentence is not a value; show the answer
         out.append({"source_id": sid, "value": value, "normalized": norm, "quote": quote})
     return out
+
+
+def _same_fact(question: dict, claims: list[dict], values: list[str]) -> bool:
+    """One model call: do the differing values answer the same fact at the same point in time?"""
+    quotes = "\n".join(
+        f"- {v}: “{next(c['quote'] for c in claims if c['normalized'] == v)}”" for v in values
+    )
+    answer = parallel.respond(
+        f"Question: {question['text']}\n\nSources answer it with different values. One quote per "
+        f"value:\n{quotes}\n\n"
+        "Using ONLY these quotes: do they state different values for the SAME fact at the SAME "
+        "point in time? same=true: the quotes are about the same event, or the same quantity as "
+        "of the same time, yet give different dates or numbers (also when one source is probably "
+        "mistaken, or dates a late-night event to the next calendar day). same=false: the quotes "
+        "themselves show different events or stages (signed vs cancelled, filed vs ruled, "
+        "announced vs finalised), a figure as of different times (a running count that grew, "
+        "before vs after a change, different years' reports), different things measured (a part "
+        "vs the total, one person's share vs everyone's), or one value is only a vaguer or "
+        "rounder form of another ('over 500' vs 555).",
+        schema=_obj(same={"type": "boolean"}),
+    )["text"]
+    return parse_json(answer).get("same") is True
 
 
 def _batches(excerpts: dict[str, str]) -> list[dict[str, str]]:
@@ -286,13 +358,23 @@ def _batches(excerpts: dict[str, str]) -> list[dict[str, str]]:
     return [b for b in out if b]
 
 
-def _verdict(premise: str, questions: list[dict], claims: list[dict], conflicts: list[dict]) -> str:
+def _verdict(
+    premise: str,
+    questions: list[dict],
+    claims: list[dict],
+    conflicts: list[dict],
+    skip: frozenset[str] | set[str] = frozenset(),
+) -> str:
+    """skip: questions whose differing values were not one fact at one time; left out entirely."""
+    questions = [q for q in questions if q["id"] not in skip]
+    claims = [c for c in claims if c["question_id"] not in skip]
     lines = []
     for q in questions:
         count = Counter(c["normalized"] for c in claims if c["question_id"] == q["id"])
         k = next((k for k in conflicts if k["question_id"] == q["id"]), None)
         state = f"CONFLICT between {k['values']}" if k else "sources agree"
-        lines.append(f"- {q['text']} -> {dict(count) or 'no claims found'} ({state})")
+        if count:  # a question nobody answered is not something sources agree or disagree on
+            lines.append(f"- {q['text']} -> {dict(count)} ({state})")
     # the primary-record sentence is code, not the model: it must match the conflict events exactly
     held = [k for k in conflicts if k["primary_value"]]
     if held:
@@ -316,7 +398,9 @@ def _verdict(premise: str, questions: list[dict], claims: list[dict], conflicts:
                 f"Premise: {premise}\nTally of what sources say (value: number of sources):\n"
                 + "\n".join(lines)
                 + "\n\nUsing ONLY this tally, write exactly 2 short plain sentences: first what "
-                "the sources agree on, then where they disagree. Skip questions with no claims. "
+                "the sources agree on, then where they disagree. A line marked 'sources agree' is "
+                "agreement even when it lists several values: they are one answer at different "
+                "precision, never a disagreement. "
                 "Do not mention primary sources. Report what sources say; make no accusations "
                 "and add no facts of your own. Plain text, no markdown, no citations."
             )["text"].strip()
@@ -401,17 +485,30 @@ def investigate(premise: str) -> Iterator[dict]:
                 yield claim
             yield stats()
 
-    conflicts = []
-    for q in questions:
-        found = find_conflict(q, by_question.get(q["id"], []), primary_ids)
-        if found:
-            n["conflicts"] += 1
-            conflicts.append({"type": "conflict", "id": f"k{n['conflicts']}", **found})
-            yield conflicts[-1]
+    def same_fact(q: dict, found: dict) -> bool:
+        try:
+            # the model's answer varies run to run: both of two votes must confirm
+            return all(_same_fact(q, by_question[q["id"]], found["values"]) for _ in range(2))
+        except Exception:
+            return False  # unconfirmed is not shown as a contradiction
+
+    found = [(q, find_conflict(q, by_question.get(q["id"], []), primary_ids)) for q in questions]
+    found = [(q, k) for q, k in found if k]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        kept = list(pool.map(lambda qk: same_fact(*qk), found))
+    conflicts, dropped = [], set()
+    for (q, k), keep in zip(found, kept, strict=True):
+        if not keep:
+            dropped.add(q["id"])
+            continue
+        n["conflicts"] += 1
+        conflicts.append({"type": "conflict", "id": f"k{n['conflicts']}", **k})
+        yield conflicts[-1]
     yield stats()
 
     all_claims = [c for cs in by_question.values() for c in cs]
-    yield {"type": "verdict", "text": _verdict(premise, questions, all_claims, conflicts)}
+    text = _verdict(premise, questions, all_claims, conflicts, dropped)
+    yield {"type": "verdict", "text": text}
     yield stats()
 
 
