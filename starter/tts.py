@@ -11,7 +11,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-CACHE = Path(".tts-cache")
+CACHE = Path(os.environ.get("TTS_CACHE", "/tmp/red-string-tts"))  # /tmp: writable for the non-root container user
 URL = "https://api.openai.com/v1/audio/speech"
 VOICES = {  # who: (voice, instructions)
     "Editor": ("marin", "Calm, warm, authoritative newsroom editor pulling the story together."),
@@ -51,8 +51,8 @@ def tts(line: Line) -> FileResponse:
             r.raise_for_status()
         except httpx2.HTTPError as e:  # the message names the URL and status, never the key
             raise HTTPException(502, f"OpenAI TTS failed: {type(e).__name__}") from None
-        CACHE.mkdir(exist_ok=True)
-        tmp = path.with_suffix(".part")
+        CACHE.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(f".{os.urandom(6).hex()}.part")  # per-request temp: concurrent misses for one line cannot collide
         tmp.write_bytes(r.content)
         tmp.replace(path)  # atomic: a half-written mp3 is never served
     return FileResponse(path, media_type="audio/mpeg")
