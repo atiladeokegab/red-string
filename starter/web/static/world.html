@@ -170,7 +170,7 @@ for (const [i, [name, color]] of [['Identifier','#6fb1ff'],['Archivist','#9a8cff
   a.el.className = 'lb agent'; a.el.style.setProperty('--c', color); document.body.append(a.el);
   CREW[name] = a;
 }
-function send(name, n, text) { const a = CREW[name]; a.target = n; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; }
+function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; }  // every new job makes the figure hop
 const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
 
 function node(id, kind, o = {}) {
@@ -236,7 +236,7 @@ function on(e) {
       if (i) link(as[i - 1].id, a.id, { red: 1, qid: q.id });
     });
     q.conflict = e;
-    if (as[0]) { S.focus = as; send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
+    if (as[0]) { S.focus = as; for (const c of Object.values(CREW)) c.hop = 90; send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
   } else if (e.type === 'stats') {
     for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = e[k];
   } else if (e.type === 'verdict' || fatal(e)) {  // a per-question error is not the end: the engine carries on
@@ -309,6 +309,8 @@ setInterval(() => {
     if (moving) { const s = Math.min(dist, 6) / dist; p.x += dx * s; p.y += dy * s; a.g.rotation.z = Math.atan2(dy, dx) - Math.PI / 2; }
     a.legs[0].rotation.x = moving ? Math.sin(T * .4) * .8 : 0; a.legs[1].rotation.x = -a.legs[0].rotation.x;
     a.arms[0].rotation.x = -a.legs[0].rotation.x; a.arms[1].rotation.x = a.legs[0].rotation.x;
+    if (a.hop > 0) { a.hop--; p.z = Math.abs(Math.sin(a.hop * .2)) * 14; if (!moving) a.arms[0].rotation.x = a.arms[1].rotation.x = Math.PI; }  // jump, arms up
+    else p.z = moving ? Math.abs(Math.sin(T * .4)) * 2 : 0;  // bob while walking
     place(a.el, p.x, p.y, 72);
   }
   requestAnimationFrame(frame);
