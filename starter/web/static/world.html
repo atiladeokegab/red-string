@@ -339,7 +339,7 @@ $('x').onclick = () => { $('detail').hidden = true; $('key').hidden = false; };
 function stop() { es?.close(); es = null; $('go').disabled = $('replay').disabled = false; }
 const fatal = e => e.type === 'error' && e.question_id == null;
 let done;
-function run(url) { for (const k in BANTER) delete BANTER[k];
+function run(url) { for (const k in BANTER) delete BANTER[k]; board.reset();
   stop(); done = false; reset($('premise').value); casefile.start($('premise').value, CREW, pretty); $('go').disabled = $('replay').disabled = true;
   es = new EventSource(url);
   es.onmessage = m => { const e = JSON.parse(m.data); on(e); casefile.on(e); board.on(e, pretty); hud.on(e); chatter(e); if (e.type === 'verdict' || fatal(e)) { done = true; stop(); } };

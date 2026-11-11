@@ -68,6 +68,8 @@ btn.onclick = () => toggle();
 addEventListener('keydown', e => { if (e.key === 'Escape' && el.classList.contains('open')) toggle(false); });
 addEventListener('resize', () => el.classList.contains('open') && strings());
 
+export function reset() { R = fresh(); drawn = new Set(); ended = false; if (el.classList.contains('open')) render(); }  // every run, even after an interrupted one
+
 export function on(e, pretty) {
   if (pretty) fmt = pretty;
   if (ended) { R = fresh(); drawn = new Set(); ended = false; }  // first event of a new run
