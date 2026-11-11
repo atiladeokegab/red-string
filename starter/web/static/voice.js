@@ -133,6 +133,8 @@ const browserMic = () => { if (!rec) return off(); start('● Listening'); try {
 // OpenAI transcription first (Web Speech struggles in a noisy room); a 503 or any failure falls back to Web Speech.
 async function record() {
   start('● Recording');
+  const r0 = run, typed = $('premise').value;  // a transcript is stale once a run starts or the premise is edited
+  const stale = () => r0 !== run || $('premise').value !== typed;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const chunks = [], mine = recorder = new MediaRecorder(stream);
@@ -145,8 +147,8 @@ async function record() {
         if (r.status === 503) sttOff = true;  // no key on this server: go straight to Web Speech from now on
         const text = r.ok && (await r.json()).text?.trim();
         if (!text) throw new Error('no transcript');
-        off(); $('premise').value = text; startRun();
-      } catch { off(); browserMic(); }  // say it again, to the browser's recogniser
+        off(); if (stale()) return; $('premise').value = text; startRun();
+      } catch { off(); if (!stale()) browserMic(); }  // say it again, to the browser's recogniser
     };
     mine.start(); setTimeout(() => recorder === mine && mine.stop(), 20000);  // 20 s of opus stays far under the 2 MB cap
   } catch { sttOff = true; off(); browserMic(); }
