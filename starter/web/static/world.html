@@ -52,6 +52,10 @@
     border-left:3px solid var(--red); border-radius:6px; font:13px/1.45 Georgia,serif; }
   #detail:not([hidden]) ~ #verdict { left:37%; width:min(520px,38vw); }  /* keep clear of the open panel */
   [hidden] { display:none !important; }
+  #flash { position:fixed; left:50%; top:22%; transform:translate(-50%,-50%) scale(.6); opacity:0; z-index:3; pointer-events:none;
+    font:900 54px/1 ui-sans-serif,system-ui,sans-serif; color:#fff; background:var(--red); padding:10px 26px; border-radius:10px;
+    border:4px solid #fff; box-shadow:0 8px 0 #7a0e0e; letter-spacing:.02em; transition:transform .25s cubic-bezier(.3,1.6,.6,1),opacity .25s; }
+  #flash.on { opacity:1; transform:translate(-50%,-50%) scale(1); }
   .lb.agent { color:#fff; font-size:12px; background:#000a; padding:2px 7px; border-radius:10px; max-width:250px;
     white-space:normal; border:1px solid #fff3; text-shadow:none; }
   .lb.agent b { color:var(--c); }
@@ -84,6 +88,7 @@
 <div id="via">Reads the web with Parallel Search and Responses. Reports what sources say; makes no claims of its own.</div>
 <aside id="detail" hidden><button id="x" aria-label="Close">✕</button><div id="detail-body"></div></aside>
 <div id="verdict" hidden></div>
+<div id="flash" aria-live="polite">Contradiction!</div>
 
 <script src="3d-force-graph.min.js"></script>
 <script type="module">
@@ -236,7 +241,7 @@ function on(e) {
       if (i) link(as[i - 1].id, a.id, { red: 1, qid: q.id });
     });
     q.conflict = e;
-    if (as[0]) { S.focus = as; for (const c of Object.values(CREW)) c.hop = 90; send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
+    if (as[0]) { S.focus = as; for (const c of Object.values(CREW)) c.hop = 90; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 1800); send('Sceptic', as[0], 'these do not match: ' + e.values.map(pretty).join(' vs ')); }
   } else if (e.type === 'stats') {
     for (const k of ['conflicts','sources','claims','searches']) $('n-' + k).textContent = e[k];
   } else if (e.type === 'verdict' || fatal(e)) {  // a per-question error is not the end: the engine carries on
