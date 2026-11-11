@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Red String</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   :root { --red:#ff2d2d; --gold:#ffd24a; --ink:#efe9df; --dim:#9a9185; }
   * { box-sizing:border-box; }
@@ -59,6 +60,26 @@
   .lb.agent { color:#fff; font-size:12px; background:#000a; padding:2px 7px; border-radius:10px; max-width:250px;
     white-space:normal; border:1px solid #fff3; text-shadow:none; }
   .lb.agent b { color:var(--c); }
+
+  /* toy-game chrome: chunky rounded type, white panels, buttons with a pressed-edge shadow */
+  html,body, input, button, .lb, #verdict, #detail, #via, #key, .st span { font-family:'Nunito', ui-rounded, system-ui, sans-serif; }
+  header { background:none; } h1 { font:900 28px 'Nunito', ui-rounded, sans-serif; color:#fff; -webkit-text-stroke:1.5px #1b1b1b; paint-order:stroke fill; text-shadow:0 3px 0 #1b1b1b; }
+  h1 b { color:var(--red); }
+  input { background:#ffffffee; color:#1b1b1b; border:3px solid #1b1b1b; border-radius:12px; font-weight:800; box-shadow:0 4px 0 #1b1b1b; }
+  button { border:3px solid #1b1b1b; border-radius:12px; font-weight:900; box-shadow:0 4px 0 #1b1b1b; text-transform:uppercase; letter-spacing:.03em; }
+  button:active { transform:translateY(3px); box-shadow:0 1px 0 #1b1b1b; }
+  button.ghost { background:#00a2ff; color:#fff; border-color:#1b1b1b; }
+  #go { background:#00b06f; border-color:#1b1b1b; }
+  #stats, #key, #via, #verdict, #detail { background:#ffffffe8; color:#1b1b1b; border:3px solid #1b1b1b; border-radius:14px; box-shadow:0 5px 0 #1b1b1b; }
+  #verdict { border-left:3px solid #1b1b1b; font-weight:700; }
+  .st b { color:#1b1b1b; font-weight:900; } .st span, #key, #via { color:#3a3a3a; font-weight:800; }
+  .st.red b { color:var(--red); -webkit-text-stroke:2px #1b1b1b; paint-order:stroke fill; text-shadow:0 4px 0 #1b1b1b; }
+  #detail h2, #detail h3 small, #x { color:#1b1b1b; }
+  .lb { font-weight:900; color:#fff; text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 2px 2px #000; }
+  .lb.premise { font:900 20px 'Nunito', ui-rounded, sans-serif; }
+  .lb.question { color:#ffd84a; background:none; }
+  .lb.agent { background:#ffffffee; color:#1b1b1b; border:2px solid #1b1b1b; border-radius:12px; text-shadow:none; font-weight:800; }
+  .lb.agent b { color:#1b1b1b; background:var(--c); padding:0 5px; border-radius:6px; margin-right:3px; }
 </style>
 </head>
 <body>
@@ -129,7 +150,9 @@ const G = new ForceGraph3D($('g')).numDimensions(2)
   .backgroundColor('#8fc9f0').showNavInfo(false)
   .nodeThreeObject(n => {  // a block that drops from the sky; the frame loop grows and recolours it
     const g = new THREE.Group();
-    n.mesh = new THREE.Mesh(BOX, new THREE.MeshPhongMaterial({ color: n.color, shininess: 60 }));  // shiny toy plastic
+    const [sw, sd] = SIZE(n), top = STUD.clone(); top.repeat.set(Math.max(1, Math.round(sw / 7)), Math.max(1, Math.round(sd / 7)));
+    const side = new THREE.MeshPhongMaterial({ color: n.color, shininess: 60 }), cap = new THREE.MeshPhongMaterial({ color: n.color, map: top, shininess: 60 });
+    n.mesh = new THREE.Mesh(BOX, [side, side, side, side, cap, side]);  // shiny toy plastic, studs on top
     n.mesh.add(new THREE.LineSegments(EDGES, EDGE));
     n.mesh.position.z = 260; n.mesh.scale.set(...SIZE(n)); g.add(n.mesh); return g;
   })
@@ -304,7 +327,7 @@ setInterval(() => {
   if (orbit) { ang += .003; G.cameraPosition({ x: C.x + R * Math.sin(ang), y: R * .55, z: -C.y + R * Math.cos(ang) }, { x: C.x, y: 0, z: -C.y }); }
   if (N) for (const n of N.values()) if (n.mesh && n.x !== undefined) {
     const [w, d, h] = SIZE(n), m = n.mesh;
-    m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15); m.material.color.set(n.color);
+    m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15); m.material[0].color.set(n.color); m.material[4].color.set(n.color);
     if (n.el) place(n.el, n.x, n.y, m.position.z + m.scale.z + 6);
   }
   for (const a of Object.values(CREW)) {
