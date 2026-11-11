@@ -22,7 +22,10 @@ from starter import parallel
 
 RUNS = Path(__file__).parent.parent / "cases" / "runs"
 REPLAY_DELAY = 0.06
-EXCERPT_CHARS = 2500  # per source per question, in the claim prompt and in the quote check
+EXCERPT_CHARS = 2000
+# per source per question, in the claim prompt and in the quote check
+# respond() refuses input over 20000 characters; the prompt itself takes the rest
+BATCH_CHARS = 17000
 
 _PRIMARY_HOST = re.compile(
     r"(\.gov|\.gov\.[a-z]{2}|\.mil|\.gouv\.fr)$|uscourts|courts\.|judiciary|courtlistener"
@@ -95,8 +98,21 @@ def distinct_values(values: list[str], kind: str) -> list[str]:
     """Distinct answers; a coarser date that is a prefix of a finer one agrees with it."""
     vals = sorted(set(values))
     if kind == "date":
-        vals = [v for v in vals if not any(o != v and o.startswith(v + "-") for o in vals)]
-    return vals
+        return [v for v in vals if not any(o != v and o.startswith(v + "-") for o in vals)]
+    # a rounder number agrees with a more exact one that rounds to it: 39 and 38.9, 3.3bn and 3.33bn
+    return [v for v in vals if not any(o != v and _rounds_to(o, v) for o in vals)]
+
+
+def _sig(v: str) -> int:
+    return len(v.replace(".", "").replace("-", "").strip("0")) or 1
+
+
+def _rounds_to(exact: str, rounder: str) -> bool:
+    """`exact` has more significant figures than `rounder` and rounds to it at that precision."""
+    digits = _sig(rounder)
+    if _sig(exact) <= digits:
+        return False
+    return float(f"{float(exact):.{digits}g}") == float(rounder)
 
 
 def find_conflict(question: dict, claims: list[dict], primary_ids: set[str]) -> dict | None:
@@ -164,9 +180,10 @@ def _plan(premise: str) -> tuple[list[dict], list[dict]]:
             '{"entities":[{"name":str,"kind":"person"|"org"|"place"}],'
             '"questions":[{"text":str,"kind":"date"|"number"}]}.\n'
             "entities: the 5-8 key people and organisations.\n"
-            "questions: 6 concrete, checkable questions about the facts most news reports on this "
-            "story state (key filing, ruling and announcement dates, deal and settlement amounts, "
-            "stake percentages), each answered by ONE "
+            "questions: 8 concrete, checkable questions about facts that news reports on this "
+            "story "
+            "state outright in a sentence (dates of public events, headline amounts, counts, ages, "
+            "vote splits, stake percentages), never obscure details; each answered by ONE "
             "specific date or ONE specific number (when exactly did X happen, how much money, "
             "how many shares/votes/people, what percentage). Pick dates and amounts that news "
             "reports commonly state differently (filing date vs hearing date vs ruling date, "
@@ -185,22 +202,23 @@ def _plan(premise: str) -> tuple[list[dict], list[dict]]:
         for i, e in enumerate(data["entities"][:8], 1)
         if e.get("kind") in kinds
     ]
+    # kind comes from the question's wording; a question that asks for neither is dropped
+    texts = [t for q in data["questions"] if _kind_of(t := str(q["text"]))][:8]
     questions = [
-        {"type": "question", "id": f"q{i}", "text": str(q["text"]), "kind": q["kind"]}
-        for i, q in enumerate(data["questions"][:6], 1)
-        if q.get("kind") == _kind_of(str(q["text"]))  # drop a question whose label is wrong
+        {"type": "question", "id": f"q{i}", "text": t, "kind": _kind_of(t)}
+        for i, t in enumerate(texts, 1)
     ]
     return entities, questions
 
 
 def _search(premise: str, q: dict) -> list[dict]:
     """Two searches per question: reporting, then the primary record. Both max_results 10."""
-    news = parallel.search(f"{q['text']} ({premise})", [q["text"], premise], 10)
+    news = parallel.search(f"{q['text']} ({premise})", [q["text"], premise], 15)
     records = parallel.search(
         f"Primary records (court filings, regulator filings, official statements) answering: "
         f"{q['text']} ({premise})",
         [f"{q['text']} court filing OR SEC filing OR official statement"],
-        10,
+        15,
     )
     return news + records
 
@@ -224,12 +242,16 @@ def _claims(q: dict, excerpts: dict[str, str], published: dict | None = None) ->
             "Below are excerpts from sources, each labelled with its id in [brackets]. Use ONLY "
             "these excerpts, no other knowledge and no web search. For each source whose excerpt "
             f"states a {kind} that answers the question, report what THAT source says. Skip a "
-            f"source whose excerpt does not state such a {kind}. Use a source's publication "
+            f"source whose excerpt does not state such a {kind}, or states it for a different "
+            "thing than the question asks (per person instead of the total, another company, "
+            "another event, another currency). Use a source's publication "
             "date only to resolve a relative date in its text ('on Saturday', 'today'); never "
             "report the publication date itself as the answer.\n"
             'Return ONLY strict JSON: {"claims":[{"source_id":str,"value":str,'
             '"normalized":str,"quote":str}]}.\n'
-            f"value: the answer as the source words it. normalized: {form}. quote: the sentence "
+            f"value: ONLY the date or amount as the source words it, at most 30 characters (e.g. "
+            "'October 30, 2023', 'December 2023', '$3.3 billion', 'about 40%'). "
+            f"normalized: {form}. quote: the sentence "
             "or phrase (under 250 characters) copied character for character from that source's "
             f"excerpt that states the answer; the quote must contain the {kind} expression "
             "itself.\n\n" + blocks,
@@ -245,9 +267,23 @@ def _claims(q: dict, excerpts: dict[str, str], published: dict | None = None) ->
         if sid in seen or norm is None or not shown:
             continue  # never show an invented quote, a foreign source id or a free-text value
         seen.add(sid)
-        value = str(r.get("value", norm))
+        value = re.sub(r"\s*\[s\d+\]", "", str(r.get("value") or norm)).strip()
+        value = value if len(value) <= 40 else norm  # a sentence is not a value; show the answer
         out.append({"source_id": sid, "value": value, "normalized": norm, "quote": quote})
     return out
+
+
+def _batches(excerpts: dict[str, str]) -> list[dict[str, str]]:
+    """Split one question's excerpts into prompts that fit respond()'s input limit."""
+    out: list[dict[str, str]] = [{}]
+    size = 0
+    for sid, text in excerpts.items():
+        if out[-1] and size + len(text) > BATCH_CHARS:
+            out.append({})
+            size = 0
+        out[-1][sid] = text
+        size += len(text) + 40
+    return [b for b in out if b]
 
 
 def _verdict(premise: str, questions: list[dict], claims: list[dict], conflicts: list[dict]) -> str:
@@ -255,26 +291,40 @@ def _verdict(premise: str, questions: list[dict], claims: list[dict], conflicts:
     for q in questions:
         count = Counter(c["normalized"] for c in claims if c["question_id"] == q["id"])
         k = next((k for k in conflicts if k["question_id"] == q["id"]), None)
-        state = "sources agree"
-        if k:
-            state = f"CONFLICT; primary source: {k['primary_value'] or 'none found'}"
+        state = f"CONFLICT between {k['values']}" if k else "sources agree"
         lines.append(f"- {q['text']} -> {dict(count) or 'no claims found'} ({state})")
-    fallback = (
+    # the primary-record sentence is code, not the model: it must match the conflict events exactly
+    held = [k for k in conflicts if k["primary_value"]]
+    if held:
+        primary = "A primary source gives " + "; ".join(
+            f"{k['primary_value']} where others say "
+            + " or ".join(v for v in k["values"] if v != k["primary_value"])
+            for k in held
+        )
+        primary += "." if len(held) == len(conflicts) else "; the other disputes have none."
+    elif conflicts:
+        primary = "No primary source in this run settles the disputed points."
+    else:
+        primary = "No contradiction on a date or number was found in this run."
+    text = (
         f"Across {len(claims)} quoted claims on {len(questions)} questions, sources disagree "
-        f"on {len(conflicts)}. " + " ".join(k["summary"] for k in conflicts[:2])
+        f"on {len(conflicts)}."
     )
     try:
-        text = parallel.respond(
-            f"Premise: {premise}\nTally of what sources say (value: number of sources):\n"
-            + "\n".join(lines)
-            + "\n\nUsing ONLY this tally, write 2-3 plain sentences: what the sources agree on, "
-            "where they disagree, and what the primary record says. Report what sources say; "
-            "make no accusations and add no facts of your own. Plain text, no markdown, no "
-            "citations."
-        )["text"].strip()
-    except Exception:
-        return fallback
-    return text or fallback
+        text = (
+            parallel.respond(
+                f"Premise: {premise}\nTally of what sources say (value: number of sources):\n"
+                + "\n".join(lines)
+                + "\n\nUsing ONLY this tally, write exactly 2 short plain sentences: first what "
+                "the sources agree on, then where they disagree. Skip questions with no claims. "
+                "Do not mention primary sources. Report what sources say; make no accusations "
+                "and add no facts of your own. Plain text, no markdown, no citations."
+            )["text"].strip()
+            or text
+        )
+    except Exception:  # the deterministic sentence above stands in
+        pass
+    return f"{text} {primary}"
 
 
 def investigate(premise: str) -> Iterator[dict]:
@@ -295,7 +345,7 @@ def investigate(premise: str) -> Iterator[dict]:
 
     sources: dict[str, dict] = {}  # url -> source event
     excerpts: dict[str, dict[str, str]] = {q["id"]: {} for q in questions}  # qid -> sid -> text
-    with ThreadPoolExecutor(max_workers=8) as pool:
+    with ThreadPoolExecutor(max_workers=16) as pool:
         jobs = {pool.submit(_search, premise, q): q for q in questions}
         for job in as_completed(jobs):
             q = jobs[job]
@@ -332,9 +382,9 @@ def investigate(premise: str) -> Iterator[dict]:
         primary_ids = {s["id"] for s in sources.values() if s["primary"]}
         by_question: dict[str, list[dict]] = {}
         jobs = {
-            pool.submit(_claims, q, excerpts[q["id"]], published): q
+            pool.submit(_claims, q, batch, published): q
             for q in questions
-            if excerpts[q["id"]]
+            for batch in _batches(excerpts[q["id"]])
         }
         for job in as_completed(jobs):
             q = jobs[job]

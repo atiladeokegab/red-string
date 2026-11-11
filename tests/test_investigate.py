@@ -43,6 +43,10 @@ def test_a_coarser_date_agrees_with_a_finer_one():
     assert inv.find_conflict(Q, [_claim(1, "2024-12"), _claim(2, "2024-12-09")], set()) is None
     number = {**Q, "kind": "number"}  # prefix agreement is for dates only
     assert inv.find_conflict(number, [_claim(1, "3"), _claim(2, "33")], set())["values"]
+    agree = [("39", "38.9"), ("3300000000", "3330000000"), ("36", "36.2")]
+    for a, b in agree:  # rounding is agreement
+        assert inv.find_conflict(number, [_claim(1, a), _claim(2, b)], set()) is None
+    assert inv.find_conflict(number, [_claim(1, "33"), _claim(2, "36")], set())
 
 
 def test_a_claim_whose_quote_is_not_in_the_excerpt_is_dropped(monkeypatch):
@@ -75,7 +79,7 @@ def test_investigate_streams_the_contract_with_stubbed_search_and_respond(monkey
                 "entities": [{"name": "A", "kind": "person"}],
                 "questions": [
                     {"text": "When was it?", "kind": "date"},
-                    {"text": "How much?", "kind": "date"},
+                    {"text": "Why?", "kind": "date"},
                 ],
             }
         elif "Question:" in prompt:
