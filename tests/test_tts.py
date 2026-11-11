@@ -37,3 +37,33 @@ def test_miss_calls_openai_once_then_cache_serves(client, monkeypatch, tmp_path)
     assert (tmp_path / name).read_bytes() == b"MP3"
     monkeypatch.delenv("OPENAI_API_KEY")  # a cache hit needs no key either
     assert client.post("/api/tts", json={"who": "Sceptic", "text": "I doubt it."}).content == b"MP3"
+
+
+def test_stt_missing_key_is_503(client, monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    r = client.post("/api/stt", content=b"audio", headers={"content-type": "audio/webm"})
+    assert r.status_code == 503
+
+
+def test_stt_too_large_is_413(client, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    r = client.post("/api/stt", content=b"x" * (tts.STT_MAX + 1))
+    assert r.status_code == 413
+
+
+def test_stt_ok_forwards_audio_and_returns_text(client, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    seen = {}
+
+    def fake_post(url, data, files, headers, timeout):
+        seen.update(url=url, model=data["model"], file=files["file"])
+        return httpx2.Response(
+            200, json={"text": "who owns the pier"}, request=httpx2.Request("POST", url)
+        )
+
+    monkeypatch.setattr(tts.httpx2, "post", fake_post)
+    headers = {"content-type": "audio/webm;codecs=opus"}
+    r = client.post("/api/stt", content=b"OPUS", headers=headers)
+    assert r.status_code == 200 and r.json() == {"text": "who owns the pier"}
+    assert seen["url"].endswith("/v1/audio/transcriptions")
+    assert seen["model"] == "gpt-4o-transcribe" and seen["file"] == ("premise.webm", b"OPUS")
