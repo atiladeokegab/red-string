@@ -26,14 +26,10 @@ const line = (who, text, to) => ({ who, ...(to && { to }), text, emoji: PERSONAS
 
 function chatter(e, s) {  // the line an event earns on its own; counters update whether or not it gets said
   if (e.type === 'source') {
-    const n = ++s.sources; s.dom[e.id] = e.domain;
+    const n = ++s.sources; s.dom[e.id] = s.lastDomain = e.domain;
     if (n === 1) return pick(s, 'src1', [
       [line('Archivist', `First source on the pile: ${e.domain}.`), line('Sceptic', 'One source is a rumour, not a story.', 'Archivist')],
       [line('Archivist', `Source one is in. ${e.domain}, filed.`)]]);
-    if ([10, 50, 100].includes(n)) return pick(s, 'srcN', [
-      [line('Sceptic', `@Archivist that's source ${n}. You counting?`, 'Archivist'), line('Archivist', `Counting. ${n} exactly, latest from ${e.domain}.`, 'Sceptic')],
-      [line('Archivist', `${n} sources read. ${e.domain} makes ${n}.`)],
-      [line('Editor', `${n} sources in. Keep them coming, team.`)]]);
     if (e.primary && !s.primaryNoted) { s.primaryNoted = 1; return [line('Archivist', `${e.domain} is a primary record. Mark it gold.`)]; }
     return [];
   }
@@ -55,6 +51,15 @@ function chatter(e, s) {  // the line an event earns on its own; counters update
       [line('Identifier', `@Sceptic ${n} sources say ${v}.`, 'Sceptic'), line('Sceptic', 'Then the odd one out matters more.', 'Identifier')]]);
     return [];
   }
+  if (e.type === 'stats') {  // source milestones quote the on-screen counter, which only moves on stats events
+    s.stats = e; const n = e.sources, d = s.lastDomain;
+    const hit = [10, 50, 100].filter(m => n >= m && !s.mile[m]); hit.forEach(m => s.mile[m] = 1);
+    if (hit.length) return pick(s, 'srcN', [
+      [line('Sceptic', `@Archivist that's ${n} sources. You counting?`, 'Archivist'), line('Archivist', `Counting. ${n} exactly, latest from ${d}.`, 'Sceptic')],
+      [line('Archivist', `${n} sources read. Latest is ${d}.`)],
+      [line('Editor', `${n} sources in. Keep them coming, team.`)]]);
+    return [];
+  }
   if (e.type === 'question') { s.questions++; return []; }
   if (e.type === 'entity') return pick(s, 'ent', [[line('Identifier', `Adding ${e.name} to the wall.`)], [line('Identifier', `${e.name}, noted. Who else?`)]]);
   return [];
@@ -62,10 +67,10 @@ function chatter(e, s) {  // the line an event earns on its own; counters update
 
 function filler(e, s) {  // small talk when the room has been quiet: every number and name from the event or the tally
   if (e.type === 'source') return pick(s, 'fsrc', [
-    [line('Archivist', `${e.domain}, filed. That's ${s.sources}.`)],
+    [line('Archivist', `${e.domain}, filed.`)],
     [line('Sceptic', `${e.domain}? Quote it or it didn't happen.`)],
     [line('Identifier', `${e.domain} is on this story too.`)],
-    [line('Timekeeper', `${s.sources} sources in. Clock's running.`)]]);
+    s.stats ? [line('Timekeeper', `${s.stats.sources} sources on the board. Clock's running.`)] : []]);
   if (e.type === 'claim') {
     const v = show(e.normalized), n = s.answers[e.question_id][e.normalized], d = s.dom[e.source_id];
     return pick(s, 'fclaim', [
@@ -94,19 +99,18 @@ function scene(e, s) {  // the red-string moment: a fixed little scene, every va
 }
 
 function closing(s) {  // the verdict payoff: counts are this run's own tally of events
-  const answered = Object.keys(s.answers).length;
   if (!s.conflicts) return [
-    line('Sceptic', `${plural(s.sources, 'source')}, ${plural(s.claims, 'claim')}, no contradictions. Annoying.`),
-    line('Archivist', `${plural(answered, 'question')} answered. Every claim quoted.`, 'Sceptic'),
+    line('Sceptic', s.stats ? `${plural(s.stats.sources, 'source')} and not one contradiction. Annoying.` : 'Not one contradiction. Annoying.'),
+    line('Archivist', 'Every answer on the board has a quote behind it.', 'Sceptic'),
     line('Editor', `If the Sceptic's satisfied, I'm satisfied. Signed off.`)];
   const ruling = s.ruling; s.ruling = null;
   return [
-    line('Sceptic', `${plural(s.conflicts, 'red string')} on the wall. Told you.`),
-    line('Editor', ruling ? `${ruling.run}, dispute flagged. Signed off.` : `${plural(s.sources, 'source')} read, dispute flagged. Signed off.`)];
+    line('Sceptic', 'The red string stays up. Told you.'),
+    line('Editor', ruling ? `${ruling.run}, dispute flagged. Signed off.` : 'Dispute flagged. Signed off.')];
 }
 
 export function banter(event, state) {
-  state.rot ??= {}; state.answers ??= {}; state.dom ??= {}; state.said ??= new Set();
+  state.rot ??= {}; state.mile ??= {}; state.answers ??= {}; state.dom ??= {}; state.said ??= new Set();
   state.sources ??= 0; state.claims ??= 0; state.questions ??= 0; state.conflicts ??= 0; state.last ??= -Infinity;
   const now = state.now0 = state.now ?? Date.now();  // state.now lets a replay or a test drive the clock
   let lines, base = 0;
@@ -134,7 +138,9 @@ export function selfTest() {
   ok(at(0, { type: 'source', id: 's1', domain: 'gao.gov', primary: true }).length >= 1, 'first source speaks');
   ok(at(100, { type: 'claim', question_id: 'q1', normalized: '2017-09-20' }).length === 0, 'rate limit holds within 2.5s');
   for (let i = 2; i <= 10; i++) at(3000 * i, { type: 'source', domain: 'x' + i + '.com' });
-  ok(all.some(l => /source 10|10 sources|10 exactly|makes 10/.test(l.text)), '10th source milestone');
+  ok(!all.some(l => /\b10\b/.test(l.text)), 'no source count before the counter shows it');
+  at(33000, { type: 'stats', searches: 2, sources: 12, claims: 0, conflicts: 0 });
+  ok(all.some(l => /\b12\b/.test(l.text)), 'source milestone quotes the stats counter');
   at(40000, { type: 'claim', question_id: 'q1', normalized: '2017-09-20' });
   const t = at(45000, { type: 'claim', question_id: 'q1', normalized: '2017-09-22' });
   ok(t.some(l => /22 Sep 2017/.test(l.text)), 'new tower names its value');
@@ -153,8 +159,9 @@ export function selfTest() {
   for (const l of [...all, ...c2]) ok(words(l) <= 12, 'too long: ' + l.text), ok(PERSONAS[l.who], 'unknown speaker ' + l.who);
   let last = -Infinity;
   for (let i = 0; i < 200; i++) { s.now = 50000 + i * 300; if (banter({ type: 'source', domain: 'z.com' }, s).length) { ok(s.now - last >= GAP_MS, 'gap'); last = s.now; } }
-  const v = closing({ sources: 3, claims: 7, conflicts: 0, answers: { q1: {}, q2: {} } });
-  ok(v[0].who === 'Sceptic' && /3 sources, 7 claims/.test(v[0].text) && /2 questions/.test(v[1].text) && v.at(-1).who === 'Editor', 'no-contradiction payoff quotes the tally');
+  const v = closing({ sources: 3, claims: 7, conflicts: 0, answers: { q1: {}, q2: {} }, stats: { sources: 142 } });
+  ok(v[0].who === 'Sceptic' && /142 sources/.test(v[0].text) && v.at(-1).who === 'Editor', 'no-contradiction payoff quotes the on-screen counter');
+  ok(v.every(l => !/\b(3|7|2)\b/.test(l.text)), 'payoff states no count of its own');
   // a full fake run at the replay pace (60ms per event): never quiet for 5s, never a repeat
   const r = { now: 0 }, said = [], times = [];
   const kinds = i => i % 7 === 0 ? { type: 'stats', searches: i >> 3, sources: i >> 1, claims: i >> 2 } : i % 3 ? { type: 'source', id: 's' + i, domain: ['a.com', 'b.org', 'c.net'][i % 3] }
