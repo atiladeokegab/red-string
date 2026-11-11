@@ -40,7 +40,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
     header h1 { font-size:22px; margin:0 auto 0 4px; }
     header input { order:3; flex:1 1 100%; max-width:none; }
     header button { padding:7px 10px; font-size:12px; }
-    #stats { top:116px; left:8px; right:8px; grid-auto-flow:column; gap:6px; padding:6px 10px; }
+    #stats { top:calc(var(--cf-hb, 108px) + 8px); left:8px; right:8px; grid-auto-flow:column; gap:6px; padding:6px 10px; }
     #stats .st b, #stats .st.red b { font-size:22px; } #stats .st span { font-size:9px; display:block; line-height:1.15; }
     #key { display:none !important; }
     #via { left:8px; right:8px; bottom:8px; font-size:10px; }
@@ -49,17 +49,28 @@ document.head.insertAdjacentHTML('beforeend', `<style>
     #cf-card { top:auto; bottom:62px; left:8px; right:8px; width:auto; max-height:55vh; }
     #cf-card:not([open]) summary .l { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   }
+  #cf-card .rc { margin:6px 0 2px; padding:6px 8px; background:#fff6cc; border:2px solid #1b1b1b; border-radius:10px; font-size:12px; font-weight:700; }
+  .cf-stamp { display:inline-block; margin-right:4px; padding:0 5px; border:2px solid #ff2d2d; border-radius:4px; color:#ff2d2d;
+    font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; transform:rotate(-3deg); }
+  .cf-chip { display:inline-block; padding:0 7px; border:2px solid #1b1b1b; border-radius:999px; background:#00a2ff; color:#fff;
+    font-size:11px; font-weight:900; white-space:nowrap; }
+  #cf-via { position:fixed; z-index:2; left:50%; top:98px; transform:translateX(-50%); pointer-events:none; transition:opacity .4s; }
+  #cf-via.off { opacity:0; }
+  @media (max-width:500px) { #cf-via { top:calc(var(--cf-hb, 108px) + 76px); } }
   @keyframes cf-pulse { 50% { border-color:#ff2d2d; box-shadow:0 5px 0 #ff2d2d, 0 0 0 6px #ff2d2d66; } }
   #cf-card.pulse { animation:cf-pulse .7s ease-in-out 2; }
   @media (prefers-reduced-motion:reduce) { #cf-intro { transition:opacity .3s; } #cf-intro.away { transform:translate(-50%,-50%); } }
 </style>`);
 
+// the header wraps to more rows as buttons are added: the phone layout hangs off its real height
+new ResizeObserver(([r]) => document.documentElement.style.setProperty('--cf-hb', Math.round(r.target.getBoundingClientRect().bottom) + 'px'))
+  .observe(document.querySelector('header'));
 const card = (id, tag = 'div') => { document.getElementById(id)?.remove(); const el = document.createElement(tag); el.id = id; el.className = 'cf'; document.body.append(el); return el; };
 let R, fmt;
 
 export function start(premise, crew, pretty) {
   const t = new Date(), p = n => String(n).padStart(2, '0');
-  R = { src: {}, claims: {}, conflicts: [], q: {}, stats: null };
+  R = { src: {}, claims: {}, conflicts: [], q: {}, stats: null, rechecks: [], verdict: null };
   fmt = pretty;
   document.getElementById('cf-card')?.remove();
   const el = card('cf-intro');
@@ -75,6 +86,7 @@ export function start(premise, crew, pretty) {
 
 export function on(e) {
   if (!R) return;
+  if (e.endpoint) via(e.endpoint);
   if (e.type === 'source') R.src[e.id] = e;
   else if (e.type === 'claim') R.claims[e.id] = e;
   else if (e.type === 'question') R.q[e.id] = e;
@@ -86,14 +98,30 @@ export function on(e) {
   }
   else if (e.type === 'stats') R.stats = e;
   else if (e.type === 'verdict') verdict(e);
+  else if (e.type === 'recheck') { R.rechecks.push(e); if (R.verdict) verdict(R.verdict, true); }  // may land before or after the verdict
 }
 
-function verdict(e) {
-  const s = R.stats || {}, k = R.conflicts;
+// a chip naming the Parallel endpoint behind the latest event that says which one it used
+let viaTimer;
+function via(endpoint) {
+  let el = document.getElementById('cf-via');
+  if (!el) { el = document.createElement('span'); el.id = 'cf-via'; el.className = 'cf-chip off'; document.body.append(el); }
+  el.textContent = 'via Parallel ' + endpoint; el.classList.remove('off');
+  clearTimeout(viaTimer); viaTimer = setTimeout(() => el.classList.add('off'), 4000);
+}
+
+const host = u => { try { return new URL(u).hostname; } catch { return u; } };
+const recheck = r => `<p class="rc"><span class="cf-stamp">Live check</span>Re-checked live via <span class="cf-chip">Parallel ${esc(r.endpoint || 'extract')}</span>: ` +
+  (r.still_says ? 'the page still says it.' : r.live_excerpt ? `the page now says “${esc(r.live_excerpt.length > 140 ? r.live_excerpt.slice(0, 139) + '…' : r.live_excerpt)}”` : 'the page no longer says it.') +
+  (/^https?:\/\//i.test(r.url) ? ` <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(host(r.url))}</a>` : '') + '</p>';  // only web links from event data
+
+function verdict(e, again) {
+  R.verdict = e;
+  const s = R.stats || {}, k = R.conflicts, shown = new Set(), was = document.getElementById('cf-card');
   const line = k.length ? `Sources disagree: ${R.q[k[0].question_id]?.text || k[0].summary}` : e.text.split(/(?<=\.)\s/)[0];
   const n = (v, label, cls = '') => `<span class="${cls}"><b>${v ?? '–'}</b>${label}</span>`;
   const el = card('cf-card', 'details');
-  el.open = !matchMedia('(max-width:500px)').matches;  // on a phone it starts folded so the string stays visible
+  el.open = was ? was.open : !matchMedia('(max-width:500px)').matches;  // on a phone it starts folded so the string stays visible
   el.innerHTML = `<summary><small>Finding</small><span class="l">${esc(line)}</span></summary>
     <div class="n">${n(s.sources, ' sources')}${n(s.claims, ' claims')}${n(s.conflicts ?? k.length, ' contradictions', 'red')}</div>
     <p class="t">${esc(e.text)}</p><button class="more" type="button">more</button>` +
@@ -101,11 +129,12 @@ function verdict(e) {
       const seen = new Set(), srcs = c.claim_ids.map(id => R.claims[id]).filter(cl => cl && cl.normalized === v)
         .map(cl => R.src[cl.source_id]).filter(x => x && !seen.has(x.url) && seen.add(x.url));
       const links = srcs.slice(0, 3).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.domain)}</a>`).join('');
-      return `<div><b class="${v === c.primary_value ? 'p' : ''}">${esc(fmt(v))}</b> ${srcs.length} source${srcs.length === 1 ? '' : 's'}${v === c.primary_value ? ', matches the primary record' : ''}<br>${links}${srcs.length > 3 ? ` +${srcs.length - 3} more` : ''}</div>`;
-    }).join('<div>vs</div>')}</div>`).join('');
+      const rcs = R.rechecks.filter(r => srcs.some(x => x.url === r.url) && !shown.has(r) && shown.add(r));  // under the side whose page was re-read
+      return `<div><b class="${v === c.primary_value ? 'p' : ''}">${esc(fmt(v))}</b> ${srcs.length} source${srcs.length === 1 ? '' : 's'}${v === c.primary_value ? ', matches the primary record' : ''}<br>${links}${srcs.length > 3 ? ` +${srcs.length - 3} more` : ''}${rcs.map(recheck).join('')}</div>`;
+    }).join('<div>vs</div>')}</div>`).join('') + R.rechecks.filter(r => !shown.has(r)).map(recheck).join('');
   const t = el.querySelector('.t'), b = el.querySelector('.more');
   const fit = () => { if (el.open && !t.classList.contains('all')) b.hidden = t.scrollHeight <= t.clientHeight + 1; };
   b.onclick = () => { b.textContent = t.classList.toggle('all') ? 'less' : 'more'; };
   el.addEventListener('toggle', fit); fit();
-  if (k.length) el.classList.add('pulse');  // two red pulses: this run found a contradiction
+  if (k.length && !again) el.classList.add('pulse');  // two red pulses: this run found a contradiction
 }
