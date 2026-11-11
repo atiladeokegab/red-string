@@ -61,10 +61,10 @@ function next() {
 }
 
 // OpenAI voice per crew member (POST /api/tts, cached on the server); resolves to a blob URL, or null to fall back.
-let noTts;  // the server has no voice provider (503): ask once, not once per line
-const tts = job => job.mp3 ??= noTts ? Promise.resolve(null) : fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+let ttsOff = false;  // one 503 means no key on this server: stop asking, use the browser voice
+const tts = job => job.mp3 ??= ttsOff ? Promise.resolve(null) : fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ who: job.name, text: job.text.slice(0, 300) }), signal: AbortSignal.timeout(10000) })
-  .then(r => { noTts = r.status === 503; return r.ok ? r.blob() : null; }).then(b => b && URL.createObjectURL(b)).catch(() => null);
+  .then(r => { if (r.status === 503) ttsOff = true; return r.ok ? r.blob() : null; }).then(b => b && URL.createObjectURL(b)).catch(() => null);
 
 function speakLocal(job) {
   const u = new SpeechSynthesisUtterance(`${job.name}. ${job.text}`), i = order.indexOf(job.name);

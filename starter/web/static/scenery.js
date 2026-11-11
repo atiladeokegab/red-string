@@ -37,7 +37,7 @@ export function addScenery(scene, THREE) {
   block(scene, yellow, [240, 240, 240], [1700, 1700, 1500]);
 
   // --- block town ringing the case area: everything static is instanced, outlines are one merged line mesh
-  const boxes = [], glows = [], studs = [];
+  const boxes = [], glows = [], studs = [], wins = [];  // wins: house-window indices into glows, lit one by one
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3(), Z = new THREE.Vector3(0, 0, 1), col = new THREE.Color();
   const at = (r, deg) => { const a = deg * Math.PI / 180; return { x: Math.cos(a) * r, y: Math.sin(a) * r, a }; };  // local +x points away from the centre
   function put(list, color, [w, d, h], [lx, ly, z0], f, stud) {
@@ -57,7 +57,7 @@ export function addScenery(scene, THREE) {
     put(boxes, WALLS[i], [D, W, H], [0, 0, 0], f);
     [D + 8, D - 10, D - 28, 14].forEach((rw, k) => put(boxes, roof, [rw, W + 8, 10], [0, 0, H + k * 10], f, k === 3));  // stepped pitched roof
     put(boxes, 0x6b4a33, [3, 14, 24], [-D / 2 - 1, 0, 0], f);
-    for (const ly of [-W / 4 - 4, W / 4 + 4]) put(glows, 0xffe9a0, [3, 13, 13], [-D / 2 - 1, ly, H - 26], f);
+    for (const ly of [-W / 4 - 4, W / 4 + 4]) wins.push(glows.length), put(glows, 0xffe9a0, [3, 13, 13], [-D / 2 - 1, ly, H - 26], f);
     for (const ly of [-36, -12, 12, 36]) put(boxes, 0xf0e6d2, [5, 5, 16], [-D / 2 - 24, ly, 0], f);
     put(boxes, 0xf0e6d2, [3, 76, 4], [-D / 2 - 24, 0, 9], f);
     for (const ly of [-W / 2 - 16, W / 2 + 16]) put(boxes, 0x4e8a4b, [18, 18, 16], [-D / 2 + 8, ly, 0], f, true);
@@ -80,6 +80,7 @@ export function addScenery(scene, THREE) {
     put(boxes, 0x4a4f57, [6, 6, 60], [0, 0, 0], f);
     put(glows, 0xfff1b8, [12, 12, 8], [0, 0, 60], f);
   }
+  let glowMesh;
   const cubeMat = new THREE.MeshLambertMaterial({ color: 0xffffff }), glowMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
   const stud = new THREE.CylinderGeometry(1, 1, 1, 10).rotateX(Math.PI / 2);
   for (const [list, geo, mat] of [[boxes, cube, cubeMat], [glows, cube, glowMat], [studs, stud, cubeMat]]) {
@@ -89,6 +90,7 @@ export function addScenery(scene, THREE) {
       im.setColorAt(i, col.set(b.color));
     });
     scene.add(im);
+    if (list === glows) glowMesh = im;
   }
   const ep = edges.attributes.position.array, all = boxes.concat(glows), lines = new Float32Array(all.length * ep.length);
   all.forEach((b, i) => {
@@ -106,7 +108,45 @@ export function addScenery(scene, THREE) {
     scene.add(car);
     return { car, a0, r, speed };
   });
+  // pedestrians on both pavements: 4 instanced parts each, posed every frame
+  const PEDS = [0x8fb7d9, 0xe6c86e, 0xb5cfa0, 0xc9c1e0, 0x9ccfc4, 0xd9a87c, 0x6a8fb5, 0xe8dcc0].map((color, i) => (
+    { color, r: i % 2 ? 1004 : 914, a0: i * .8, speed: (i % 2 ? -1 : 1) * (.012 + i % 3 * .003) }));
+  const pedMesh = new THREE.InstancedMesh(cube, cubeMat, PEDS.length * 4);
+  PEDS.forEach(({ color }, i) => [0x3d4a5c, 0x3d4a5c, color, 0xf5cd30].forEach((c, k) => pedMesh.setColorAt(i * 4 + k, col.set(c))));
+  scene.add(pedMesh);
+  const frame = new THREE.Matrix4(), part = new THREE.Matrix4(), swing = new THREE.Matrix4(), Y = new THREE.Vector3(0, 1, 0);
+  const birds = [0, 2.1, 4.2].map(a0 => {
+    const bird = new THREE.Group(), wings = [];
+    block(bird, tyre, [16, 6, 5], [0, 0, 0]);
+    for (const side of [-1, 1]) { const w = new THREE.Group(); block(w, glass, [8, 14, 2], [0, side * 7, 0]); bird.add(w); wings.push(w); }
+    scene.add(bird);
+    return { bird, wings, a0 };
+  });
+  const DARK = new THREE.Color(0x3a3f4a), LIT = new THREE.Color(0xffe9a0);
   return function update(t) {
+    PEDS.forEach(({ r, a0, speed }, i) => {
+      const a = a0 + t * speed, step = Math.sin(t * 7 + i) * .5;
+      frame.compose(v.set(Math.cos(a) * r, Math.sin(a) * r, Math.abs(step) * 1.5), q.setFromAxisAngle(Z, a + Math.sign(speed) * Math.PI / 2), sc.set(1, 1, 1));
+      for (const [k, side] of [[0, -1], [1, 1]]) {  // legs swing about the hip
+        swing.makeRotationAxis(Y, side * step).premultiply(part.makeTranslation(0, side * 2.2, 9));
+        pedMesh.setMatrixAt(i * 4 + k, part.copy(frame).multiply(swing).multiply(m4.compose(v.set(0, 0, -4.5), q.identity(), sc.set(4, 4, 9))));
+      }
+      pedMesh.setMatrixAt(i * 4 + 2, part.copy(frame).multiply(m4.compose(v.set(0, 0, 13.5), q.identity(), sc.set(5, 9, 9))));
+      pedMesh.setMatrixAt(i * 4 + 3, part.copy(frame).multiply(m4.compose(v.set(0, 0, 21), q.identity(), sc.set(6, 6, 6))));
+    });
+    pedMesh.instanceMatrix.needsUpdate = true;
+    for (const { bird, wings, a0 } of birds) {
+      const a = a0 - t * .08, flap = Math.sin(t * 9 + a0) * .6;
+      bird.position.set(Math.cos(a) * 760, Math.sin(a) * 760, 430 + Math.sin(t + a0) * 20);
+      bird.rotation.z = a - Math.PI / 2;
+      wings[0].rotation.x = -flap; wings[1].rotation.x = flap;
+    }
+    wins.forEach((g, i) => {  // each window warms up in turn, sputtering as it comes on
+      const on = Math.min(1, Math.max(0, (t - 1 - i * .6) / 2.5)), sputter = on < 1 && Math.sin(t * 23 + i * 5) > .3 ? .35 : 1;
+      glowMesh.setColorAt(g, col.copy(DARK).lerp(LIT, on * sputter));
+    });
+    glowMesh.instanceColor.needsUpdate = true;
+
     for (const { cloud, x, y, phase } of clouds) {
       cloud.position.x = x + Math.sin(t * .03 + phase) * 70;
       cloud.position.y = y + Math.cos(t * .02 + phase) * 50;
