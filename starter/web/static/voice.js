@@ -7,13 +7,23 @@ const PITCH = [1, .6, 1.5, .3, 1.9];  // one per crew member, in order of first 
 const MAX_WAITING = 2;                // a replay talks faster than speech: the log keeps every line, the voice keeps up
 
 document.head.insertAdjacentHTML('beforeend', `<style>
-  #chan { position:fixed; left:10px; bottom:48px; width:270px; z-index:2; padding:6px 10px 8px; font-size:12px;
+  #chan { position:fixed; left:10px; bottom:48px; width:330px; z-index:2; padding:6px 10px 8px; font-size:16px;
     background:#ffffffe8; color:#1b1b1b; border:3px solid #1b1b1b; border-radius:14px; box-shadow:0 5px 0 #1b1b1b; }
   #chan h2 { margin:0 0 4px; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.05em;
     display:flex; justify-content:space-between; align-items:center; }
-  #chan-log { height:120px; overflow:auto; font-weight:700; line-height:1.3; }
-  #chan-log p { margin:0 0 3px; } #chan-log p.now { background:#ffe98a; border-radius:4px; }
-  #chan-log b { background:var(--c); padding:0 4px; border-radius:5px; margin-right:3px; }
+  #chan-log { height:170px; overflow:auto; font-weight:700; line-height:1.25; scrollbar-width:none;
+    mask-image:linear-gradient(transparent, #000 28px); -webkit-mask-image:linear-gradient(transparent, #000 28px); }  /* old lines fade out at the top */
+  #chan-log p { margin:0 0 4px; padding:2px 6px; border-radius:10px 10px 10px 3px; background:#f1efe9; width:fit-content; max-width:100%;
+    overflow-wrap:anywhere; animation:chan-in .25s cubic-bezier(.3,1.6,.6,1); transform-origin:left bottom; }
+  #chan-log p.chat { background:#dff0ff; border:2px solid #1b1b1b; }  /* banter: the crew talking to each other */
+  #chan-log p.now { background:#ffe98a; }
+  #chan-log b, #chan-log i { background:var(--c); padding:0 4px; border-radius:5px; margin-right:3px; font-style:normal; font-weight:900; }
+  #chan-typing { margin:2px 0 0; height:17px; font-size:13px; font-weight:800; color:#666; }
+  #chan-typing::after { content:'…'; animation:chan-dots 1s steps(4) infinite; display:inline-block; overflow:hidden; vertical-align:bottom; width:1em; }
+  @keyframes chan-in { from { opacity:0; transform:scale(.6) translateY(8px); } }
+  @keyframes chan-dots { from { width:0; } }
+  @media (prefers-reduced-motion:reduce) { #chan-log p, #chan-typing::after { animation:none; } }
+  @media (max-width:900px) { #stats { top:calc(var(--hdr, 62px) + 4px) !important; } header #mute { padding:7px 10px; font-size:12px; box-shadow:0 4px 0 #1b1b1b; } }
   #mute { white-space:nowrap; padding:1px 8px; font-size:11px; box-shadow:0 2px 0 #1b1b1b; background:#fff; color:#1b1b1b; }
   #mic { background:#ffd24a; color:#1b1b1b; } #mic.on { background:var(--red); color:#fff; }
   @media (max-height:560px), (max-width:900px) { #chan { display:none; } }
@@ -21,10 +31,15 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 </style>`);
 $('replay').insertAdjacentHTML('afterend', '<button id="mic" title="Say what to investigate">Speak</button>');
 document.body.insertAdjacentHTML('beforeend',
-  `<section id="chan" aria-label="Investigators' channel"><h2>Investigators' channel <button id="mute"></button></h2><div id="chan-log" aria-live="off"></div></section>`);
+  `<section id="chan" aria-label="Investigators' channel"><h2>Investigators' channel <button id="mute"></button></h2><div id="chan-log" aria-live="off"></div><p id="chan-typing" hidden></p></section>`);
+// phones: the channel is hidden, so the speech mute moves up beside the mic, and the stats sit below the wrapped header
+// shortcut: decided once at load, not on resize; fine for a phone, upgrade if the page must reflow live
+if (matchMedia('(max-height:560px), (max-width:900px)').matches) $('mic').after($('mute'));
+new ResizeObserver(([e]) => document.documentElement.style.setProperty('--hdr', e.target.offsetHeight + 'px')).observe(document.querySelector('header'));
 
 let audio;  // the OpenAI line now playing
-let muted = localStorage.getItem('rs-mute') === '1', listening = false, speaking = null, timer;
+let muted = localStorage.getItem('rs-mute') === '1', listening = false, speaking = null, timer, run = 0;
+const colors = {}, typing = [];  // crew colours for @mentions; banter lines waiting behind 'is typing'
 const waiting = [], order = [];
 const paint = () => { $('mute').textContent = muted ? 'Muted' : 'Voice on'; $('mute').setAttribute('aria-pressed', muted); };
 const hush = () => { waiting.length = 0; speaking = null; clearTimeout(timer); synth?.cancel(); audio?.pause(); };
@@ -63,26 +78,43 @@ function speakLocal(job) {
   synth.speak(u);
 }
 
-// Called from send() for every crew line.
-export function say(name, text, color) {
+function pump() {  // banter lands like chat: 'Sceptic is typing…', then the line
+  const t = $('chan-typing'), r = run;
+  if (!typing.length) return void (t.hidden = true);
+  t.textContent = typing[0][0] + ' is typing'; t.hidden = false;
+  setTimeout(() => { if (r !== run) return; post(...typing.shift()); pump(); }, 650);
+}
+
+// Called from send() for every crew line; chat = { to } marks banter between the crew (world.html chatter()).
+export function say(name, text, color, chat) {
+  colors[name] = color;
   if (text === 'standing by') return;  // reset noise: five at once, before every run
+  if (!chat) return post(name, text, color);
+  if (typing.push([name, chat.to && !text.includes('@' + chat.to) ? `@${chat.to} ${text}` : text, color, true]) === 1) pump();
+}
+
+function post(name, text, color, chat) {
   if (!order.includes(name)) order.push(name);
   const row = document.createElement('p'), b = document.createElement('b');
-  b.textContent = name; b.style.setProperty('--c', color || '#ddd'); row.append(b, text);
+  b.textContent = name; b.style.setProperty('--c', color || '#ddd'); row.append(b); if (chat) row.className = 'chat';
+  for (const part of text.split(/(@\w+)/)) {  // @mentions wear the addressee's colour
+    const c = part[0] === '@' && colors[part.slice(1)];
+    if (c) { const at = document.createElement('i'); at.textContent = part; at.style.setProperty('--c', c); row.append(at); } else row.append(part);
+  }
   const log = $('chan-log'); log.append(row); log.scrollTop = log.scrollHeight;
   if (muted || listening || !synth) return;
-  const urgent = name === 'Sceptic' || name === 'Editor';  // the contradiction and the write-up are always spoken
-  if (waiting.length >= MAX_WAITING) { const i = waiting.findIndex(j => !j.urgent); if (i >= 0) waiting.splice(i, 1); else if (!urgent) return; }
-  waiting.push({ name, text, row, urgent });
+  const urgent = chat || name === 'Sceptic' || name === 'Editor';  // banter, the contradiction and the write-up are always spoken
+  if (waiting.length >= MAX_WAITING) { const i = waiting.findIndex(j => !j.urgent); if (i >= 0) waiting.splice(i, 1); else if (!urgent) return; else if (waiting.length >= 4) waiting.shift(); }  // even banter must not run a minute behind the world
+  waiting.push({ name, text: text.replace(/@/g, ''), row, urgent });  // a spoken '@' is noise
   if (!speaking) next();
 }
 
 $('mute').onclick = () => { muted = !muted; localStorage.setItem('rs-mute', muted ? '1' : '0'); paint(); if (muted) hush(); };
-for (const id of ['go', 'replay']) $(id).addEventListener('click', () => { hush(); $('chan-log').textContent = ''; });  // a new run starts a clean channel
+for (const id of ['go', 'replay']) $(id).addEventListener('click', () => { run++; typing.length = 0; $('chan-typing').hidden = true; hush(); $('chan-log').textContent = ''; });  // a new run starts a clean channel
 paint();
 
 const mic = $('mic');
-const run = () => $(new URLSearchParams(location.search).has('replay') ? 'replay' : 'go').click();
+const startRun = () => $(new URLSearchParams(location.search).has('replay') ? 'replay' : 'go').click();
 const off = () => { listening = false; mic.classList.remove('on'); mic.textContent = 'Speak'; };
 const start = label => { hush(); listening = true; mic.classList.add('on'); mic.textContent = label; };  // quiet, or the mic hears the crew
 let rec, recorder, sttOff = !window.MediaRecorder || !navigator.mediaDevices?.getUserMedia;
@@ -91,7 +123,7 @@ if (Rec) {
   rec.onresult = e => {
     const r = e.results[e.results.length - 1];
     $('premise').value = r[0].transcript.trim();
-    if (r.isFinal && $('premise').value) { off(); run(); }
+    if (r.isFinal && $('premise').value) { off(); startRun(); }
   };
   rec.onend = off;
   rec.onerror = e => { off(); mic.title = 'Microphone: ' + e.error; };
@@ -113,7 +145,7 @@ async function record() {
         if (r.status === 503) sttOff = true;  // no key on this server: go straight to Web Speech from now on
         const text = r.ok && (await r.json()).text?.trim();
         if (!text) throw new Error('no transcript');
-        off(); $('premise').value = text; run();
+        off(); $('premise').value = text; startRun();
       } catch { off(); browserMic(); }  // say it again, to the browser's recogniser
     };
     mine.start(); setTimeout(() => recorder === mine && mine.stop(), 20000);  // 20 s of opus stays far under the 2 MB cap

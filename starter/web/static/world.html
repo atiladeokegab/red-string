@@ -237,7 +237,7 @@ window.crewLook = (who, to) => {
 function chatter(e) {  // crew personality: banter lines from persona.js, spoken and shown over the speaker's head
   for (const l of banter(e, BANTER)) { const a = CREW[l.who]; if (!a) continue;
     a.hop = 30; a.el.innerHTML = `<b>${l.who}</b> ${l.emoji || ''} ${esc(l.text)}`; window.crewLook?.(l.who, l.to);
-    say(l.who, l.text, a.el.style.getPropertyValue('--c')); }
+    say(l.who, l.text, a.el.style.getPropertyValue('--c'), { to: l.to }); }
 }
 function send(name, n, text) { const a = CREW[name]; a.target = n; a.hop = 40; if (n) sfx.hop(name); a.el.innerHTML = `<b>${name}</b> ${esc(text)}`; say(name, text, a.el.style.getPropertyValue('--c')); }  // every new job makes the figure hop
 const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
