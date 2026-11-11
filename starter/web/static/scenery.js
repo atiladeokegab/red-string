@@ -110,23 +110,23 @@ export function addScenery(scene, THREE) {
   });
   // pedestrians on both pavements: 4 instanced parts each, posed every frame
   const PEDS = [0x8fb7d9, 0xe6c86e, 0xb5cfa0, 0xc9c1e0, 0x9ccfc4, 0xd9a87c, 0x6a8fb5, 0xe8dcc0].map((color, i) => (
-    { color, r: i % 2 ? 1004 : 914, a0: i * .8, speed: (i % 2 ? -1 : 1) * (.012 + i % 3 * .003) }));
+    { color, r: i % 2 ? 893 : 911, a0: i * .8, speed: (i % 2 ? -1 : 1) * (.012 + i % 3 * .003) }));
   const pedMesh = new THREE.InstancedMesh(cube, cubeMat, PEDS.length * 4);
   PEDS.forEach(({ color }, i) => [0x3d4a5c, 0x3d4a5c, color, 0xf5cd30].forEach((c, k) => pedMesh.setColorAt(i * 4 + k, col.set(c))));
   scene.add(pedMesh);
   const frame = new THREE.Matrix4(), part = new THREE.Matrix4(), swing = new THREE.Matrix4(), Y = new THREE.Vector3(0, 1, 0);
-  const birds = [0, 2.1, 4.2].map(a0 => {
+  const birds = [[0, 330, 240], [2.1, 760, 430], [4.2, 760, 430]].map(([a0, r, z]) => {  // the first bird circles inside the camera's view
     const bird = new THREE.Group(), wings = [];
     block(bird, tyre, [16, 6, 5], [0, 0, 0]);
     for (const side of [-1, 1]) { const w = new THREE.Group(); block(w, glass, [8, 14, 2], [0, side * 7, 0]); bird.add(w); wings.push(w); }
-    scene.add(bird);
-    return { bird, wings, a0 };
+    bird.scale.setScalar(2); scene.add(bird);
+    return { bird, wings, a0, r, z };
   });
   const DARK = new THREE.Color(0x3a3f4a), LIT = new THREE.Color(0xffe9a0);
   return function update(t) {
     PEDS.forEach(({ r, a0, speed }, i) => {
       const a = a0 + t * speed, step = Math.sin(t * 7 + i) * .5;
-      frame.compose(v.set(Math.cos(a) * r, Math.sin(a) * r, Math.abs(step) * 1.5), q.setFromAxisAngle(Z, a + Math.sign(speed) * Math.PI / 2), sc.set(1, 1, 1));
+      frame.compose(v.set(Math.cos(a) * r, Math.sin(a) * r, Math.abs(step) * 4), q.setFromAxisAngle(Z, a + Math.sign(speed) * Math.PI / 2), sc.set(2.5, 2.5, 2.5));
       for (const [k, side] of [[0, -1], [1, 1]]) {  // legs swing about the hip
         swing.makeRotationAxis(Y, side * step).premultiply(part.makeTranslation(0, side * 2.2, 9));
         pedMesh.setMatrixAt(i * 4 + k, part.copy(frame).multiply(swing).multiply(m4.compose(v.set(0, 0, -4.5), q.identity(), sc.set(4, 4, 9))));
@@ -135,9 +135,9 @@ export function addScenery(scene, THREE) {
       pedMesh.setMatrixAt(i * 4 + 3, part.copy(frame).multiply(m4.compose(v.set(0, 0, 21), q.identity(), sc.set(6, 6, 6))));
     });
     pedMesh.instanceMatrix.needsUpdate = true;
-    for (const { bird, wings, a0 } of birds) {
+    for (const { bird, wings, a0, r, z } of birds) {
       const a = a0 - t * .08, flap = Math.sin(t * 9 + a0) * .6;
-      bird.position.set(Math.cos(a) * 760, Math.sin(a) * 760, 430 + Math.sin(t + a0) * 20);
+      bird.position.set(Math.cos(a) * r, Math.sin(a) * r, z + Math.sin(t + a0) * 20);
       bird.rotation.z = a - Math.PI / 2;
       wings[0].rotation.x = -flap; wings[1].rotation.x = flap;
     }
