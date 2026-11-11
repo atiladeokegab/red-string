@@ -83,6 +83,9 @@
   .lb.agent b { color:#1b1b1b; background:var(--c); padding:1px 5px; border-radius:6px; font-size:14px; }
   .lb.agent.speaking { font-size:12px; max-width:210px; white-space:normal; }
   .lb.agent.speaking b { display:block; }
+  .lb.agent { transition:opacity .25s; }
+  .lb.agent.arc-quiet { opacity:.35; }
+  .lb.agent.arc-quiet b { font-size:12px; }
   .lb.question, .lb.entity, .lb.answer { font-size:14px; }
   .lb.answer.red { background:#e6eff2; color:#1b1b1b; border:2px solid #1b1b1b; text-shadow:none; }
   #tag { position:fixed; top:66px; left:190px; font-weight:900; color:#fff; font-size:15px;
@@ -362,7 +365,7 @@ setInterval(() => {
 const threads = new Map(), threadRed = new THREE.MeshBasicMaterial({ color:0xff2424 });
 const threadGlow = new THREE.MeshBasicMaterial({ color:0xff2424, transparent:true, opacity:.16, depthWrite:false });
 const pinGeometry = new THREE.SphereGeometry(6, 12, 8);
-let lastFrame = performance.now();
+let lastFrame = performance.now(), focusShot, focusUntil = 0, viewAngle = Math.atan2(.35, 1), aimHeight = 65;
 function drawThreads() {
   for (const [l, thread] of threads) if (!L.includes(l)) {
     scene.remove(thread.group); thread.core.geometry.dispose(); thread.glow.geometry.dispose(); threads.delete(l);
@@ -377,6 +380,7 @@ function drawThreads() {
       const pins = [new THREE.Mesh(pinGeometry, threadRed), new THREE.Mesh(pinGeometry, threadRed)];
       group.add(glow, core, ...pins); scene.add(group);
       thread = { group, core, glow, pins, started:performance.now() }; threads.set(l, thread);
+      focusUntil = Math.max(focusUntil, thread.started + 4000);
     }
     const progress = Math.min(1, (performance.now() - thread.started) / 1800);
     if (T % 6 === 0 || !thread.curve) {
@@ -400,14 +404,30 @@ function drawThreads() {
   if (N) for (const n of N.values()) if (n.kind !== 'source' && Number.isFinite(n.x)) far = Math.max(far, Math.hypot(n.x, n.y));
   const fs = S && S.focus && S.focus.every(n => n.x !== undefined) ? S.focus : null;
   const f = fs && { x: fs.reduce((t, n) => t + n.x, 0) / fs.length, y: fs.reduce((t, n) => t + n.y, 0) / fs.length };  // fly to the newest contradiction
+  const pair = fs && fs.length > 1 ? fs : null;
+  if (pair && S.focus !== focusShot) { focusShot = S.focus; focusUntil = now + 4000; }
+  if (!fs) focusShot = null;
+  const reveal = pair && now < focusUntil;
+  const chordX = pair ? pair[1].x - pair[0].x : 0, chordY = pair ? pair[1].y - pair[0].y : 0;
+  const chord = Math.hypot(chordX, chordY), ux = chord ? chordX / chord : 1, uy = chord ? chordY / chord : 0;
   const activeCrew = fs ? CREW.Sceptic : Object.values(CREW).reduce((a, b) => a.hop > b.hop ? a : b), active = activeCrew.g.position;
   const center = f || { x:active.x * .25, y:active.y * .25 };
   let radius = f ? 160 : far;
   const framing = fs || Object.values(CREW).map(a => a.g.position);
   for (const p of framing) radius = Math.max(radius, Math.hypot(p.x - center.x, p.y - center.y));
-  R += ((radius * (f ? 1.9 : 1.65) + 180) * Math.max(1, innerHeight / innerWidth) - R) * (1 - Math.exp(-elapsed / 650));
+  let distance = (radius * (f ? 1.9 : 1.65) + 180) * Math.max(1, innerHeight / innerWidth), height = 65;
+  if (pair) {
+    const high = Math.max(...pair.map(n => n.mesh ? n.mesh.scale.z : SIZE(n)[2]));
+    const low = Math.min(...pair.map(n => n.mesh ? n.mesh.scale.z : SIZE(n)[2]));
+    const arch = Math.max(55, Math.hypot(chord, high - low) * .25), tan = Math.tan(G.camera().fov * Math.PI / 360);
+    distance = Math.max(320, (chord + 100) / (2 * tan * (innerWidth / innerHeight) * .72), (high + arch + 60) / (2 * tan * .65));
+    height = (high + low) / 2 + arch * .5;
+  }
+  const ease = 1 - Math.exp(-elapsed / 650), angle = pair ? Math.atan2(uy, ux) : Math.atan2(.35, 1);
+  R += (distance - R) * ease; aimHeight += (height - aimHeight) * ease;
+  viewAngle += Math.atan2(Math.sin(angle - viewAngle), Math.cos(angle - viewAngle)) * ease;
   C.x += (center.x - C.x) * (1 - Math.exp(-elapsed / 850)); C.y += (center.y - C.y) * (1 - Math.exp(-elapsed / 850));
-  if (orbit) G.cameraPosition({ x:C.x + R * .35, y:R * .8 + 80, z:-C.y + R }, { x:C.x, y:65, z:-C.y });
+  if (orbit) G.cameraPosition({ x:C.x + Math.sin(viewAngle) * R, y:aimHeight + R * .65, z:-C.y + Math.cos(viewAngle) * R }, { x:C.x, y:aimHeight, z:-C.y });
   if (N) for (const n of N.values()) if (n.mesh && n.x !== undefined) {
     const [w, d, h] = SIZE(n), m = n.mesh;
     m.position.z *= .88; m.scale.set(w, d, m.scale.z + (h - m.scale.z) * .15);
@@ -420,7 +440,8 @@ function drawThreads() {
   }
   for (const [i, a] of Object.values(CREW).entries()) {
     const p = a.g.position, t = fs ? fs[i % fs.length] : a.target;
-    const tx = t && t.x !== undefined ? t.x + Math.cos(i * 1.257) * 90 : a.home[0], ty = t && t.x !== undefined ? t.y + Math.sin(i * 1.257) * 90 : a.home[1];
+    const tx = pair ? f.x + ux * (i - 2) * 65 + uy * 240 : t && t.x !== undefined ? t.x + Math.cos(i * 1.257) * 90 : a.home[0];
+    const ty = pair ? f.y + uy * (i - 2) * 65 - ux * 240 : t && t.x !== undefined ? t.y + Math.sin(i * 1.257) * 90 : a.home[1];
     const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy), moving = dist > 3;
     if (moving) { const s = Math.min(dist, Math.max(6, dist * (1 - Math.exp(-elapsed / 220)))) / dist; p.x += dx * s; p.y += dy * s; a.facing = Math.atan2(dy, dx) - Math.PI / 2; }
     const looking = now < a.lookUntil && a.lookTarget, partner = looking && a.lookTarget.g.position;
@@ -437,7 +458,8 @@ function drawThreads() {
     a.head.rotation.y += (glance - a.head.rotation.y) * settle;
     if (a.hop > 0) { a.hop--; p.z = Math.abs(Math.sin(a.hop * .2)) * 14; if (!moving) a.arms[0].rotation.x = a.arms[1].rotation.x = Math.PI; }  // jump, arms up
     else p.z = moving ? Math.abs(Math.sin(phase)) * 2 : 1 + breath * .8;
-    a.el.classList.toggle('speaking', a === activeCrew && a.hop > 0);
+    a.el.classList.toggle('arc-quiet', !!reveal);
+    a.el.classList.toggle('speaking', !reveal && a === activeCrew && a.hop > 0);
     place(a.el, p.x, p.y, 108);
   }
   if (L) drawThreads();
