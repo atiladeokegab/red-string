@@ -1,5 +1,6 @@
 // Case file: an intro card when a run starts and a verdict card when it ends.
 // Everything shown comes from the run's own events; nothing is made up here.
+import { say } from './voice.js';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // what each investigator does, as world.html's send() calls describe it
 const ROLE = { Identifier: 'who is in the story', Archivist: 'reads the sources', Timekeeper: 'quotes the claims',
@@ -48,6 +49,8 @@ document.head.insertAdjacentHTML('beforeend', `<style>
     #cf-card { top:auto; bottom:62px; left:8px; right:8px; width:auto; max-height:55vh; }
     #cf-card:not([open]) summary .l { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   }
+  @keyframes cf-pulse { 50% { border-color:#ff2d2d; box-shadow:0 5px 0 #ff2d2d, 0 0 0 6px #ff2d2d66; } }
+  #cf-card.pulse { animation:cf-pulse .7s ease-in-out 2; }
   @media (prefers-reduced-motion:reduce) { #cf-intro { transition:opacity .3s; } #cf-intro.away { transform:translate(-50%,-50%); } }
 </style>`);
 
@@ -66,6 +69,7 @@ export function start(premise, crew, pretty) {
     <h2>${esc(premise)}</h2><small>On the case</small>
     <ul>${Object.values(crew).map(a => `<li><b style="--c:${a.color}">${esc(a.name)}</b>${esc(ROLE[a.name] || '')}</li>`).join('')}</ul>`;
   setTimeout(() => el.classList.add('away'), 2500);
+  say('Editor', `New case. ${premise.trim().replace(/[.?!]+$/, '')}. Find me the sources.`, crew.Editor?.color);  // built from the premise only
   setTimeout(() => el.remove(), 3100);
 }
 
@@ -103,4 +107,5 @@ function verdict(e) {
   const fit = () => { if (el.open && !t.classList.contains('all')) b.hidden = t.scrollHeight <= t.clientHeight + 1; };
   b.onclick = () => { b.textContent = t.classList.toggle('all') ? 'less' : 'more'; };
   el.addEventListener('toggle', fit); fit();
+  if (k.length) el.classList.add('pulse');  // two red pulses: this run found a contradiction
 }
