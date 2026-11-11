@@ -66,7 +66,7 @@
 <div id="labels"></div>
 <header>
   <h1>Red <b>String</b></h1>
-  <input id="premise" value="The OpenAI board's firing of Sam Altman" aria-label="What should we investigate?">
+  <input id="premise" value="Hurricane Maria death toll in Puerto Rico" aria-label="What should we investigate?">
   <button id="go">Investigate</button>
   <button id="replay" class="ghost" title="Replay a saved real run, no network needed">Replay</button>
 </header>
@@ -277,7 +277,7 @@ function run(url) {
   };
 }
 const qs = new URLSearchParams(location.search);
-const saved = () => qs.get('replay') || (/openai|altman/i.test($('premise').value) ? 'openai' : 'murdoch');
+const saved = () => qs.get('replay') || (v => /openai|altman/i.test(v) ? 'openai' : /murdoch/i.test(v) ? 'murdoch' : 'maria')($('premise').value);
 $('go').onclick = () => {
   const premise = $('premise').value;
   run('/api/investigate?premise=' + encodeURIComponent(premise));
@@ -323,7 +323,7 @@ setInterval(() => {
 
 window.RS = { detail, get S() { return S; } };  // for the screenshot check
 reset($('premise').value);
-if (qs.has('replay')) { if (qs.get('replay') === 'murdoch') $('premise').value = 'The Murdoch family succession dispute'; $('replay').click(); }
+if (qs.has('replay')) { const r = qs.get('replay'); if (r === 'murdoch') $('premise').value = 'The Murdoch family succession dispute'; if (r === 'openai') $('premise').value = "The OpenAI board's firing of Sam Altman"; $('replay').click(); }
 </script>
 </body>
 </html>
