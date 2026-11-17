@@ -2,6 +2,8 @@
   <img src="docs/readme/banner.svg" alt="Red String: pull the thread. A citation crawler that shows where the web's sources contradict each other." width="100%">
 </p>
 
+<p align="center"><b>🏆 Won · £250,000 in credits</b><br>Agentic Web Hackathon (Parallel) · London · 11 November 2026</p>
+
 <p align="center"><b>Type a story. Watch a hundred sources get pinned to the wall, and a red string snap between every
 two that contradict each other.</b></p>
 
