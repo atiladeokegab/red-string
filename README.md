@@ -1,99 +1,89 @@
-<p align="center">
-  <img src="docs/readme/banner.svg" alt="Red String: pull the thread. A citation crawler that shows where the web's sources contradict each other." width="100%">
-</p>
+![Red String, the citation crawler](docs/assets/banner.png)
 
-<p align="center"><b>🏆 Won · £250,000 in credits</b><br>Agentic Web Hackathon (Parallel) · London · 11 November 2026</p>
+# Red String
 
-<p align="center"><b>Type a story. Watch a hundred sources get pinned to the wall, and a red string snap between every
-two that contradict each other.</b></p>
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python)](pyproject.toml)
+[![Offline checks](https://img.shields.io/badge/Checks-make%20check-B22537)](Makefile)
+[![Saved demo](https://img.shields.io/badge/Demo-Saved%20replay-B22537)](#installation)
 
-<p align="center"><img src="docs/readme/wall.png" alt="The wall after a run on the Murdoch succession dispute: sources pinned under each answer, red strings between answers that disagree." width="100%"></p>
+Investigative reporters have to reconcile dates and amounts across dozens of sources, often with browser tabs, spreadsheets and manual comparisons. In the saved Hurricane Maria investigation, the collector read **112 sources** before surfacing one disagreement about the landfall date. [Saved run](cases/runs/maria.json)
 
-Red String is a citation crawler for journalists. You give it an investigative premise. It works out
-who is in the story, reads the web's reporting on it, quotes what each source says about the
-checkable facts (when did it happen, how much was it), and shows you where the sources disagree,
-with the primary record (court, regulator, filing) marked in gold beside the press.
+Red String turns a reporting premise into checkable questions. It pins literal quotes beside the values they support and draws a red string wherever sources disagree on the same fact. A gold marker identifies a source categorized as a primary record, so reporters can examine it alongside the press.
 
-Built in two hours at the Agentic Web build night (Parallel x No Agenda, London, 11 Nov 2026).
+Built in two hours at the Agentic Web build night, Parallel × No Agenda, London, on 11 November 2026. The project won £250,000 in credits. Red String reads search excerpts and reports the disagreement it sees. Its primary-record marker is based on domain, and the reporter decides what the quotes establish.
 
-## What you see
+**[Run the interactive replay](#installation)** · **[Watch the Hurricane Maria walkthrough](docs/assets/replay.mp4)**
 
-1. **One box, one button.** Type a premise, press Investigate.
-2. **Who's who.** The people and organisations in the story appear first.
-3. **The wall fills.** Each checkable question gets a panel. Every source is pinned under the
-   answer it gives, with its exact quote and a link.
-4. **Red string.** Where sources give different dates or amounts, a red string joins the
-   disagreeing answers. Click it to read the quotes side by side.
-5. **The verdict.** A short editor's note: what the sources agree on, where they differ, and what
-   the primary record says.
+![The real Hurricane Maria replay builds a source wall and opens the quotes on a date disagreement](docs/assets/demo.gif)
 
-Every quote is checked to be a real substring of the text the source returned, and the date or
-number taken from it must be stated in that quote. A claim that fails either check is dropped, not shown. The tool reports what sources say; it makes no
-claims of its own.
-
-## How it uses Parallel
-
-| Step | Parallel API | What it does |
-|---|---|---|
-| Identify the people and the checkable questions | Responses (`/v1/responses`) | One web-grounded answer, returned as JSON |
-| Read the reporting | Search (`/v1/search`) | Two searches per question (the reporting, then primary records), run concurrently, up to 15 sources each |
-| Quote what each source says | Responses | Batched calls per question over that question's excerpts, answers held to a JSON schema |
-| Find the contradictions | none, then Responses | Plain code finds more than one distinct date or number for the same question; each candidate is then checked twice to confirm the quotes describe the same fact at the same moment, or it is dropped |
-
-The counter at the top of the page shows the real number of Parallel searches and sources read in
-the run on screen.
+<sub>A recording of the app's flat evidence wall replaying a saved Parallel run. The evidence and quotes are the recorded investigation's.</sub>
 
 ## How it works
 
-**Context:** who uses it and what it depends on.
+1. **Turn a premise into checkable questions.** Parallel Responses identifies people and organizations and returns questions with a checkable date or amount. Parallel Search looks for reporting and primary records concurrently (`starter/parallel.py`, `starter/investigate.py`).
 
-![C4 context diagram](docs/architecture/c4_context.png)
+   ![Replay starts and the first investigators and questions appear](docs/assets/how-replay.gif)
 
-**Containers:** the page, the event stream, the engine and the Parallel client.
+2. **Build the wall from quoted evidence.** For each question, the crawler checks that a quote is in the source excerpt and that it contains the date or number claimed. Distinct answers get separate groups, and a candidate disagreement is checked twice to see whether the quotes are talking about the same fact at the same time (`starter/investigate.py`).
 
-![C4 container diagram](docs/architecture/c4_container.png)
+   ![Sources accumulate on the evidence wall and a thread highlights the conflicting dates](docs/assets/how-compare.gif)
 
-**Components:** the engine's steps and the event each one emits.
+3. **Open the evidence and decide.** The detail panel puts the literal quotes and their source links side by side. The verdict summarizes where the sources agree and where the primary record differs (`starter/web/static/wall.html`, `starter/web/static/world.html`).
 
-![C4 component diagram](docs/architecture/c4_component.png)
+   ![Quote panel and editor verdict in the saved investigation](docs/assets/how-read.gif)
 
-## Run it
+## Results
 
-```bash
-uv sync
-echo "PARALLEL_API_KEY=your-key" > .env      # from platform.parallel.ai
-set -a; . ./.env; set +a
-uv run uvicorn starter.main:app --port 8000
-# open http://localhost:8000/static/world.html
+![Source counts from the three saved Red String investigations](docs/assets/results.png)
+
+These are counts from the saved runs. Opposing values had to pass checks against literal excerpts before a disagreement reached the wall. The Hurricane Maria replay shows the 20 and 22 September claims side by side.
+
+| Saved investigation | Sources read | Claims quoted | Contradictions |
+| --- | ---: | ---: | ---: |
+| [Hurricane Maria](cases/runs/maria.json) | **MEASURED** · 112 | **MEASURED** · 68 | **MEASURED** · 1 |
+| [OpenAI board](cases/runs/openai.json) | **MEASURED** · 142 | **MEASURED** · 62 | **MEASURED** · 0 |
+| [Murdoch succession](cases/runs/murdoch.json) | **MEASURED** · 126 | **MEASURED** · 93 | **MEASURED** · 0 |
+
+| Evidence wall | Literal quotes | Editor verdict |
+| --- | --- | --- |
+| ![Source cards and date groups from the hurricane replay](docs/assets/screen-wall.png) | ![Panel comparing two landfall dates and linking their sources](docs/assets/screen-evidence.png) | ![The editor verdict shown above the wall](docs/assets/screen-verdict.png) |
+
+## Installation
+
+You need Git and [uv](https://docs.astral.sh/uv/). The saved replays work without an API key.
+
+```sh
+git clone https://github.com/atiladeokegab/red-string.git
+cd red-string
+uv sync                                           # Install pinned dependencies
+uv run uvicorn starter.main:app --port 8000        # Start the local app
+make check                                        # Optional, run lint and offline tests
 ```
 
-**Replay** plays back a saved real run with no network, for when the venue Wi-Fi does not cooperate.
-`?replay=maria` plays Hurricane Maria (112 sources, 68 claims, 1 contradiction: a NOAA page dates landfall 22 September against 20 September everywhere else), `?replay=openai` the OpenAI board run (142 sources, 62 claims, sources agree), or
-`?replay=murdoch` for the Murdoch succession dispute (126 sources, 93 claims, where the sources agree and no red string is drawn).
+Open [Hurricane Maria](http://localhost:8000/static/world.html?replay=maria), [OpenAI board](http://localhost:8000/static/world.html?replay=openai) or [Murdoch succession](http://localhost:8000/static/world.html?replay=murdoch). Export `PARALLEL_API_KEY` before starting the server to investigate a new story.
 
-The page is a 3D world: every answer is a tower whose height is the number of sources that state it,
-contradicting answers turn red and are joined by a red string, and five block investigators
-(Identifier, Archivist, Timekeeper, Sceptic, Editor) run to whatever they are working on. Drag to look
-around, click a red tower to read the quotes side by side. The earlier flat evidence wall is still at
-`/static/wall.html`.
+## Documentation
 
-`make check` runs the lint and the offline tests.
+[Architecture context](docs/architecture/c4_context.png) · [Containers](docs/architecture/c4_container.png) · [Components](docs/architecture/c4_component.png) · [Saved runs](cases/runs/).
 
-## Pre-existing work
+## Contact
 
-The FastAPI app factory, store, agent loop and deploy scripts under `starter/` come from a starter
-kit written before the event. Written at the event: `starter/parallel.py`,
-`starter/investigate.py`, `starter/web/static/wall.html`, their tests, and this README.
+Open an [issue](https://github.com/atiladeokegab/red-string/issues) with the premise and a source link when reporting a discrepancy. Atilade Oke ([GitHub](https://github.com/atiladeokegab), [LinkedIn](https://www.linkedin.com/in/atiladeoke/)).
 
-## Known limits
+## Contributing
 
-- "Primary record" is a domain rule (courts, government, regulators, filings, archives), not a
-  judgement about the document.
-- It reads the excerpts Parallel's search returns (up to 2,000 characters per source per question), not
-  every full page.
-- A contradiction means two sources state different values. Some are real disagreements; some are the
-  same fact at different moments (a head count that grew through the day). The quotes are side by side
-  so the reader can tell which.
-- A relative date in a quote ("filed on Saturday") is resolved against the article's publish date.
-- Parallel's Monitor API (re-check the story on a schedule and push new contradictions) is wired in
-  the client but not used by the page yet.
+Run `make check` and check a saved replay before opening a pull request. For a claim-handling change, include the relevant excerpt and expected behavior in the test.
+
+## Citation
+
+```bibtex
+@software{red_string_2026,
+  title = {Red String},
+  year = {2026},
+  url = {https://github.com/atiladeokegab/red-string}
+}
+```
+
+## License
+
+Contact the maintainers for terms on the project code. The reporting and excerpts retain their original sources, linked from each quote on the wall.
